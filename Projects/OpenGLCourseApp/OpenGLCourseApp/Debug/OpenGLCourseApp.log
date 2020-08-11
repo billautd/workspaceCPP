@@ -1,0 +1,3 @@
+﻿  Game.cpp
+C:\Users\David\workspaceC++\Projects\OpenGLCourseApp\OpenGLCourseApp\Game.cpp(226,25): warning C4018: '<': signed/unsigned mismatch
+  OpenGLCourseApp.vcxproj -> C:\Users\David\workspaceC++\Projects\OpenGLCourseApp\Debug\OpenGLCourseApp.exe
