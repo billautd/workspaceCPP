@@ -1,0 +1,12 @@
+﻿  Animation.cpp
+  AssetManager.cpp
+  Collision.cpp
+  Entity.cpp
+  EntityManager.cpp
+  FontManager.cpp
+  Game.cpp
+  main.cpp
+  Map.cpp
+  TextureManager.cpp
+  Generating Code...
+  SDLGame.vcxproj -> C:\Users\David\workspaceC++\Projects\SDLGame\x64\Debug\SDLGame.exe
