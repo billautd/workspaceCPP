@@ -1,23 +1,17 @@
 #include "Camera.h"
 
-Camera::Camera(glm::vec3 cPosition, glm::vec3 cTarget, glm::vec3 cWorldUp) : position(cPosition), target(cTarget), worldUp(cWorldUp) {
-	direction = glm::normalize(target - position);
+Camera::Camera(glm::vec3 cPosition, glm::vec3 cDirection, glm::vec3 cWorldUp, GLfloat cSpeed) : position(cPosition), worldUp(cWorldUp), speed(cSpeed) {
+	direction = glm::normalize(cDirection);
 	right = glm::normalize(-glm::cross(worldUp, direction));
 	cameraUp = glm::normalize(-glm::cross(direction, right));
 }
 
 void Camera::LookAtCurrent(glm::mat4* view) {
-	*view = glm::lookAt(position, target, cameraUp);
+	*view = glm::lookAt(position, position + direction, cameraUp);
 }
 
 void Camera::SetPosition(glm::vec3 position) {
 	this->position = position;
-	direction = glm::normalize(target - position);
-}
-
-void Camera::SetTarget(glm::vec3 target) {
-	this->target = target;
-	direction = glm::normalize(target - position);
 }
 
 void Camera::SetWorldUp(glm::vec3 worldUp) {

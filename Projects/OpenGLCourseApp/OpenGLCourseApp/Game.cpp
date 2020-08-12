@@ -177,9 +177,23 @@ void Game::BindTextures() {
 }
 
 
-
-
 void Game::ProcessInput(SDL_Event& e) {
+	//Delta time
+	GLuint timeToWait{ static_cast<GLuint>(FRAME_TARGET_TIME) - (SDL_GetTicks() - ticksLastFrame) };
+	if (timeToWait > 0 && timeToWait < FRAME_TARGET_TIME)
+		SDL_Delay(timeToWait);
+
+	//Delta time is the difference in seconds from the last frame
+	GLfloat deltaTime{ (SDL_GetTicks() - ticksLastFrame) / 1000.0f };
+
+	//Clamp delta time to a max value
+	deltaTime = (deltaTime > 0.05f) ? 0.05f : deltaTime;
+
+	//Set the new ticks at the current frame for the next pass
+	ticksLastFrame = SDL_GetTicks();
+
+
+
 	if (e.type == SDL_WINDOWEVENT) {
 		switch (e.window.event) {
 			case SDL_WINDOWEVENT_SIZE_CHANGED:
@@ -188,19 +202,38 @@ void Game::ProcessInput(SDL_Event& e) {
 		}
 	}
 
-	if (e.type == SDL_KEYDOWN) {
-		switch (e.key.keysym.sym) {
-			case SDLK_ESCAPE:
-				isRunning = false;
-				SDL_Quit();
-				break;
-		}
-	}
-
 	if (e.type == SDL_QUIT) {
 		isRunning = false;
 		SDL_Quit();
+		return;
 	}
+
+	ProcessCameraMovement(deltaTime);
+}
+
+void Game::ProcessCameraMovement(GLfloat deltaTime) {
+	const Uint8* kbdState = SDL_GetKeyboardState(nullptr);
+
+	//Quit
+	if (kbdState[SDL_SCANCODE_ESCAPE]) {
+		isRunning = false;
+		SDL_Quit();
+		return;
+	}
+
+	//Front
+	if (kbdState[SDL_GetScancodeFromKey(SDLK_z)])
+		camera->SetPosition(camera->GetPosition() + deltaTime * camera->GetSpeed() * camera->GetDirection());
+	//Back
+	if (kbdState[SDL_GetScancodeFromKey(SDLK_s)])
+		camera->SetPosition(camera->GetPosition() - deltaTime * camera->GetSpeed() * camera->GetDirection());
+	//Left	
+	if (kbdState[SDL_GetScancodeFromKey(SDLK_q)])
+		camera->SetPosition(camera->GetPosition() - deltaTime * camera->GetSpeed() * camera->GetRight());
+	//Right
+	if (kbdState[SDL_GetScancodeFromKey(SDLK_d)])
+		camera->SetPosition(camera->GetPosition() + deltaTime * camera->GetSpeed() * camera->GetRight());
+
 
 }
 
@@ -208,10 +241,7 @@ void Game::MVP() {
 	//View
 	GLfloat radius{ 10.0f };
 	glm::mat4 view = glm::mat4(1.0f);
-	GLfloat camX = sin(SDL_GetTicks() / 1000.0f) * radius;
-	GLfloat camZ = cos(SDL_GetTicks() / 1000.0f) * radius;
-	Game::camera->SetPosition(glm::vec3(camX, 0.0f, camZ));
-	Game::camera->LookAtCurrent(&view);
+	camera->LookAtCurrent(&view);
 	shader.SetMat4f("view", view);
 
 
@@ -223,7 +253,7 @@ void Game::MVP() {
 	glBindVertexArray(VAO);
 	{
 		//Model
-		for (GLsizei i = 0; i < cubeNumbers; i++) {
+		for (size_t i = 0; i < cubeNumbers; i++) {
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, cubePositions[i]);
 			if (i % 3 == 0)

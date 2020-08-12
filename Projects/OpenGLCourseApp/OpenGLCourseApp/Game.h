@@ -18,6 +18,7 @@ public:
 
 	void Init();
 	void ProcessInput(SDL_Event& e);
+	void ProcessCameraMovement(GLfloat deltaTime);
 
 	//Shaders
 	int InitShaders();
@@ -34,13 +35,12 @@ public:
 
 private:
 	bool isRunning{ false };
+	GLuint ticksLastFrame{ 0 };
 
 	GLuint VAO{ 0 };
 	GLuint VBO{ 0 };
 	GLuint EBO{ 0 };
 	Shader shader{};
-
-
 	std::vector<GLuint> textureIds{ 0, 1 };
 };
 
