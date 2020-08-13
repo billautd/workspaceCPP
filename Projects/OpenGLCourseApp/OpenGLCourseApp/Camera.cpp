@@ -1,21 +1,75 @@
 #include "Camera.h"
 
-Camera::Camera(glm::vec3 cPosition, glm::vec3 cDirection, glm::vec3 cWorldUp, GLfloat cSpeed) : position(cPosition), worldUp(cWorldUp), speed(cSpeed) {
-	direction = glm::normalize(cDirection);
-	right = glm::normalize(-glm::cross(worldUp, direction));
-	cameraUp = glm::normalize(-glm::cross(direction, right));
+Camera::Camera(glm::vec3 cPosition, glm::vec3 cWorldUp, GLfloat cYaw, GLfloat cPitch, GLfloat cSpeed, GLfloat cSensitivity, GLfloat cZoom) :
+	position(cPosition), worldUp(cWorldUp), speed(cSpeed), sensitivity(cSensitivity), zoom(cZoom) {
+	UpdateCameraVectors();
 }
 
 void Camera::LookAtCurrent(glm::mat4* view) {
 	*view = glm::lookAt(position, position + direction, cameraUp);
 }
 
-void Camera::SetPosition(glm::vec3 position) {
-	this->position = position;
+//void Camera::SetWorldUp(glm::vec3 worldUp) {
+//	this->worldUp = worldUp;
+//	right = glm::normalize(-glm::cross(worldUp, direction));
+//	cameraUp = glm::normalize(-glm::cross(direction, right));
+//}
+
+void Camera::UpdateCameraVectors() {
+	direction = glm::normalize(
+		glm::vec3(
+			cos(glm::radians(yaw)) * cos(glm::radians(pitch)),
+			sin(glm::radians(pitch)),
+			sin(glm::radians(yaw)) * cos(glm::radians(pitch))
+		)
+	);
+	right = glm::normalize(glm::cross(direction, worldUp));
+	cameraUp = glm::normalize(glm::cross(right, direction));
 }
 
-void Camera::SetWorldUp(glm::vec3 worldUp) {
-	this->worldUp = worldUp;
-	right = glm::normalize(-glm::cross(worldUp, direction));
-	cameraUp = glm::normalize(-glm::cross(direction, right));
+void Camera::ProcessKeyboardInput(GLfloat deltaTime) {
+	const Uint8* kbdState = SDL_GetKeyboardState(nullptr);
+
+	//Front
+	if (kbdState[SDL_GetScancodeFromKey(SDLK_z)])
+		position += deltaTime * speed * direction;
+	//Back
+	if (kbdState[SDL_GetScancodeFromKey(SDLK_s)])
+		position -= deltaTime * speed * direction;
+	//Left	
+	if (kbdState[SDL_GetScancodeFromKey(SDLK_q)])
+		position -= deltaTime * speed * right;
+	//Right
+	if (kbdState[SDL_GetScancodeFromKey(SDLK_d)])
+		position += deltaTime * speed * right;
+}
+
+GLuint lastX{ 0 };
+GLuint lastY{ 0 };
+GLboolean firstMouse{ true };
+void Camera::ProcessMouseInput(GLfloat x, GLfloat y) {
+	if (firstMouse) {
+		lastX = x;
+		lastY = y;
+		firstMouse = false;
+	}
+
+	GLfloat xoffset{ x - lastX };
+	GLfloat yoffset{ lastY - y };
+
+	xoffset *= sensitivity;
+	yoffset *= sensitivity;
+
+	yaw += xoffset;
+	pitch += yoffset;
+
+	if (pitch > 89.0f)
+		pitch = 89.0f;
+	if (pitch < -89.0f)
+		pitch = -89.0f;
+
+	UpdateCameraVectors();
+
+	lastX = x;
+	lastY = y;
 }

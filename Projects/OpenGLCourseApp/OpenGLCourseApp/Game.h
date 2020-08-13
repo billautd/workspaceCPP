@@ -17,8 +17,8 @@ public:
 	bool IsRunning() { return isRunning; }
 
 	void Init();
-	void ProcessInput(SDL_Event& e);
-	void ProcessCameraMovement(GLfloat deltaTime);
+	void ProcessKeyboardInput(SDL_Event& e);
+	void ProcessMouseInput();
 
 	//Shaders
 	int InitShaders();

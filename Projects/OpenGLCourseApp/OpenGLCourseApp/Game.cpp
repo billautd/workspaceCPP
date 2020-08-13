@@ -177,7 +177,7 @@ void Game::BindTextures() {
 }
 
 
-void Game::ProcessInput(SDL_Event& e) {
+void Game::ProcessKeyboardInput(SDL_Event& e) {
 	//Delta time
 	GLuint timeToWait{ static_cast<GLuint>(FRAME_TARGET_TIME) - (SDL_GetTicks() - ticksLastFrame) };
 	if (timeToWait > 0 && timeToWait < FRAME_TARGET_TIME)
@@ -208,33 +208,14 @@ void Game::ProcessInput(SDL_Event& e) {
 		return;
 	}
 
-	ProcessCameraMovement(deltaTime);
+	camera->ProcessKeyboardInput(deltaTime);
 }
 
-void Game::ProcessCameraMovement(GLfloat deltaTime) {
-	const Uint8* kbdState = SDL_GetKeyboardState(nullptr);
-
-	//Quit
-	if (kbdState[SDL_SCANCODE_ESCAPE]) {
-		isRunning = false;
-		SDL_Quit();
-		return;
-	}
-
-	//Front
-	if (kbdState[SDL_GetScancodeFromKey(SDLK_z)])
-		camera->SetPosition(camera->GetPosition() + deltaTime * camera->GetSpeed() * camera->GetDirection());
-	//Back
-	if (kbdState[SDL_GetScancodeFromKey(SDLK_s)])
-		camera->SetPosition(camera->GetPosition() - deltaTime * camera->GetSpeed() * camera->GetDirection());
-	//Left	
-	if (kbdState[SDL_GetScancodeFromKey(SDLK_q)])
-		camera->SetPosition(camera->GetPosition() - deltaTime * camera->GetSpeed() * camera->GetRight());
-	//Right
-	if (kbdState[SDL_GetScancodeFromKey(SDLK_d)])
-		camera->SetPosition(camera->GetPosition() + deltaTime * camera->GetSpeed() * camera->GetRight());
-
-
+void Game::ProcessMouseInput() {
+	GLint x{ 0 };
+	GLint y{ 0 };
+	SDL_GetMouseState(&x, &y);
+	camera->ProcessMouseInput(x * 1.0f, y * 1.0f);
 }
 
 void Game::MVP() {

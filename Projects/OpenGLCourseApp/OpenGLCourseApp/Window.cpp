@@ -51,6 +51,8 @@ int Window::Init() {
 	}
 	SDL_GL_MakeCurrent(mainWindow, mainContext);
 
+	SDL_ShowCursor(SDL_DISABLE);
+
 	//Init GLAD
 	if (!gladLoadGLLoader(SDL_GL_GetProcAddress)) {
 		std::cerr << "Error initializing GLAD.\n";

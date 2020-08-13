@@ -2,25 +2,21 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include <glad\glad.h>
+#include <SDL_ttf.h>
+#include <iostream>
 
 class Camera {
 public:
-	Camera() = default;
-	Camera(glm::vec3 cPosition, glm::vec3 cDirection, glm::vec3 worldUp, GLfloat cSpeed);
+	Camera(glm::vec3 cPosition = glm::vec3{ 0.0f, 0.0f, 10.0f }, glm::vec3 cWorldUp = glm::vec3(0.0f, 1.0f, 0.0f),
+		GLfloat cYaw = -90.f, GLfloat cPitch = 0.0f, GLfloat cSpeed = 10.0f, GLfloat cSensitivity = 0.1f, GLfloat cZoom = 45.0f);
 	~Camera() = default;
 
 	void LookAtCurrent(glm::mat4* view);
 
-	glm::vec3 GetPosition() { return position; }
-	glm::vec3 GetDirection() { return direction; }
-	glm::vec3 GetWorldUp() { return worldUp; }
-	glm::vec3 GetCameraUp() { return cameraUp; }
-	glm::vec3 GetRight() { return right; }
-	GLfloat GetSpeed() { return speed; }
+	void UpdateCameraVectors();
 
-	void SetPosition(glm::vec3 position);
-	void SetWorldUp(glm::vec3 worldUp);
-	void SetSpeed(GLfloat speed) { this->speed = speed; }
+	void ProcessKeyboardInput(GLfloat deltaTime);
+	void ProcessMouseInput(GLfloat x, GLfloat y);
 
 private:
 	glm::vec3 position{};
@@ -28,6 +24,10 @@ private:
 	glm::vec3 worldUp{};
 	glm::vec3 cameraUp{};
 	glm::vec3 right{};
-	GLfloat speed{ 0.0f };
+	GLfloat speed{ 1.0f };
+	GLfloat sensitivity{ 1.0f };
+	GLfloat zoom{ 1.0f };
+	GLfloat yaw{ -90.0f };
+	GLfloat pitch{ 0.0f };
 };
 

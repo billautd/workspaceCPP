@@ -11,10 +11,7 @@
 
 //Static inits
 Window* Game::mainWindow = new Window();
-Camera* Game::camera = new Camera(glm::vec3(0.0f, 0.0f, 10.0f),
-	glm::vec3(0.0f, 0.0f, -1.0f),
-	glm::vec3(0.0f, 1.0f, 0.0f),
-	2.0f);
+Camera* Game::camera = new Camera();
 
 SDL_Event event{};
 
@@ -27,7 +24,8 @@ int main(int argc, char* argv[]) {
 	while (game.IsRunning()) {
 		//Input
 		SDL_PollEvent(&event);
-		game.ProcessInput(event);
+		game.ProcessKeyboardInput(event);
+		game.ProcessMouseInput();
 
 		//Update
 		Game::mainWindow->GLClear();
@@ -38,6 +36,7 @@ int main(int argc, char* argv[]) {
 
 		//Render
 		SDL_GL_SwapWindow(Game::mainWindow->GetSDL_Window());
+
 	}
 
 	game.FreeShaders();
