@@ -218,6 +218,11 @@ void Game::ProcessMouseInput() {
 	camera->ProcessMouseInput(x * 1.0f, y * 1.0f);
 }
 
+void Game::ProcessMouseScrollInput(SDL_Event& e) {
+	if (e.type == SDL_MOUSEWHEEL)
+		camera->ProcessMouseScrollInput(e.wheel.y * 2.0f);
+}
+
 void Game::MVP() {
 	//View
 	GLfloat radius{ 10.0f };
@@ -228,7 +233,7 @@ void Game::MVP() {
 
 	//Projection
 	glm::mat4 projection = glm::mat4(1.0f);
-	projection = glm::perspective(glm::radians(45.0f), ASPECT_RATIO, 0.1f, 100.0f);
+	projection = glm::perspective(glm::radians(camera->GetZoom()), ASPECT_RATIO, 0.1f, 100.0f);
 	shader.SetMat4f("projection", projection);
 
 	glBindVertexArray(VAO);

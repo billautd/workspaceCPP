@@ -26,6 +26,9 @@ int main(int argc, char* argv[]) {
 		SDL_PollEvent(&event);
 		game.ProcessKeyboardInput(event);
 		game.ProcessMouseInput();
+		while (SDL_PollEvent(&event))
+			game.ProcessMouseScrollInput(event);
+
 
 		//Update
 		Game::mainWindow->GLClear();

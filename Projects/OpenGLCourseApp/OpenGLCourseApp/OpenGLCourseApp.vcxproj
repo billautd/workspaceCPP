@@ -154,6 +154,7 @@
     <ClCompile Include="..\..\..\Libraries\GLAD\src\glad.c" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GlmUtils.cpp" />
     <ClCompile Include="HelloTriangle_1.cpp" />
     <ClCompile Include="HelloTriangle_2.cpp" />
     <ClCompile Include="HelloTriangle_3.cpp" />

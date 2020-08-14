@@ -32,16 +32,16 @@ void Camera::ProcessKeyboardInput(GLfloat deltaTime) {
 
 	//Front
 	if (kbdState[SDL_GetScancodeFromKey(SDLK_z)])
-		position += deltaTime * speed * direction;
+		position += deltaTime * speed * glm::vec3(direction.x, 0.0f, direction.z);
 	//Back
 	if (kbdState[SDL_GetScancodeFromKey(SDLK_s)])
-		position -= deltaTime * speed * direction;
+		position -= deltaTime * speed * glm::vec3(direction.x, 0.0f, direction.z);
 	//Left	
 	if (kbdState[SDL_GetScancodeFromKey(SDLK_q)])
-		position -= deltaTime * speed * right;
+		position -= deltaTime * speed * glm::vec3(right.x, 0.0f, right.z);
 	//Right
 	if (kbdState[SDL_GetScancodeFromKey(SDLK_d)])
-		position += deltaTime * speed * right;
+		position += deltaTime * speed * glm::vec3(right.x, 0.0f, right.z);
 }
 
 GLuint lastX{ 0 };
@@ -72,4 +72,12 @@ void Camera::ProcessMouseInput(GLfloat x, GLfloat y) {
 
 	lastX = x;
 	lastY = y;
+}
+
+void Camera::ProcessMouseScrollInput(GLfloat yOffset) {
+	zoom -= yOffset;
+	if (zoom < 1.0f)
+		zoom = 1.0f;
+	if (zoom > 45.0f)
+		zoom = 45.0f;
 }
