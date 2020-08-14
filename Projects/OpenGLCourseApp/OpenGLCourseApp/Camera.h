@@ -20,7 +20,7 @@ public:
 	void UpdateCameraVectors();
 
 	void ProcessKeyboardInput(GLfloat deltaTime);
-	void ProcessMouseInput(GLfloat x, GLfloat y);
+	void ProcessMouseInput(SDL_Event& e, GLfloat x, GLfloat y);
 	void ProcessMouseScrollInput(GLfloat yOffset);
 
 private:

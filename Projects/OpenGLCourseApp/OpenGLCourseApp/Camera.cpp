@@ -45,8 +45,8 @@ void Camera::ProcessKeyboardInput(GLfloat deltaTime) {
 GLfloat lastX{ 0 };
 GLfloat lastY{ 0 };
 GLboolean firstMouse{ true };
-void Camera::ProcessMouseInput(GLfloat x, GLfloat y) {
-	if (firstMouse) {
+void Camera::ProcessMouseInput(SDL_Event& e, GLfloat x, GLfloat y) {
+	if (firstMouse || e.type == SDL_WINDOWEVENT_ENTER) {
 		lastX = x;
 		lastY = y;
 		firstMouse = false;

@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
 		//Input
 		SDL_PollEvent(&event);
 		game.ProcessKeyboardInput(event);
-		game.ProcessMouseInput();
+		game.ProcessMouseInput(event);
 		while (SDL_PollEvent(&event))
 			game.ProcessMouseScrollInput(event);
 

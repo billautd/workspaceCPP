@@ -18,7 +18,7 @@ public:
 
 	void Init();
 	void ProcessKeyboardInput(SDL_Event& e);
-	void ProcessMouseInput();
+	void ProcessMouseInput(SDL_Event& e);
 	void ProcessMouseScrollInput(SDL_Event& e);
 
 	//Shaders

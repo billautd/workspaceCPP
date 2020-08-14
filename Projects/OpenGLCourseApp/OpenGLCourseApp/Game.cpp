@@ -261,11 +261,11 @@ void Game::ProcessKeyboardInput(SDL_Event& e) {
 	camera->ProcessKeyboardInput(deltaTime);
 }
 
-void Game::ProcessMouseInput() {
+void Game::ProcessMouseInput(SDL_Event& e) {
 	GLint x{ 0 };
 	GLint y{ 0 };
 	SDL_GetMouseState(&x, &y);
-	camera->ProcessMouseInput(x * 1.0f, y * 1.0f);
+	camera->ProcessMouseInput(e, x * 1.0f, y * 1.0f);
 }
 
 void Game::ProcessMouseScrollInput(SDL_Event& e) {
