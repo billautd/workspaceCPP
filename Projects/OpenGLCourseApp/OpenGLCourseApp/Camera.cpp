@@ -5,15 +5,9 @@ Camera::Camera(glm::vec3 cPosition, glm::vec3 cWorldUp, GLfloat cYaw, GLfloat cP
 	UpdateCameraVectors();
 }
 
-void Camera::LookAtCurrent(glm::mat4* view) {
-	*view = glm::lookAt(position, position + direction, cameraUp);
+glm::mat4 Camera::LookAtCurrent() {
+	return glm::lookAt(position, position + direction, cameraUp);
 }
-
-//void Camera::SetWorldUp(glm::vec3 worldUp) {
-//	this->worldUp = worldUp;
-//	right = glm::normalize(-glm::cross(worldUp, direction));
-//	cameraUp = glm::normalize(-glm::cross(direction, right));
-//}
 
 void Camera::UpdateCameraVectors() {
 	direction = glm::normalize(
@@ -44,8 +38,8 @@ void Camera::ProcessKeyboardInput(GLfloat deltaTime) {
 		position += deltaTime * speed * glm::vec3(right.x, 0.0f, right.z);
 }
 
-GLuint lastX{ 0 };
-GLuint lastY{ 0 };
+GLfloat lastX{ 0 };
+GLfloat lastY{ 0 };
 GLboolean firstMouse{ true };
 void Camera::ProcessMouseInput(GLfloat x, GLfloat y) {
 	if (firstMouse) {

@@ -32,16 +32,19 @@ public:
 
 	void MVP();
 
-	void UseShader() { shader.Use(); }
+	Shader GetContainerShader() { return containerShader; }
+	Shader GetLightSourceShader() { return lightSourceShader; }
 
 private:
 	bool isRunning{ false };
 	GLuint ticksLastFrame{ 0 };
 
-	GLuint VAO{ 0 };
+	GLuint containerVAO{ 0 };
+	GLuint lightSourceVAO{ 0 };
 	GLuint VBO{ 0 };
 	GLuint EBO{ 0 };
-	Shader shader{};
+	Shader containerShader{};
+	Shader lightSourceShader{};
 	std::vector<GLuint> textureIds{ 0, 1 };
 };
 

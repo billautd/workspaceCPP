@@ -23,6 +23,9 @@ public:
 	};
 	void SetMat4f(const std::string& name, glm::mat4 value) {
 		glUniformMatrix4fv(glGetUniformLocation(programID, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+	};
+	void SetVec3(const std::string& name, glm::vec3 value) {
+		glUniform3fv(glGetUniformLocation(programID, name.c_str()), 1, glm::value_ptr(value));
 	}
 	GLuint GetProgramID() { return programID; }
 

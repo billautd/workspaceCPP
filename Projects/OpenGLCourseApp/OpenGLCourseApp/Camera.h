@@ -14,7 +14,7 @@ public:
 
 	GLfloat GetZoom() { return zoom; }
 
-	void LookAtCurrent(glm::mat4* view);
+	glm::mat4 LookAtCurrent();
 
 	void UpdateCameraVectors();
 

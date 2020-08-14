@@ -28,6 +28,12 @@
     <Filter Include="Resource Files\Shaders\Exercices">
       <UniqueIdentifier>{c4c7c455-ada5-4735-9a35-a61cdc4baf70}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Shaders\LightSource">
+      <UniqueIdentifier>{7d0d9950-0e4b-42d8-b105-84e712cb42ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\Container">
+      <UniqueIdentifier>{69fb7961-ee82-42d3-ad9f-fa356a18ca3a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -84,9 +90,6 @@
     <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GlmUtils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h">
@@ -132,6 +135,18 @@
     </None>
     <None Include="Shaders\Textures_1_Fragment.shader">
       <Filter>Resource Files\Shaders\Exercices</Filter>
+    </None>
+    <None Include="Shaders\Container\fragment.shader">
+      <Filter>Resource Files\Shaders\Container</Filter>
+    </None>
+    <None Include="Shaders\Container\vertex.shader">
+      <Filter>Resource Files\Shaders\Container</Filter>
+    </None>
+    <None Include="Shaders\LightSource\fragment.shader">
+      <Filter>Resource Files\Shaders\LightSource</Filter>
+    </None>
+    <None Include="Shaders\LightSource\vertex.shader">
+      <Filter>Resource Files\Shaders\LightSource</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
