@@ -14,41 +14,66 @@ glm::vec3 cubePositions[] = {
 	glm::vec3(-1.3f,  1.0f, -1.5f)
 };
 
-GLuint vertexNumber{ 36 };
+GLuint verticesNumber{ 24 };
 GLfloat vertices[] = {
-	// x      y     z     texX  texY
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,     //front
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+	// x      y     z       nx     ny    nz      texX  texY
+	-0.5f, -0.5f,  0.5f,   0.0f,  0.0f,  0.0f,   0.0f, 0.0f,     //front
+	 0.5f, -0.5f,  0.5f,   0.0f,  0.0f,  0.0f,   1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,   0.0f,  0.0f,  0.0f,   1.0f, 1.0f,
+	-0.5f,  0.5f,  0.5f,   0.0f,  0.0f,  0.0f,   0.0f, 1.0f,
 
-	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,     //top
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f,  0.5f,  0.5f,   0.0f,  0.0f,  0.0f,    0.0f, 0.0f,     //top
+	 0.5f,  0.5f,  0.5f,   0.0f,  0.0f,  0.0f,    1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,   0.0f,  0.0f,  0.0f,    1.0f, 1.0f,
+	-0.5f,  0.5f, -0.5f,   0.0f,  0.0f,  0.0f,    0.0f, 1.0f,
 
-	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,    //back
-	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,   0.0f,  0.0f,  0.0f,   1.0f, 0.0f,    //back
+	-0.5f, -0.5f, -0.5f,   0.0f,  0.0f,  0.0f,   0.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,   0.0f,  0.0f,  0.0f,   0.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,   0.0f,  0.0f,  0.0f,   1.0f, 1.0f,
 
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,    //bottom
-	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f,   0.0f,  0.0f,  0.0f,    0.0f, 1.0f,    //bottom
+	 0.5f, -0.5f, -0.5f,   0.0f,  0.0f,  0.0f,    1.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,   0.0f,  0.0f,  0.0f,    1.0f, 0.0f,
+	-0.5f, -0.5f,  0.5f,   0.0f,  0.0f,  0.0f,    0.0f, 0.0f,
 
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,    //left
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,   0.0f,  0.0f,  0.0f,    0.0f, 1.0f,    //left
+	-0.5f, -0.5f,  0.5f,   0.0f,  0.0f,  0.0f,    0.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,   0.0f,  0.0f,  0.0f,    1.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,   0.0f,  0.0f,  0.0f,    1.0f, 1.0f,
 
-	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,    //right
-	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,   0.0f,  0.0f,  0.0f,    0.0f, 0.0f,    //right
+	 0.5f, -0.5f, -0.5f,   0.0f,  0.0f,  0.0f,    0.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,   0.0f,  0.0f,  0.0f,    1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,   0.0f,  0.0f,  0.0f,    1.0f, 0.0f,
 };
 
+void CalcAverageNormals(GLfloat vertices[], GLuint verticesNumber, GLshort indices[], GLuint indicesNumber, GLuint vLength, GLuint normalOffset) {
+	for (size_t i = 0; i < indicesNumber; i += 3) {
+		unsigned int in0 = indices[i] * vLength;
+		unsigned int in1 = indices[i + 1] * vLength;
+		unsigned int in2 = indices[i + 2] * vLength;
+		glm::vec3 v1(vertices[in1] - vertices[in0], vertices[in1 + 1] - vertices[in0 + 1], vertices[in1 + 2] - vertices[in0 + 2]);
+		glm::vec3 v2(vertices[in2] - vertices[in0], vertices[in2 + 1] - vertices[in0 + 1], vertices[in2 + 2] - vertices[in0 + 2]);
+		glm::vec3 normal = glm::cross(v1, v2);
+		normal = glm::normalize(normal);
 
+		in0 += normalOffset; in1 += normalOffset; in2 += normalOffset;
+		vertices[in0] += normal.x; vertices[in0 + 1] += normal.y; vertices[in0 + 2] += normal.z;
+		vertices[in1] += normal.x; vertices[in1 + 1] += normal.y; vertices[in1 + 2] += normal.z;
+		vertices[in2] += normal.x; vertices[in2 + 1] += normal.y; vertices[in2 + 2] += normal.z;
+	}
+
+	for (size_t i = 0; i < verticesNumber / vLength; i++) {
+		unsigned int nOffset = i * vLength + normalOffset;
+		glm::vec3 vec(vertices[nOffset], vertices[nOffset + 1], vertices[nOffset + 2]);
+		vec = glm::normalize(vec);
+		vertices[nOffset] = vec.x; vertices[nOffset + 1] = vec.y; vertices[nOffset + 2] = vec.z;
+	}
+}
+
+
+GLuint indicesNumber{ 36 };
 GLshort indices[] = {
 	 0,  1,  2,   //front
 	 2,  3,  0,
@@ -77,6 +102,7 @@ void Game::Init() {
 	int windowInitStatus = mainWindow->Init();
 	int shadersInitStatus = InitShaders();
 
+	CalcAverageNormals(vertices, verticesNumber, indices, indicesNumber, 8, 3);
 	GenerateVertexData();
 	GenerateTextureData();
 	if (windowInitStatus + shadersInitStatus == 0)
@@ -89,7 +115,7 @@ int Game::InitShaders() {
 		return 1;
 	};
 	if (containerShader.Init("Shaders/Container/vertex.shader", "Shaders/Container/fragment.shader") != 0) {
-		std::cerr << "Error while initializing light source shader\n";
+		std::cerr << "Error while initializing container shader\n";
 		return 1;
 	};
 	return 0;
@@ -114,12 +140,16 @@ void Game::GenerateVertexData() {
 
 
 		//Position
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), 0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), 0);
 		glEnableVertexAttribArray(0);
 
+		//Normal
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(1);
+
 		//Texture
-		//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
-		//glEnableVertexAttribArray(1);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(6 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(2);
 
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -132,7 +162,7 @@ void Game::GenerateVertexData() {
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), 0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), 0);
 		glEnableVertexAttribArray(0);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -149,7 +179,6 @@ void Game::FreeShaders() {
 	glDeleteProgram(containerShader.GetProgramID());
 }
 
-//TODO Maybe find a way to make it more flexible
 void Game::GenerateTextureData() {
 	Texture::SetTextureWrap(GL_REPEAT);
 	Texture::SetTextureFilter(GL_LINEAR);
@@ -186,15 +215,15 @@ void Game::GenerateTextureData() {
 	faceTexture.FreeImage();
 }
 
-//TODO Maybe find a way to make it more flexible
 void Game::BindTextures() {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textureIds.at(0));
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, textureIds.at(1));
 
-	//shader.SetInt("textureUnit1", 0);
-	//shader.SetInt("textureUnit2", 1);
+	containerShader.Use();
+	containerShader.SetInt("texture1", 0);
+	containerShader.SetInt("texture2", 1);
 }
 
 
@@ -249,10 +278,16 @@ void Game::MVP() {
 	containerShader.Use();
 	glm::vec3 lightColor = glm::vec3{ 1.0f, 1.0f, 1.0f };
 	glm::vec3 objectColor = glm::vec3{ 1.0f, 0.5f, 0.31f };
+	glm::vec3 lightSourcePos = glm::vec3(1.2f, 1.0f, 2.0f);
+	GLfloat ambientStrength{ 0.1f };
+	GLfloat specularStrength{ 0.5f };
+	containerShader.SetFloat("ambientStrength", ambientStrength);
+	containerShader.SetFloat("specularStrength", specularStrength);
 	containerShader.SetVec3("lightColor", lightColor);
 	containerShader.SetVec3("objectColor", objectColor);
+	containerShader.SetVec3("lightPos", lightSourcePos);
+	containerShader.SetVec3("viewPos", camera->GetPosition());
 	//View
-	GLfloat radius{ 10.0f };
 	glm::mat4 view = camera->LookAtCurrent();
 	containerShader.SetMat4f("view", view);
 
@@ -267,7 +302,7 @@ void Game::MVP() {
 
 	glBindVertexArray(containerVAO);
 	{
-		glDrawElements(GL_TRIANGLES, vertexNumber, GL_UNSIGNED_SHORT, 0);
+		glDrawElements(GL_TRIANGLES, indicesNumber, GL_UNSIGNED_SHORT, 0);
 	}
 	glBindVertexArray(0);
 
@@ -278,14 +313,13 @@ void Game::MVP() {
 	//Projection
 	lightSourceShader.SetMat4f("projection", projection);
 	//Model
-	glm::vec3 lightSourcePos = glm::vec3(1.2f, 1.0f, 2.0f);
 	model = glm::translate(model, lightSourcePos);
 	model = glm::scale(model, glm::vec3(0.2f));
 	lightSourceShader.SetMat4f("model", model);
 
 	glBindVertexArray(lightSourceVAO);
 	{
-		glDrawElements(GL_TRIANGLES, vertexNumber, GL_UNSIGNED_SHORT, 0);
+		glDrawElements(GL_TRIANGLES, indicesNumber, GL_UNSIGNED_SHORT, 0);
 	}
 	glBindVertexArray(0);
 }

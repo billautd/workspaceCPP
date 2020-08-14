@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
 
 		//Update
 		Game::mainWindow->GLClear();
-		//game.BindTextures();
+		game.BindTextures();
 
 		game.MVP();
 

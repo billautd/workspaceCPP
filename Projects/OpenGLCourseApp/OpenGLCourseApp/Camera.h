@@ -13,6 +13,7 @@ public:
 	~Camera() = default;
 
 	GLfloat GetZoom() { return zoom; }
+	glm::vec3 GetPosition() { return position; }
 
 	glm::mat4 LookAtCurrent();
 
