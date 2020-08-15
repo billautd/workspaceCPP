@@ -14,7 +14,7 @@ public:
 	GLint GetNbrChannels() { return nbrChannels; }
 	GLubyte* GetData() { return data; }
 
-	int Init(const char* path);
+	int Init(const char* path, GLuint* id, GLuint rgbMode);
 	void FreeImage() { stbi_image_free(data); }
 
 	static void SetTextureWrap(GLuint mode);

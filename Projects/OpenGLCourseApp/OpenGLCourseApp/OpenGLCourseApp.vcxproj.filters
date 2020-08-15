@@ -150,5 +150,14 @@
     <Image Include="Assets\Textures\wall.jpg">
       <Filter>Resource Files\Assets\Textures</Filter>
     </Image>
+    <Image Include="Assets\Textures\container.png">
+      <Filter>Resource Files\Assets\Textures</Filter>
+    </Image>
+    <Image Include="Assets\Textures\container_specular.png">
+      <Filter>Resource Files\Assets\Textures</Filter>
+    </Image>
+    <Image Include="Assets\Textures\matrix.jpg">
+      <Filter>Resource Files\Assets\Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

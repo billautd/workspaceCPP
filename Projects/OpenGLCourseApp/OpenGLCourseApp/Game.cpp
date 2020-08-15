@@ -114,6 +114,7 @@ int Game::InitShaders() {
 		std::cerr << "Error while initializing light source shader\n";
 		return 1;
 	};
+
 	if (containerShader.Init("Shaders/Container/vertex.shader", "Shaders/Container/fragment.shader") != 0) {
 		std::cerr << "Error while initializing container shader\n";
 		return 1;
@@ -182,37 +183,34 @@ void Game::FreeShaders() {
 void Game::GenerateTextureData() {
 	Texture::SetTextureWrap(GL_REPEAT);
 	Texture::SetTextureFilter(GL_LINEAR);
-	Texture wallTexture{};
-	if (wallTexture.Init("Assets/Textures/wall.jpg") != 0) {
-		std::cerr << "Error while initializing wall texture\n";
+	Texture containerTexture{ Texture() };
+	if (containerTexture.Init("Assets/Textures/container.png", &textureIds.at(0), GL_RGBA) != 0) {
+		std::cerr << "Error while initializing container texture\n";
 		return;
 	}
 
-	glGenTextures(1, &textureIds.at(0));
-	glBindTexture(GL_TEXTURE_2D, textureIds.at(0));
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wallTexture.GetWidth(),
-			wallTexture.GetHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, wallTexture.GetData());
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-
-	Texture faceTexture{};
-	stbi_set_flip_vertically_on_load(true);
-	if (faceTexture.Init("Assets/Textures/awesomeface.png") != 0) {
-		std::cerr << "Error while initializing face texture\n";
+	Texture containerSpecularTexture{ Texture() };
+	if (containerSpecularTexture.Init("Assets/Textures/container_specular.png", &textureIds.at(1), GL_RGBA) != 0) {
+		std::cerr << "Error while initializing container specular texture\n";
 		return;
 	}
-	glGenTextures(1, &textureIds.at(1));
-	glBindTexture(GL_TEXTURE_2D, textureIds.at(1));
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, faceTexture.GetWidth(),
-			faceTexture.GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, faceTexture.GetData());
-		glGenerateMipmap(GL_TEXTURE_2D);
+
+	Texture matrixTexture{ Texture() };
+	if (matrixTexture.Init("Assets/Textures/matrix.jpg", &textureIds.at(2), GL_RGB) != 0) {
+		std::cerr << "Error while initializing matrix texture\n";
+		return;
 	}
+
+	containerShader.Use();
+	containerShader.SetInt("material.diffuse", 0);
+	containerShader.SetInt("material.specular", 1);
+	containerShader.SetInt("material.emission", 2);
 
 	//Free textures
-	wallTexture.FreeImage();
-	faceTexture.FreeImage();
+	containerTexture.FreeImage();
+	containerSpecularTexture.FreeImage();
+	matrixTexture.FreeImage();
+
 }
 
 void Game::BindTextures() {
@@ -220,10 +218,8 @@ void Game::BindTextures() {
 	glBindTexture(GL_TEXTURE_2D, textureIds.at(0));
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, textureIds.at(1));
-
-	containerShader.Use();
-	containerShader.SetInt("texture1", 0);
-	containerShader.SetInt("texture2", 1);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, textureIds.at(2));
 }
 
 
@@ -276,17 +272,20 @@ void Game::ProcessMouseScrollInput(SDL_Event& e) {
 void Game::MVP() {
 	//Container shader
 	containerShader.Use();
-	glm::vec3 lightColor = glm::vec3{ 1.0f, 1.0f, 1.0f };
-	glm::vec3 objectColor = glm::vec3{ 1.0f, 0.5f, 0.31f };
-	glm::vec3 lightSourcePos = glm::vec3(1.2f, 1.0f, 2.0f);
-	GLfloat ambientStrength{ 0.1f };
-	GLfloat specularStrength{ 0.5f };
-	containerShader.SetFloat("ambientStrength", ambientStrength);
-	containerShader.SetFloat("specularStrength", specularStrength);
-	containerShader.SetVec3("lightColor", lightColor);
-	containerShader.SetVec3("objectColor", objectColor);
-	containerShader.SetVec3("lightPos", lightSourcePos);
-	containerShader.SetVec3("viewPos", camera->GetPosition());
+	glm::vec3 lightSourcePos = glm::vec3(1.2f * cos(SDL_GetTicks() / 1000.0f), 1.0f, 2.0f * sin(SDL_GetTicks() / 1000.0f));
+	//glm::vec3 lightSourcePos = glm::vec3(1.2f, 1.0f, 2.0f);
+	//glm::vec3 lightColor = glm::vec3(cos(SDL_GetTicks() * 2.0f / 1000.0f), cos(SDL_GetTicks() * 0.7f / 1000.0f), cos(SDL_GetTicks() * 1.3f / 1000.0f));
+	glm::vec3 lightColor = glm::vec3(1.0f);
+	glm::vec3 diffuseColor = 0.8f * lightColor;
+	glm::vec3 ambientColor = 0.5f * lightColor;
+
+	containerShader.SetVec3("light.ambient", ambientColor);
+	containerShader.SetVec3("light.diffuse", diffuseColor);
+	containerShader.SetVec3("light.specular", 1.0f, 1.0f, 1.0f);
+
+	containerShader.SetFloat("material.shininess", 2.0f);
+
+	containerShader.SetVec3("vLightPos", lightSourcePos);
 	//View
 	glm::mat4 view = camera->LookAtCurrent();
 	containerShader.SetMat4f("view", view);
@@ -308,7 +307,9 @@ void Game::MVP() {
 
 	//Light source shader
 	lightSourceShader.Use();
-	////View
+	lightSourceShader.SetVec3("lightColor", lightColor);
+
+	//View
 	lightSourceShader.SetMat4f("view", view);
 	//Projection
 	lightSourceShader.SetMat4f("projection", projection);

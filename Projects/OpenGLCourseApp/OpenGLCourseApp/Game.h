@@ -45,6 +45,6 @@ private:
 	GLuint EBO{ 0 };
 	Shader containerShader{};
 	Shader lightSourceShader{};
-	std::vector<GLuint> textureIds{ 0, 1 };
+	std::vector<GLuint> textureIds{ 0,0,0 };
 };
 

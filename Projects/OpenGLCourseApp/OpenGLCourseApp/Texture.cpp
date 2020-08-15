@@ -2,11 +2,17 @@
 
 Texture::~Texture() {}
 
-int Texture::Init(const char* path) {
+int Texture::Init(const char* path, GLuint* id, GLuint rgbMode) {
 	data = stbi_load(path, &width, &height, &nbrChannels, 0);
 	if (!data) {
 		std::cerr << "Error while initialize texture data : " << path << '\n';
 		return 1;
+	}
+	glGenTextures(1, id);
+	glBindTexture(GL_TEXTURE_2D, *id);
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, rgbMode, width, height, 0, rgbMode, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	return 0;
 }
