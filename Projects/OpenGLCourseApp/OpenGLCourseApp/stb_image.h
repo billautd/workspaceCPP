@@ -609,7 +609,7 @@ extern "C" {
 #ifdef _MSC_VER
 typedef unsigned short stbi__uint16;
 typedef   signed short stbi__int16;
-typedef unsigned int   stbi__uint32;
+typedef GLuint   stbi__uint32;
 typedef   signed int   stbi__int32;
 #else
 #include <stdint.h>
@@ -1231,8 +1231,8 @@ static void stbi__float_postprocess(float* result, int* x, int* y, int* comp, in
 #ifndef STBI_NO_STDIO
 
 #if defined(_MSC_VER) && defined(STBI_WINDOWS_UTF8)
-STBI_EXTERN __declspec(dllimport) int __stdcall MultiByteToWideChar(unsigned int cp, unsigned long flags, const char* str, int cbmb, wchar_t* widestr, int cchwide);
-STBI_EXTERN __declspec(dllimport) int __stdcall WideCharToMultiByte(unsigned int cp, unsigned long flags, const wchar_t* widestr, int cchwide, char* str, int cbmb, const char* defchar, int* used_default);
+STBI_EXTERN __declspec(dllimport) int __stdcall MultiByteToWideChar(GLuint cp, unsigned long flags, const char* str, int cbmb, wchar_t* widestr, int cchwide);
+STBI_EXTERN __declspec(dllimport) int __stdcall WideCharToMultiByte(GLuint cp, unsigned long flags, const wchar_t* widestr, int cchwide, char* str, int cbmb, const char* defchar, int* used_default);
 #endif
 
 #if defined(_MSC_VER) && defined(STBI_WINDOWS_UTF8)
@@ -1631,7 +1631,7 @@ static stbi_uc stbi__compute_y(int r, int g, int b) {
 #if defined(STBI_NO_PNG) && defined(STBI_NO_BMP) && defined(STBI_NO_PSD) && defined(STBI_NO_TGA) && defined(STBI_NO_GIF) && defined(STBI_NO_PIC) && defined(STBI_NO_PNM)
 // nothing
 #else
-static unsigned char* stbi__convert_format(unsigned char* data, int img_n, int req_comp, unsigned int x, unsigned int y) {
+static unsigned char* stbi__convert_format(unsigned char* data, int img_n, int req_comp, GLuint x, GLuint y) {
 	int i, j;
 	unsigned char* good;
 
@@ -1686,7 +1686,7 @@ static stbi__uint16 stbi__compute_y_16(int r, int g, int b) {
 #if defined(STBI_NO_PNG) && defined(STBI_NO_PSD)
 // nothing
 #else
-static stbi__uint16* stbi__convert_format16(stbi__uint16* data, int img_n, int req_comp, unsigned int x, unsigned int y) {
+static stbi__uint16* stbi__convert_format16(stbi__uint16* data, int img_n, int req_comp, GLuint x, GLuint y) {
 	int i, j;
 	stbi__uint16* good;
 
@@ -1816,7 +1816,7 @@ typedef struct
 	stbi__uint16 code[256];
 	stbi_uc  values[256];
 	stbi_uc  size[257];
-	unsigned int maxcode[18];
+	GLuint maxcode[18];
 	int    delta[17];   // old 'firstsymbol' - old 'firstcode'
 } stbi__huffman;
 
@@ -1876,7 +1876,7 @@ typedef struct
 
 static int stbi__build_huffman(stbi__huffman* h, int* count) {
 	int i, j, k = 0;
-	unsigned int code;
+	GLuint code;
 	// build size list for each symbol (from JPEG spec)
 	for (i = 0; i < 16; ++i)
 		for (j = 0; j < count[i]; ++j)
@@ -1943,7 +1943,7 @@ static void stbi__build_fast_ac(stbi__int16* fast_ac, stbi__huffman* h) {
 
 static void stbi__grow_buffer_unsafe(stbi__jpeg* j) {
 	do {
-		unsigned int b = j->nomore ? 0 : stbi__get8(j->s);
+		GLuint b = j->nomore ? 0 : stbi__get8(j->s);
 		if (b == 0xff) {
 			int c = stbi__get8(j->s);
 			while (c == 0xff) c = stbi__get8(j->s); // consume fill bytes
@@ -1963,7 +1963,7 @@ static const stbi__uint32 stbi__bmask[17] = { 0,1,3,7,15,31,63,127,255,511,1023,
 
 // decode a jpeg huffman value from the bitstream
 stbi_inline static int stbi__jpeg_huff_decode(stbi__jpeg* j, stbi__huffman* h) {
-	unsigned int temp;
+	GLuint temp;
 	int c, k;
 
 	if (j->code_bits < 16) stbi__grow_buffer_unsafe(j);
@@ -2016,7 +2016,7 @@ static const int stbi__jbias[16] = { 0,-1,-3,-7,-15,-31,-63,-127,-255,-511,-1023
 // combined JPEG 'receive' and JPEG 'extend', since baseline
 // always extends everything it receives.
 stbi_inline static int stbi__extend_receive(stbi__jpeg* j, int n) {
-	unsigned int k;
+	GLuint k;
 	int sgn;
 	if (j->code_bits < n) stbi__grow_buffer_unsafe(j);
 
@@ -2031,7 +2031,7 @@ stbi_inline static int stbi__extend_receive(stbi__jpeg* j, int n) {
 
 // get some unsigned bits
 stbi_inline static int stbi__jpeg_get_bits(stbi__jpeg* j, int n) {
-	unsigned int k;
+	GLuint k;
 	if (j->code_bits < n) stbi__grow_buffer_unsafe(j);
 	k = stbi_lrot(j->code_buffer, n);
 	j->code_buffer = k & ~stbi__bmask[n];
@@ -2041,7 +2041,7 @@ stbi_inline static int stbi__jpeg_get_bits(stbi__jpeg* j, int n) {
 }
 
 stbi_inline static int stbi__jpeg_get_bit(stbi__jpeg* j) {
-	unsigned int k;
+	GLuint k;
 	if (j->code_bits < 1) stbi__grow_buffer_unsafe(j);
 	k = j->code_buffer;
 	j->code_buffer <<= 1;
@@ -2086,7 +2086,7 @@ static int stbi__jpeg_decode_block(stbi__jpeg* j, short data[64], stbi__huffman*
 	// decode AC components, see JPEG spec
 	k = 1;
 	do {
-		unsigned int zig;
+		GLuint zig;
 		int c, r, s;
 		if (j->code_bits < 16) stbi__grow_buffer_unsafe(j);
 		c = (j->code_buffer >> (32 - FAST_BITS)) & ((1 << FAST_BITS) - 1);
@@ -2162,7 +2162,7 @@ static int stbi__jpeg_decode_block_prog_ac(stbi__jpeg* j, short data[64], stbi__
 
 		k = j->spec_start;
 		do {
-			unsigned int zig;
+			GLuint zig;
 			int c, r, s;
 			if (j->code_bits < 16) stbi__grow_buffer_unsafe(j);
 			c = (j->code_buffer >> (32 - FAST_BITS)) & ((1 << FAST_BITS) - 1);
@@ -2276,7 +2276,7 @@ static int stbi__jpeg_decode_block_prog_ac(stbi__jpeg* j, short data[64], stbi__
 // take a -128..127 value and stbi__clamp it and convert to 0..255
 stbi_inline static stbi_uc stbi__clamp(int x) {
 	// trick to use a single test to catch both cases
-	if ((unsigned int)x > 255) {
+	if ((GLuint)x > 255) {
 		if (x < 0) return 0;
 		if (x > 255) return 255;
 	}
@@ -3676,7 +3676,7 @@ typedef struct
 
 // fast 0..255 * 0..255 => 0..255 rounded multiplication
 static stbi_uc stbi__blinn_8x8(stbi_uc x, stbi_uc y) {
-	unsigned int t = x * y + 128;
+	GLuint t = x * y + 128;
 	return (stbi_uc)((t + (t >> 8)) >> 8);
 }
 
@@ -3703,7 +3703,7 @@ static stbi_uc* load_jpeg_image(stbi__jpeg* z, int* out_x, int* out_y, int* comp
 	// resample and color-convert
 	{
 		int k;
-		unsigned int i, j;
+		GLuint i, j;
 		stbi_uc* output;
 		stbi_uc* coutput[4] = { NULL, NULL, NULL, NULL };
 
@@ -4010,13 +4010,13 @@ static void stbi__fill_bits(stbi__zbuf* z) {
 			z->zbuffer = z->zbuffer_end;  /* treat this as EOF so we fail. */
 			return;
 		}
-		z->code_buffer |= (unsigned int)stbi__zget8(z) << z->num_bits;
+		z->code_buffer |= (GLuint)stbi__zget8(z) << z->num_bits;
 		z->num_bits += 8;
 	} while (z->num_bits <= 24);
 }
 
-stbi_inline static unsigned int stbi__zreceive(stbi__zbuf* z, int n) {
-	unsigned int k;
+stbi_inline static GLuint stbi__zreceive(stbi__zbuf* z, int n) {
+	GLuint k;
 	if (z->num_bits < n) stbi__fill_bits(z);
 	k = z->code_buffer & ((1 << n) - 1);
 	z->code_buffer >>= n;
@@ -4063,10 +4063,10 @@ stbi_inline static int stbi__zhuffman_decode(stbi__zbuf* a, stbi__zhuffman* z) {
 static int stbi__zexpand(stbi__zbuf* z, char* zout, int n)  // need to make room for n bytes
 {
 	char* q;
-	unsigned int cur, limit, old_limit;
+	GLuint cur, limit, old_limit;
 	z->zout = zout;
 	if (!z->z_expandable) return stbi__err("output buffer limit", "Corrupt PNG");
-	cur = (unsigned int)(z->zout - z->zout_start);
+	cur = (GLuint)(z->zout - z->zout_start);
 	limit = old_limit = (unsigned)(z->zout_end - z->zout_start);
 	if (UINT_MAX - cur < (unsigned)n) return stbi__err("outofmem", "Out of memory");
 	while (cur + n > limit) {
@@ -5131,7 +5131,7 @@ static int stbi__bmp_test(stbi__context* s) {
 
 
 // returns 0..31 for the highest set bit
-static int stbi__high_bit(unsigned int z) {
+static int stbi__high_bit(GLuint z) {
 	int n = 0;
 	if (z == 0) return -1;
 	if (z >= 0x10000) { n += 16; z >>= 16; }
@@ -5142,7 +5142,7 @@ static int stbi__high_bit(unsigned int z) {
 	return n;
 }
 
-static int stbi__bitcount(unsigned int a) {
+static int stbi__bitcount(GLuint a) {
 	a = (a & 0x55555555) + ((a >> 1) & 0x55555555); // max 2
 	a = (a & 0x33333333) + ((a >> 2) & 0x33333333); // max 4
 	a = (a + (a >> 4)) & 0x0f0f0f0f; // max 8 per 4, now 8 bits
@@ -5154,13 +5154,13 @@ static int stbi__bitcount(unsigned int a) {
 // extract an arbitrarily-aligned N-bit value (N=bits)
 // from v, and then make it 8-bits long and fractionally
 // extend it to full full range.
-static int stbi__shiftsigned(unsigned int v, int shift, int bits) {
-	static unsigned int mul_table[9] = {
+static int stbi__shiftsigned(GLuint v, int shift, int bits) {
+	static GLuint mul_table[9] = {
 	   0,
 	   0xff/*0b11111111*/, 0x55/*0b01010101*/, 0x49/*0b01001001*/, 0x11/*0b00010001*/,
 	   0x21/*0b00100001*/, 0x41/*0b01000001*/, 0x81/*0b10000001*/, 0x01/*0b00000001*/,
 	};
-	static unsigned int shift_table[9] = {
+	static GLuint shift_table[9] = {
 	   0, 0,0,1,0,2,4,6,0,
 	};
 	if (shift < 0)
@@ -5176,7 +5176,7 @@ static int stbi__shiftsigned(unsigned int v, int shift, int bits) {
 typedef struct
 {
 	int bpp, offset, hsz;
-	unsigned int mr, mg, mb, ma, all_a;
+	GLuint mr, mg, mb, ma, all_a;
 	int extra_read;
 } stbi__bmp_data;
 
@@ -5274,7 +5274,7 @@ static void* stbi__bmp_parse_header(stbi__context* s, stbi__bmp_data* info) {
 
 static void* stbi__bmp_load(stbi__context* s, int* x, int* y, int* comp, int req_comp, stbi__result_info* ri) {
 	stbi_uc* out;
-	unsigned int mr = 0, mg = 0, mb = 0, ma = 0, all_a;
+	GLuint mr = 0, mg = 0, mb = 0, ma = 0, all_a;
 	stbi_uc pal[256][4];
 	int psize = 0, i, j, width;
 	int flip_vertically, pad, target;
@@ -5426,7 +5426,7 @@ static void* stbi__bmp_load(stbi__context* s, int* x, int* y, int* comp, int req
 				int bpp = info.bpp;
 				for (i = 0; i < (int)s->img_x; ++i) {
 					stbi__uint32 v = (bpp == 16 ? (stbi__uint32)stbi__get16le(s) : stbi__get32le(s));
-					unsigned int a;
+					GLuint a;
 					out[z++] = STBI__BYTECAST(stbi__shiftsigned(v & mr, rshift, rcount));
 					out[z++] = STBI__BYTECAST(stbi__shiftsigned(v & mg, gshift, gcount));
 					out[z++] = STBI__BYTECAST(stbi__shiftsigned(v & mb, bshift, bcount));

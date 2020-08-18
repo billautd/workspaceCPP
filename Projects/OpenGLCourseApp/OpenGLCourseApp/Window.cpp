@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "stb_image.h"
 
 Window::Window() : width(WINDOW_WIDTH), height(WINDOW_HEIGHT) {}
 
@@ -59,6 +60,9 @@ int Window::Init() {
 		SDL_Quit();
 		return 1;
 	}
+
+	// tell stb_image.h to flip loaded texture's on the y-axis (before loading model).
+	stbi_set_flip_vertically_on_load(true);
 
 	//Viewport
 	glViewport(0, 0, width, height);

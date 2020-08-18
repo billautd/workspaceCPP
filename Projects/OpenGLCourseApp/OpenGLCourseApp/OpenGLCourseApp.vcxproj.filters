@@ -34,6 +34,12 @@
     <Filter Include="Resource Files\Shaders\Container">
       <UniqueIdentifier>{69fb7961-ee82-42d3-ad9f-fa356a18ca3a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Assets\Objects">
+      <UniqueIdentifier>{c532c797-e28f-4943-bb41-3fca63f45204}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\Model">
+      <UniqueIdentifier>{fa6280f5-8c6d-472b-b785-945357fb15c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -69,9 +75,6 @@
     <ClCompile Include="Shaders_3.cpp">
       <Filter>Source Files\Exercises</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Textures_1.cpp">
       <Filter>Source Files\Exercises</Filter>
     </ClCompile>
@@ -88,6 +91,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -107,13 +116,16 @@
     <ClInclude Include="stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

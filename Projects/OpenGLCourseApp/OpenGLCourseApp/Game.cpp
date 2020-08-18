@@ -56,11 +56,11 @@ GLfloat vertices[] = {
 	 0.5f,  0.5f,  0.5f,   0.0f,  0.0f,  0.0f,    1.0f, 0.0f,
 };
 
-void CalcAverageNormals(GLfloat vertices[], GLuint verticesNumber, GLshort indices[], GLuint indicesNumber, GLuint vLength, GLuint normalOffset) {
+void CalcAverageNormals(GLfloat vertices[], GLuint verticesNumber, GLuint indices[], GLuint indicesNumber, GLuint vLength, GLuint normalOffset) {
 	for (size_t i = 0; i < indicesNumber; i += 3) {
-		unsigned int in0 = indices[i] * vLength;
-		unsigned int in1 = indices[i + 1] * vLength;
-		unsigned int in2 = indices[i + 2] * vLength;
+		GLuint in0 = indices[i] * vLength;
+		GLuint in1 = indices[i + 1] * vLength;
+		GLuint in2 = indices[i + 2] * vLength;
 		glm::vec3 v1(vertices[in1] - vertices[in0], vertices[in1 + 1] - vertices[in0 + 1], vertices[in1 + 2] - vertices[in0 + 2]);
 		glm::vec3 v2(vertices[in2] - vertices[in0], vertices[in2 + 1] - vertices[in0 + 1], vertices[in2 + 2] - vertices[in0 + 2]);
 		glm::vec3 normal = glm::cross(v1, v2);
@@ -73,7 +73,7 @@ void CalcAverageNormals(GLfloat vertices[], GLuint verticesNumber, GLshort indic
 	}
 
 	for (size_t i = 0; i < verticesNumber / vLength; i++) {
-		unsigned int nOffset = i * vLength + normalOffset;
+		GLuint nOffset = i * vLength + normalOffset;
 		glm::vec3 vec(vertices[nOffset], vertices[nOffset + 1], vertices[nOffset + 2]);
 		vec = glm::normalize(vec);
 		vertices[nOffset] = vec.x; vertices[nOffset + 1] = vec.y; vertices[nOffset + 2] = vec.z;
@@ -82,7 +82,7 @@ void CalcAverageNormals(GLfloat vertices[], GLuint verticesNumber, GLshort indic
 
 
 GLuint indicesNumber{ 36 };
-GLshort indices[] = {
+GLuint indices[] = {
 	 0,  1,  2,   //front
 	 2,  3,  0,
 
@@ -107,128 +107,22 @@ Game::~Game() {
 }
 
 void Game::Init() {
-	int windowInitStatus = mainWindow->Init();
-	int shadersInitStatus = InitShaders();
-
-	CalcAverageNormals(vertices, verticesNumber, indices, indicesNumber, 8, 3);
-	GenerateVertexData();
-	GenerateTextureData();
-	if (windowInitStatus + shadersInitStatus == 0)
-		isRunning = true;
-}
-
-int Game::InitShaders() {
-	if (lightSourceShader.Init("Shaders/LightSource/vertex.shader", "Shaders/LightSource/fragment.shader") != 0) {
-		std::cerr << "Error while initializing light source shader\n";
-		return 1;
-	};
-
-	if (containerShader.Init("Shaders/Container/vertex.shader", "Shaders/Container/fragment.shader") != 0) {
+	camera = new Camera();
+	shader = new Shader();
+	if (mainWindow->Init() != 0) {
+		std::cerr << "Error while initializing SDLWindow\n";
+		return;
+	}
+	if (shader->Init("Shaders/Model/vertex.shader", "Shaders/Model/fragment.shader") != 0) {
 		std::cerr << "Error while initializing container shader\n";
-		return 1;
+		return;
 	};
-	return 0;
+
+	//CalcAverageNormals(vertices, verticesNumber, indices, indicesNumber, 8, 3);
+	isRunning = true;
 }
 
-void Game::GenerateVertexData() {
-	glGenVertexArrays(1, &containerVAO);
-	glGenVertexArrays(1, &lightSourceVAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
 
-	//Container
-	glBindVertexArray(containerVAO);
-	{
-		//VBO
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-		//EBO
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-
-		//Position
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), 0);
-		glEnableVertexAttribArray(0);
-
-		//Normal
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
-		glEnableVertexAttribArray(1);
-
-		//Texture
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(6 * sizeof(GLfloat)));
-		glEnableVertexAttribArray(2);
-
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	}
-	glBindVertexArray(0);
-
-	//Light source
-	glBindVertexArray(lightSourceVAO);
-	{
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), 0);
-		glEnableVertexAttribArray(0);
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	}
-	glBindVertexArray(0);
-}
-
-void Game::FreeShaders() {
-	glDeleteVertexArrays(1, &containerVAO);
-	glDeleteVertexArrays(1, &lightSourceVAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
-	glDeleteProgram(lightSourceShader.GetProgramID());
-	glDeleteProgram(containerShader.GetProgramID());
-}
-
-void Game::GenerateTextureData() {
-	Texture::SetTextureWrap(GL_REPEAT);
-	Texture::SetTextureFilter(GL_LINEAR);
-	Texture containerTexture{ Texture() };
-	if (containerTexture.Init("Assets/Textures/container.png", &textureIds.at(0), GL_RGBA) != 0) {
-		std::cerr << "Error while initializing container texture\n";
-		return;
-	}
-
-	Texture containerSpecularTexture{ Texture() };
-	if (containerSpecularTexture.Init("Assets/Textures/container_specular.png", &textureIds.at(1), GL_RGBA) != 0) {
-		std::cerr << "Error while initializing container specular texture\n";
-		return;
-	}
-
-	Texture matrixTexture{ Texture() };
-	if (matrixTexture.Init("Assets/Textures/matrix.jpg", &textureIds.at(2), GL_RGB) != 0) {
-		std::cerr << "Error while initializing matrix texture\n";
-		return;
-	}
-
-	containerShader.Use();
-	containerShader.SetInt("material.diffuse", 0);
-	containerShader.SetInt("material.specular", 1);
-	containerShader.SetInt("material.emission", 2);
-
-	//Free textures
-	containerTexture.FreeImage();
-	containerSpecularTexture.FreeImage();
-	matrixTexture.FreeImage();
-
-}
-
-void Game::BindTextures() {
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, textureIds.at(0));
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, textureIds.at(1));
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, textureIds.at(2));
-}
 
 
 void Game::ProcessKeyboardInput(SDL_Event& e) {
@@ -279,104 +173,20 @@ void Game::ProcessMouseScrollInput(SDL_Event& e) {
 
 void Game::MVP() {
 	//Container shader
-	containerShader.Use();
-
-	// directional light
-	containerShader.SetVec3("dirLight.direction", 0.0f, 0.0f, -1.0f);
-	containerShader.SetVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
-	containerShader.SetVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
-	containerShader.SetVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
-	// point light 1
-	containerShader.SetVec3("pointLights[0].position", pointLightPositions[0]);
-	containerShader.SetVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
-	containerShader.SetVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
-	containerShader.SetVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
-	containerShader.SetFloat("pointLights[0].constant", 1.0f);
-	containerShader.SetFloat("pointLights[0].linear", 0.09f);
-	containerShader.SetFloat("pointLights[0].quadratic", 0.032f);
-	// point light 2
-	containerShader.SetVec3("pointLights[1].position", pointLightPositions[1]);
-	containerShader.SetVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
-	containerShader.SetVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
-	containerShader.SetVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
-	containerShader.SetFloat("pointLights[1].constant", 1.0f);
-	containerShader.SetFloat("pointLights[1].linear", 0.09f);
-	containerShader.SetFloat("pointLights[1].quadratic", 0.032f);
-	// point light 3
-	containerShader.SetVec3("pointLights[2].position", pointLightPositions[2]);
-	containerShader.SetVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
-	containerShader.SetVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
-	containerShader.SetVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
-	containerShader.SetFloat("pointLights[2].constant", 1.0f);
-	containerShader.SetFloat("pointLights[2].linear", 0.09f);
-	containerShader.SetFloat("pointLights[2].quadratic", 0.032f);
-	// point light 4
-	containerShader.SetVec3("pointLights[3].position", pointLightPositions[3]);
-	containerShader.SetVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
-	containerShader.SetVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
-	containerShader.SetVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
-	containerShader.SetFloat("pointLights[3].constant", 1.0f);
-	containerShader.SetFloat("pointLights[3].linear", 0.09f);
-	containerShader.SetFloat("pointLights[3].quadratic", 0.032f);
-	// spotLight
-	containerShader.SetVec3("spotLight.position", camera->GetPosition());
-	containerShader.SetVec3("spotLight.direction", camera->GetDirection());
-	containerShader.SetVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
-	containerShader.SetVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
-	containerShader.SetVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
-	containerShader.SetFloat("spotLight.constant", 1.0f);
-	containerShader.SetFloat("spotLight.linear", 0.09f);
-	containerShader.SetFloat("spotLight.quadratic", 0.032f);
-	containerShader.SetFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-	containerShader.SetFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
-
-	containerShader.SetFloat("material.shininess", 2.0f);
+	shader->Use();
 
 	//View
 	glm::mat4 view = camera->LookAtCurrent();
-	containerShader.SetMat4f("view", view);
+	shader->SetMat4f("view", view);
 
 	//Projection
 	glm::mat4 projection = glm::perspective(glm::radians(camera->GetZoom()), ASPECT_RATIO, 0.1f, 100.0f);
-	containerShader.SetMat4f("projection", projection);
+	shader->SetMat4f("projection", projection);
 
 
-
+	//Model
 	glm::mat4 model = glm::mat4(1.0f);
-	glBindVertexArray(containerVAO);
-	{
-		//Model
-		for (GLuint i = 0; i < cubeNumbers; i++) {
-			model = glm::mat4(1.0f);
-			model = glm::translate(model, cubePositions[i]);
-			model = glm::rotate(model, glm::radians(20.0f * i), glm::vec3(1.0f, 0.3f, 0.5f));
-			containerShader.SetMat4f("model", model);
-			glDrawElements(GL_TRIANGLES, indicesNumber, GL_UNSIGNED_SHORT, 0);
-		}
-	}
-	glBindVertexArray(0);
-
-	//Light source shader
-	lightSourceShader.Use();
-	lightSourceShader.SetVec3("lightColor", glm::vec3(1.0f));
-
-	//View 
-	view = camera->LookAtCurrent();
-	lightSourceShader.SetMat4f("view", view);
-
-	//Projection
-	projection = glm::perspective(glm::radians(camera->GetZoom()), ASPECT_RATIO, 0.1f, 100.0f);
-	lightSourceShader.SetMat4f("projection", projection);
-
-	glBindVertexArray(containerVAO);
-	{
-		//Model
-		for (GLuint i = 0; i < pointLightNumbers; i++) {
-			model = glm::mat4(1.0f);
-			model = glm::translate(model, pointLightPositions[i]);
-			lightSourceShader.SetMat4f("model", model);
-			glDrawElements(GL_TRIANGLES, indicesNumber, GL_UNSIGNED_SHORT, 0);
-		}
-	}
-	glBindVertexArray(0);
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+	shader->SetMat4f("model", model);
 }
