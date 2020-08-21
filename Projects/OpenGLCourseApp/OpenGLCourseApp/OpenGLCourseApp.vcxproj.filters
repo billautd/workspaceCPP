@@ -25,9 +25,6 @@
     <Filter Include="Source Files\Exercises">
       <UniqueIdentifier>{28026bcd-256e-433a-a2fa-2185bf94781e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Shaders\Exercices">
-      <UniqueIdentifier>{c4c7c455-ada5-4735-9a35-a61cdc4baf70}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files\Shaders\LightSource">
       <UniqueIdentifier>{7d0d9950-0e4b-42d8-b105-84e712cb42ea}</UniqueIdentifier>
     </Filter>
@@ -37,8 +34,8 @@
     <Filter Include="Resource Files\Assets\Objects">
       <UniqueIdentifier>{c532c797-e28f-4943-bb41-3fca63f45204}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Shaders\Model">
-      <UniqueIdentifier>{fa6280f5-8c6d-472b-b785-945357fb15c3}</UniqueIdentifier>
+    <Filter Include="Resource Files\Shaders\DepthTesting">
+      <UniqueIdentifier>{149a9aec-942d-4f1d-a6fc-fbc2dd446e37}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -130,18 +127,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\Shaders_1_Vertex.shader">
-      <Filter>Resource Files\Shaders\Exercices</Filter>
-    </None>
-    <None Include="Shaders\Shaders_2_Vertex.shader">
-      <Filter>Resource Files\Shaders\Exercices</Filter>
-    </None>
-    <None Include="Shaders\Shaders_3_Vertex.shader">
-      <Filter>Resource Files\Shaders\Exercices</Filter>
-    </None>
-    <None Include="Shaders\Textures_1_Fragment.shader">
-      <Filter>Resource Files\Shaders\Exercices</Filter>
-    </None>
     <None Include="Shaders\Container\fragment.shader">
       <Filter>Resource Files\Shaders\Container</Filter>
     </None>
@@ -153,6 +138,12 @@
     </None>
     <None Include="Shaders\LightSource\vertex.shader">
       <Filter>Resource Files\Shaders\LightSource</Filter>
+    </None>
+    <None Include="Shaders\DepthTesting\fragment.shader">
+      <Filter>Resource Files\Shaders\DepthTesting</Filter>
+    </None>
+    <None Include="Shaders\DepthTesting\vertex.shader">
+      <Filter>Resource Files\Shaders\DepthTesting</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +160,12 @@
       <Filter>Resource Files\Assets\Textures</Filter>
     </Image>
     <Image Include="Assets\Textures\matrix.jpg">
+      <Filter>Resource Files\Assets\Textures</Filter>
+    </Image>
+    <Image Include="Assets\Textures\marble.jpg">
+      <Filter>Resource Files\Assets\Textures</Filter>
+    </Image>
+    <Image Include="Assets\Textures\metal.png">
       <Filter>Resource Files\Assets\Textures</Filter>
     </Image>
   </ItemGroup>

@@ -16,7 +16,7 @@ public:
 	}
 	void Draw(Shader& shader);
 
-	static GLuint TextureFromFile(const char* path, const std::string& directory, bool gamma = false);
+	static GLuint TextureFromFile(const char* path, const std::string directory, bool gamma = false);
 private:
 	std::vector<Mesh> meshes{};
 	std::string directory{};

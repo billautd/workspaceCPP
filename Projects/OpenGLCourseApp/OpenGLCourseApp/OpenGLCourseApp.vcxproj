@@ -185,18 +185,18 @@
   <ItemGroup>
     <None Include="Shaders\Container\fragment.shader" />
     <None Include="Shaders\Container\vertex.shader" />
+    <None Include="Shaders\DepthTesting\fragment.shader" />
+    <None Include="Shaders\DepthTesting\vertex.shader" />
     <None Include="Shaders\LightSource\fragment.shader" />
     <None Include="Shaders\LightSource\vertex.shader" />
-    <None Include="Shaders\Shaders_1_Vertex.shader" />
-    <None Include="Shaders\Shaders_2_Vertex.shader" />
-    <None Include="Shaders\Shaders_3_Vertex.shader" />
-    <None Include="Shaders\Textures_1_Fragment.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Textures\awesomeface.png" />
     <Image Include="Assets\Textures\container.png" />
     <Image Include="Assets\Textures\container_specular.png" />
+    <Image Include="Assets\Textures\marble.jpg" />
     <Image Include="Assets\Textures\matrix.jpg" />
+    <Image Include="Assets\Textures\metal.png" />
     <Image Include="Assets\Textures\wall.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

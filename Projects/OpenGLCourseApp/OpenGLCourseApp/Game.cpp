@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "Model.h"
 
 GLuint cubeNumbers{ 10 };
 glm::vec3 cubePositions[] = {
@@ -22,8 +23,8 @@ glm::vec3 pointLightPositions[] = {
 	glm::vec3(0.0f,  0.0f, -3.0f)
 };
 
-GLuint verticesNumber{ 24 };
-GLfloat vertices[] = {
+GLuint cubeVerticesNumber{ 24 };
+GLfloat cubeVertices[] = {
 	// x      y     z       nx     ny    nz      texX  texY
 	-0.5f, -0.5f,  0.5f,   0.0f,  0.0f,  0.0f,   0.0f, 0.0f,     //front
 	 0.5f, -0.5f,  0.5f,   0.0f,  0.0f,  0.0f,   1.0f, 0.0f,
@@ -81,8 +82,8 @@ void CalcAverageNormals(GLfloat vertices[], GLuint verticesNumber, GLuint indice
 }
 
 
-GLuint indicesNumber{ 36 };
-GLuint indices[] = {
+GLuint cubeIndicesNumber{ 36 };
+GLuint cubeIndices[] = {
 	 0,  1,  2,   //front
 	 2,  3,  0,
 
@@ -102,9 +103,29 @@ GLuint indices[] = {
 	 22, 23, 20,
 };
 
+GLuint planeVerticesNumber{ 6 };
+GLfloat planeVertices[] = {
+	// positions          // texture Coords (note we set these higher than 1 (together with GL_REPEAT as texture wrapping mode). this will cause the floor texture to repeat)
+	 5.0f, -0.5f,  5.0f,  2.0f, 0.0f,
+	-5.0f, -0.5f,  5.0f,  0.0f, 0.0f,
+	-5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
+
+	 5.0f, -0.5f,  5.0f,  2.0f, 0.0f,
+	-5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
+	 5.0f, -0.5f, -5.0f,  2.0f, 2.0f
+};
+
 Game::~Game() {
 	isRunning = false;
 }
+
+GLuint cubeVAO{ 0 };
+GLuint cubeVBO{ 0 };
+GLuint cubeEBO{ 0 };
+GLuint planeVAO{ 0 };
+GLuint planeVBO{ 0 };
+GLuint cubeTexture{ 0 };
+GLuint floorTexture{ 0 };
 
 void Game::Init() {
 	camera = new Camera();
@@ -113,13 +134,58 @@ void Game::Init() {
 		std::cerr << "Error while initializing SDLWindow\n";
 		return;
 	}
-	if (shader->Init("Shaders/Model/vertex.shader", "Shaders/Model/fragment.shader") != 0) {
+	if (shader->Init("Shaders/DepthTesting/vertex.shader", "Shaders/DepthTesting/fragment.shader") != 0) {
 		std::cerr << "Error while initializing container shader\n";
 		return;
 	};
-
-	//CalcAverageNormals(vertices, verticesNumber, indices, indicesNumber, 8, 3);
 	isRunning = true;
+	CalcAverageNormals(cubeVertices, cubeVerticesNumber, cubeIndices, cubeIndicesNumber, 8, 3);
+
+	// cube VAO
+
+	glGenVertexArrays(1, &cubeVAO);
+	glGenBuffers(1, &cubeVBO);
+	glGenBuffers(1, &cubeEBO);
+	glBindVertexArray(cubeVAO); {
+		glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(6 * sizeof(GLfloat)));
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeEBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
+	glBindVertexArray(0);
+
+	// plane VAO
+
+	glGenVertexArrays(1, &planeVAO);
+	glGenBuffers(1, &planeVBO);
+	glBindVertexArray(planeVAO); {
+		glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), planeVertices, GL_STATIC_DRAW);
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
+	glBindVertexArray(0);
+
+	cubeTexture = Model::TextureFromFile("marble.jpg", "C:/Users/David/workspaceC++/Projects/OpenGLCourseApp/OpenGLCourseApp/Assets/Textures");
+	floorTexture = Model::TextureFromFile("metal.png", "C:/Users/David/workspaceC++/Projects/OpenGLCourseApp/OpenGLCourseApp/Assets/Textures");
+
+	shader->Use();
+	shader->SetInt("texture1", 0);
+
 }
 
 
@@ -172,21 +238,29 @@ void Game::ProcessMouseScrollInput(SDL_Event& e) {
 }
 
 void Game::MVP() {
-	//Container shader
+
 	shader->Use();
 
-	//View
-	glm::mat4 view = camera->LookAtCurrent();
-	shader->SetMat4f("view", view);
-
-	//Projection
-	glm::mat4 projection = glm::perspective(glm::radians(camera->GetZoom()), ASPECT_RATIO, 0.1f, 100.0f);
-	shader->SetMat4f("projection", projection);
-
-
-	//Model
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+	glm::mat4 view = camera->LookAtCurrent();
+	glm::mat4 projection = glm::perspective(glm::radians(camera->GetZoom()), ASPECT_RATIO, 0.1f, 100.0f);
+	shader->SetMat4f("view", view);
+	shader->SetMat4f("projection", projection);
+	// cubes
+	glBindVertexArray(cubeVAO);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, cubeTexture);
+	model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
 	shader->SetMat4f("model", model);
+	glDrawElements(GL_TRIANGLES, cubeIndicesNumber, GL_UNSIGNED_INT, 0);
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+	shader->SetMat4f("model", model);
+	glDrawElements(GL_TRIANGLES, cubeIndicesNumber, GL_UNSIGNED_INT, 0);
+	// floor
+	glBindVertexArray(planeVAO);
+	glBindTexture(GL_TEXTURE_2D, floorTexture);
+	shader->SetMat4f("model", glm::mat4(1.0f));
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
 }

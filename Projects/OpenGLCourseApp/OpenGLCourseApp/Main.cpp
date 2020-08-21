@@ -18,11 +18,10 @@ SDL_Event event{};
 int main(int argc, char* argv[]) {
 	Game game = Game();
 	game.Init();
-	Model ourModel("C:/Users/David/workspaceC++/Projects/OpenGLCourseApp/OpenGLCourseApp/Assets/Objects/Backpack/backpack.obj");
+	//Model ourModel("C:/Users/David/workspaceC++/Projects/OpenGLCourseApp/OpenGLCourseApp/Assets/Objects/Backpack/backpack.obj");
 
 	//Render loop
 	while (game.IsRunning()) {
-		std::cout << "a";
 		//Input
 		SDL_PollEvent(&event);
 		game.ProcessKeyboardInput(event);
@@ -34,7 +33,7 @@ int main(int argc, char* argv[]) {
 		Game::mainWindow->GLClear();
 		game.MVP();
 
-		ourModel.Draw(*(game.GetShader()));
+		//ourModel.Draw(*(game.GetShader()));
 
 		//Render
 		SDL_GL_SwapWindow(Game::mainWindow->GetSDL_Window());
