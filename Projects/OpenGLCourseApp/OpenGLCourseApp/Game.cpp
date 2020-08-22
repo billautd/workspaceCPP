@@ -115,6 +115,17 @@ GLfloat planeVertices[] = {
 	 5.0f, -0.5f, -5.0f,  2.0f, 2.0f
 };
 
+GLuint squareVerticesNumber{ 6 };
+GLfloat squareVertices[] = {
+	0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
+	0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+	-0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+
+	-0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+	-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+	0.5f, -0.5f, 0.0f, 1.0f, 0.0f
+};
+
 Game::~Game() {
 	isRunning = false;
 }
@@ -124,8 +135,13 @@ GLuint cubeVBO{ 0 };
 GLuint cubeEBO{ 0 };
 GLuint planeVAO{ 0 };
 GLuint planeVBO{ 0 };
+GLuint grassVAO{ 0 };
+GLuint grassVBO{ 0 };
 GLuint cubeTexture{ 0 };
 GLuint floorTexture{ 0 };
+GLuint grassTexture{ 0 };
+std::vector<glm::vec3> vegetation;
+
 
 void Game::Init() {
 	camera = new Camera();
@@ -174,18 +190,38 @@ void Game::Init() {
 
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
+	glBindVertexArray(0);
+
+	glGenVertexArrays(1, &grassVAO);
+	glGenBuffers(1, &grassVBO);
+	glBindVertexArray(grassVAO); {
+		glBindBuffer(GL_ARRAY_BUFFER, grassVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(squareVertices), squareVertices, GL_STATIC_DRAW);
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 	glBindVertexArray(0);
 
 	cubeTexture = Model::TextureFromFile("marble.jpg", "C:/Users/David/workspaceC++/Projects/OpenGLCourseApp/OpenGLCourseApp/Assets/Textures");
 	floorTexture = Model::TextureFromFile("metal.png", "C:/Users/David/workspaceC++/Projects/OpenGLCourseApp/OpenGLCourseApp/Assets/Textures");
+	grassTexture = Model::TextureFromFile("grass.png", "C:/Users/David/workspaceC++/Projects/OpenGLCourseApp/OpenGLCourseApp/Assets/Textures");
 
 	shader->Use();
 	shader->SetInt("texture1", 0);
 
+	vegetation.push_back(glm::vec3(-1.5f, 0.0f, -0.48f));
+	vegetation.push_back(glm::vec3(1.5f, 0.0f, 0.51f));
+	vegetation.push_back(glm::vec3(0.0f, 0.0f, 0.7f));
+	vegetation.push_back(glm::vec3(-0.3f, 0.0f, -2.3f));
+	vegetation.push_back(glm::vec3(0.5f, 0.0f, -0.6f));
 }
 
 
@@ -263,4 +299,13 @@ void Game::MVP() {
 	shader->SetMat4f("model", glm::mat4(1.0f));
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
+	//Grass
+	glBindVertexArray(grassVAO);
+	glBindTexture(GL_TEXTURE_2D, grassTexture);
+	for (size_t i = 0; i < vegetation.size(); i++) {
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, vegetation.at(i));
+		shader->SetMat4f("model", model);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+	}
 }

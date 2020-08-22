@@ -194,6 +194,7 @@
     <Image Include="Assets\Textures\awesomeface.png" />
     <Image Include="Assets\Textures\container.png" />
     <Image Include="Assets\Textures\container_specular.png" />
+    <Image Include="Assets\Textures\grass.png" />
     <Image Include="Assets\Textures\marble.jpg" />
     <Image Include="Assets\Textures\matrix.jpg" />
     <Image Include="Assets\Textures\metal.png" />
