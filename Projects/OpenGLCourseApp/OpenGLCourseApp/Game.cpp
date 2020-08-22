@@ -106,19 +106,19 @@ GLuint planeVerticesNumber{ 6 };
 GLfloat planeVertices[] = {
 	// positions          // texture Coords (note we set these higher than 1 (together with GL_REPEAT as texture wrapping mode). this will cause the floor texture to repeat)
 	 5.0f, -0.5f,  5.0f,  2.0f, 0.0f,
-	-5.0f, -0.5f,  5.0f,  0.0f, 0.0f,
 	-5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
+	-5.0f, -0.5f,  5.0f,  0.0f, 0.0f,
 
 	 5.0f, -0.5f,  5.0f,  2.0f, 0.0f,
-	-5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
-	 5.0f, -0.5f, -5.0f,  2.0f, 2.0f
+	 5.0f, -0.5f, -5.0f,  2.0f, 2.0f,
+	-5.0f, -0.5f, -5.0f,  0.0f, 2.0f
 };
 
 GLuint squareVerticesNumber{ 6 };
 GLfloat squareVertices[] = {
 	0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
-	0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
 	-0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+	0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
 
 	-0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
 	-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
@@ -282,16 +282,19 @@ void Game::MVP() {
 	shader->SetMat4f("view", view);
 	shader->SetMat4f("projection", projection);
 	// Floor
+	glDisable(GL_CULL_FACE);
 	glBindVertexArray(planeVAO); {
 		glBindTexture(GL_TEXTURE_2D, floorTexture);
 		shader->SetMat4f("model", glm::mat4(1.0f));
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 	}
 	//Cubes
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 	glBindVertexArray(cubeVAO); {
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, cubeTexture);
-		model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
+		model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 0.0f));
 		shader->SetMat4f("model", model);
 		glDrawElements(GL_TRIANGLES, cubeIndicesNumber, GL_UNSIGNED_INT, 0);
 
@@ -302,6 +305,8 @@ void Game::MVP() {
 	}
 
 	//Windows
+	glDisable(GL_CULL_FACE);
+	glCullFace(GL_FRONT_AND_BACK);
 	glBindVertexArray(windowVAO);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glBindTexture(GL_TEXTURE_2D, windowTexture);

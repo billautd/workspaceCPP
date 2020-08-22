@@ -75,6 +75,8 @@ int Window::Init() {
 
 	glEnable(GL_BLEND);
 
+	glEnable(GL_CULL_FACE);
+
 	return 0;
 }
 
