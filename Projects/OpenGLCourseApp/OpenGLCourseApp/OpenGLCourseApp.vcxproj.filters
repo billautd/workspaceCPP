@@ -171,5 +171,8 @@
     <Image Include="Assets\Textures\grass.png">
       <Filter>Resource Files\Assets\Textures</Filter>
     </Image>
+    <Image Include="Assets\Textures\transparent_window.png">
+      <Filter>Resource Files\Assets\Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

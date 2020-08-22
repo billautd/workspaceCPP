@@ -198,6 +198,7 @@
     <Image Include="Assets\Textures\marble.jpg" />
     <Image Include="Assets\Textures\matrix.jpg" />
     <Image Include="Assets\Textures\metal.png" />
+    <Image Include="Assets\Textures\transparent_window.png" />
     <Image Include="Assets\Textures\wall.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

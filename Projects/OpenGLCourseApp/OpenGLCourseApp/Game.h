@@ -2,6 +2,8 @@
 #include "Camera.h"
 #include "Window.h"
 #include "Shader.h"
+#include "Model.h"
+#include <map>
 #include "Utils.h"
 #include <vector>
 

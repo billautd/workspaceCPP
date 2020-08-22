@@ -73,6 +73,8 @@ int Window::Init() {
 	//Depth buffer
 	glEnable(GL_DEPTH_TEST);
 
+	glEnable(GL_BLEND);
+
 	return 0;
 }
 

@@ -1,5 +1,4 @@
 #include "Game.h"
-#include "Model.h"
 
 GLuint cubeNumbers{ 10 };
 glm::vec3 cubePositions[] = {
@@ -135,12 +134,12 @@ GLuint cubeVBO{ 0 };
 GLuint cubeEBO{ 0 };
 GLuint planeVAO{ 0 };
 GLuint planeVBO{ 0 };
-GLuint grassVAO{ 0 };
-GLuint grassVBO{ 0 };
+GLuint windowVAO{ 0 };
+GLuint windowVBO{ 0 };
 GLuint cubeTexture{ 0 };
 GLuint floorTexture{ 0 };
-GLuint grassTexture{ 0 };
-std::vector<glm::vec3> vegetation;
+GLuint windowTexture{ 0 };
+std::vector<glm::vec3> windows;
 
 
 void Game::Init() {
@@ -196,10 +195,10 @@ void Game::Init() {
 	}
 	glBindVertexArray(0);
 
-	glGenVertexArrays(1, &grassVAO);
-	glGenBuffers(1, &grassVBO);
-	glBindVertexArray(grassVAO); {
-		glBindBuffer(GL_ARRAY_BUFFER, grassVBO);
+	glGenVertexArrays(1, &windowVAO);
+	glGenBuffers(1, &windowVBO);
+	glBindVertexArray(windowVAO); {
+		glBindBuffer(GL_ARRAY_BUFFER, windowVBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(squareVertices), squareVertices, GL_STATIC_DRAW);
 
 		glEnableVertexAttribArray(0);
@@ -212,16 +211,16 @@ void Game::Init() {
 
 	cubeTexture = Model::TextureFromFile("marble.jpg", "C:/Users/David/workspaceC++/Projects/OpenGLCourseApp/OpenGLCourseApp/Assets/Textures");
 	floorTexture = Model::TextureFromFile("metal.png", "C:/Users/David/workspaceC++/Projects/OpenGLCourseApp/OpenGLCourseApp/Assets/Textures");
-	grassTexture = Model::TextureFromFile("grass.png", "C:/Users/David/workspaceC++/Projects/OpenGLCourseApp/OpenGLCourseApp/Assets/Textures");
+	windowTexture = Model::TextureFromFile("transparent_window.png", "C:/Users/David/workspaceC++/Projects/OpenGLCourseApp/OpenGLCourseApp/Assets/Textures");
 
 	shader->Use();
 	shader->SetInt("texture1", 0);
 
-	vegetation.push_back(glm::vec3(-1.5f, 0.0f, -0.48f));
-	vegetation.push_back(glm::vec3(1.5f, 0.0f, 0.51f));
-	vegetation.push_back(glm::vec3(0.0f, 0.0f, 0.7f));
-	vegetation.push_back(glm::vec3(-0.3f, 0.0f, -2.3f));
-	vegetation.push_back(glm::vec3(0.5f, 0.0f, -0.6f));
+	windows.push_back(glm::vec3(-1.5f, 0.0f, -0.48f));
+	windows.push_back(glm::vec3(1.5f, 0.0f, 0.51f));
+	windows.push_back(glm::vec3(0.0f, 0.0f, 0.7f));
+	windows.push_back(glm::vec3(-0.3f, 0.0f, -2.3f));
+	windows.push_back(glm::vec3(0.5f, 0.0f, -0.6f));
 }
 
 
@@ -282,30 +281,40 @@ void Game::MVP() {
 	glm::mat4 projection = glm::perspective(glm::radians(camera->GetZoom()), ASPECT_RATIO, 0.1f, 100.0f);
 	shader->SetMat4f("view", view);
 	shader->SetMat4f("projection", projection);
-	// cubes
-	glBindVertexArray(cubeVAO);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, cubeTexture);
-	model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-	shader->SetMat4f("model", model);
-	glDrawElements(GL_TRIANGLES, cubeIndicesNumber, GL_UNSIGNED_INT, 0);
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
-	shader->SetMat4f("model", model);
-	glDrawElements(GL_TRIANGLES, cubeIndicesNumber, GL_UNSIGNED_INT, 0);
-	// floor
-	glBindVertexArray(planeVAO);
-	glBindTexture(GL_TEXTURE_2D, floorTexture);
-	shader->SetMat4f("model", glm::mat4(1.0f));
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	glBindVertexArray(0);
-	//Grass
-	glBindVertexArray(grassVAO);
-	glBindTexture(GL_TEXTURE_2D, grassTexture);
-	for (size_t i = 0; i < vegetation.size(); i++) {
+	// Floor
+	glBindVertexArray(planeVAO); {
+		glBindTexture(GL_TEXTURE_2D, floorTexture);
+		shader->SetMat4f("model", glm::mat4(1.0f));
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+	}
+	//Cubes
+	glBindVertexArray(cubeVAO); {
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, cubeTexture);
+		model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
+		shader->SetMat4f("model", model);
+		glDrawElements(GL_TRIANGLES, cubeIndicesNumber, GL_UNSIGNED_INT, 0);
+
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, vegetation.at(i));
+		model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+		shader->SetMat4f("model", model);
+		glDrawElements(GL_TRIANGLES, cubeIndicesNumber, GL_UNSIGNED_INT, 0);
+	}
+
+	//Windows
+	glBindVertexArray(windowVAO);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBindTexture(GL_TEXTURE_2D, windowTexture);
+	std::map<GLfloat, glm::vec3> sorted;
+	for (size_t i = 0; i < windows.size(); i++) {
+		GLfloat distance = glm::length(camera->GetPosition() - windows.at(i));
+		sorted[distance] = windows[i];
+	}
+	for (std::map<GLfloat, glm::vec3>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, it->second);
 		shader->SetMat4f("model", model);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 	}
+	glBindVertexArray(0);
 }
