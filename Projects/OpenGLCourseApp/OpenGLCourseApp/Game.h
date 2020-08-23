@@ -23,13 +23,10 @@ public:
 
 	void MVP();
 
-	Shader* GetShader() { return shader; }
-
 private:
 	bool isRunning{ false };
 	GLuint ticksLastFrame{ 0 };
 
 	Camera* camera{ nullptr };
-	Shader* shader{ nullptr };
 };
 

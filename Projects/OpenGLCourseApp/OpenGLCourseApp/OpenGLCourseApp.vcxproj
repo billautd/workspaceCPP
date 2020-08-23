@@ -154,20 +154,10 @@
     <ClCompile Include="..\..\..\Libraries\GLAD\src\glad.c" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="HelloTriangle_1.cpp" />
-    <ClCompile Include="HelloTriangle_2.cpp" />
-    <ClCompile Include="HelloTriangle_3.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="Shaders_1.cpp" />
-    <ClCompile Include="Shaders_2.cpp" />
-    <ClCompile Include="Shaders_3.cpp" />
-    <ClCompile Include="Textures_1.cpp" />
-    <ClCompile Include="Textures_2.cpp" />
-    <ClCompile Include="Textures_3.cpp" />
-    <ClCompile Include="Transformation_2.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
@@ -189,6 +179,8 @@
     <None Include="Shaders\DepthTesting\vertex.shader" />
     <None Include="Shaders\LightSource\fragment.shader" />
     <None Include="Shaders\LightSource\vertex.shader" />
+    <None Include="Shaders\Skybox\fragment.shader" />
+    <None Include="Shaders\Skybox\vertex.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Textures\awesomeface.png" />
@@ -198,6 +190,12 @@
     <Image Include="Assets\Textures\marble.jpg" />
     <Image Include="Assets\Textures\matrix.jpg" />
     <Image Include="Assets\Textures\metal.png" />
+    <Image Include="Assets\Textures\Skybox\back.jpg" />
+    <Image Include="Assets\Textures\Skybox\bottom.jpg" />
+    <Image Include="Assets\Textures\Skybox\front.jpg" />
+    <Image Include="Assets\Textures\Skybox\left.jpg" />
+    <Image Include="Assets\Textures\Skybox\right.jpg" />
+    <Image Include="Assets\Textures\Skybox\top.jpg" />
     <Image Include="Assets\Textures\transparent_window.png" />
     <Image Include="Assets\Textures\wall.jpg" />
   </ItemGroup>

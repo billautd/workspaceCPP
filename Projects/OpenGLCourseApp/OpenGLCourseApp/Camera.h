@@ -9,7 +9,7 @@
 class Camera {
 public:
 	Camera(glm::vec3 cPosition = glm::vec3{ 0.0f, 0.0f, 10.0f }, glm::vec3 cWorldUp = glm::vec3(0.0f, 1.0f, 0.0f),
-		GLfloat cYaw = -90.f, GLfloat cPitch = 0.0f, GLfloat cSpeed = 10.0f, GLfloat cSensitivity = 0.1f, GLfloat cZoom = 45.0f);
+		GLfloat cYaw = -90.f, GLfloat cPitch = 0.0f, GLfloat cSpeed = 10.0f, GLfloat cSensitivity = 0.3f, GLfloat cZoom = 45.0f);
 	~Camera() = default;
 
 	GLfloat GetZoom() { return zoom; }

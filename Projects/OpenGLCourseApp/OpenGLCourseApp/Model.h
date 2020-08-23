@@ -17,6 +17,7 @@ public:
 	void Draw(Shader& shader);
 
 	static GLuint TextureFromFile(const char* path, const std::string directory, bool gamma = false);
+	static GLuint CubemapFromFile(std::vector<std::string> faces, const std::string directory);
 private:
 	std::vector<Mesh> meshes{};
 	std::string directory{};

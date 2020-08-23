@@ -125,10 +125,57 @@ GLfloat squareVertices[] = {
 	0.5f, -0.5f, 0.0f, 1.0f, 0.0f
 };
 
+GLfloat skyboxVertices[] = {
+	// positions          
+	-1.0f,  1.0f, -1.0f,
+	-1.0f, -1.0f, -1.0f,
+	 1.0f, -1.0f, -1.0f,
+	 1.0f, -1.0f, -1.0f,
+	 1.0f,  1.0f, -1.0f,
+	-1.0f,  1.0f, -1.0f,
+
+	-1.0f, -1.0f,  1.0f,
+	-1.0f, -1.0f, -1.0f,
+	-1.0f,  1.0f, -1.0f,
+	-1.0f,  1.0f, -1.0f,
+	-1.0f,  1.0f,  1.0f,
+	-1.0f, -1.0f,  1.0f,
+
+	 1.0f, -1.0f, -1.0f,
+	 1.0f, -1.0f,  1.0f,
+	 1.0f,  1.0f,  1.0f,
+	 1.0f,  1.0f,  1.0f,
+	 1.0f,  1.0f, -1.0f,
+	 1.0f, -1.0f, -1.0f,
+
+	-1.0f, -1.0f,  1.0f,
+	-1.0f,  1.0f,  1.0f,
+	 1.0f,  1.0f,  1.0f,
+	 1.0f,  1.0f,  1.0f,
+	 1.0f, -1.0f,  1.0f,
+	-1.0f, -1.0f,  1.0f,
+
+	-1.0f,  1.0f, -1.0f,
+	 1.0f,  1.0f, -1.0f,
+	 1.0f,  1.0f,  1.0f,
+	 1.0f,  1.0f,  1.0f,
+	-1.0f,  1.0f,  1.0f,
+	-1.0f,  1.0f, -1.0f,
+
+	-1.0f, -1.0f, -1.0f,
+	-1.0f, -1.0f,  1.0f,
+	 1.0f, -1.0f, -1.0f,
+	 1.0f, -1.0f, -1.0f,
+	-1.0f, -1.0f,  1.0f,
+	 1.0f, -1.0f,  1.0f
+};
+
 Game::~Game() {
 	isRunning = false;
 }
 
+Shader* shader = new Shader();
+Shader* skyboxShader = new Shader();
 GLuint cubeVAO{ 0 };
 GLuint cubeVBO{ 0 };
 GLuint cubeEBO{ 0 };
@@ -136,21 +183,44 @@ GLuint planeVAO{ 0 };
 GLuint planeVBO{ 0 };
 GLuint windowVAO{ 0 };
 GLuint windowVBO{ 0 };
+GLuint skyboxVAO{ 0 };
+GLuint skyboxVBO{ 0 };
 GLuint cubeTexture{ 0 };
 GLuint floorTexture{ 0 };
 GLuint windowTexture{ 0 };
-std::vector<glm::vec3> windows;
+GLuint skyboxTexture{ 0 };
+std::string directory{ "C:/Users/David/workspaceC++/Projects/OpenGLCourseApp/OpenGLCourseApp/Assets/Textures" };
+std::vector<glm::vec3> windows{
+	glm::vec3(-1.5f, 0.0f, -0.48f),
+	glm::vec3(1.5f, 0.0f, 0.51f),
+	glm::vec3(0.0f, 0.0f, 0.7f),
+	glm::vec3(-0.3f, 0.0f, -2.3f),
+	glm::vec3(0.5f, 0.0f, -0.6f)
+};
+std::vector<std::string> faces{
+	"right.jpg",
+	"left.jpg",
+	"top.jpg",
+	"bottom.jpg",
+	"front.jpg",
+	"back.jpg"
+};
 
 
 void Game::Init() {
 	camera = new Camera();
 	shader = new Shader();
+	skyboxShader = new Shader();
 	if (mainWindow->Init() != 0) {
 		std::cerr << "Error while initializing SDLWindow\n";
 		return;
 	}
 	if (shader->Init("Shaders/DepthTesting/vertex.shader", "Shaders/DepthTesting/fragment.shader") != 0) {
-		std::cerr << "Error while initializing container shader\n";
+		std::cerr << "Error while initializing shader\n";
+		return;
+	};
+	if (skyboxShader->Init("Shaders/Skybox/vertex.shader", "Shaders/Skybox/fragment.shader") != 0) {
+		std::cerr << "Error while initializing skybox shader\n";
 		return;
 	};
 	isRunning = true;
@@ -195,6 +265,7 @@ void Game::Init() {
 	}
 	glBindVertexArray(0);
 
+	//Window VAO
 	glGenVertexArrays(1, &windowVAO);
 	glGenBuffers(1, &windowVBO);
 	glBindVertexArray(windowVAO); {
@@ -209,18 +280,24 @@ void Game::Init() {
 	}
 	glBindVertexArray(0);
 
-	cubeTexture = Model::TextureFromFile("marble.jpg", "C:/Users/David/workspaceC++/Projects/OpenGLCourseApp/OpenGLCourseApp/Assets/Textures");
-	floorTexture = Model::TextureFromFile("metal.png", "C:/Users/David/workspaceC++/Projects/OpenGLCourseApp/OpenGLCourseApp/Assets/Textures");
-	windowTexture = Model::TextureFromFile("transparent_window.png", "C:/Users/David/workspaceC++/Projects/OpenGLCourseApp/OpenGLCourseApp/Assets/Textures");
+	//SkyboxVAO
+	glGenVertexArrays(1, &skyboxVAO);
+	glGenBuffers(1, &skyboxVBO);
+	glBindVertexArray(skyboxVAO); {
+		glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
 
-	shader->Use();
-	shader->SetInt("texture1", 0);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
 
-	windows.push_back(glm::vec3(-1.5f, 0.0f, -0.48f));
-	windows.push_back(glm::vec3(1.5f, 0.0f, 0.51f));
-	windows.push_back(glm::vec3(0.0f, 0.0f, 0.7f));
-	windows.push_back(glm::vec3(-0.3f, 0.0f, -2.3f));
-	windows.push_back(glm::vec3(0.5f, 0.0f, -0.6f));
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
+	glBindVertexArray(0);
+
+	cubeTexture = Model::TextureFromFile("marble.jpg", directory);
+	floorTexture = Model::TextureFromFile("metal.png", directory);
+	windowTexture = Model::TextureFromFile("transparent_window.png", directory);
+	skyboxTexture = Model::CubemapFromFile(faces, directory + "/Skybox");
 }
 
 
@@ -273,12 +350,29 @@ void Game::ProcessMouseScrollInput(SDL_Event& e) {
 }
 
 void Game::MVP() {
+	//Skybox
+	skyboxShader->Use();
+	skyboxShader->SetInt("skybox", 0);
+	glm::mat4 view = glm::mat4(glm::mat3(camera->LookAtCurrent()));
+	glm::mat4 projection = glm::perspective(glm::radians(camera->GetZoom()), ASPECT_RATIO, 0.1f, 100.0f);
+	skyboxShader->SetMat4f("view", view);
+	skyboxShader->SetMat4f("projection", projection);
+	glDepthMask(GL_FALSE);
+	glDepthFunc(GL_LEQUAL);
+	glBindVertexArray(skyboxVAO); {
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+	}
+	glDepthMask(GL_TRUE);
+	glBindVertexArray(0);
+
 
 	shader->Use();
+	shader->SetInt("texture1", 0);
 
 	glm::mat4 model = glm::mat4(1.0f);
-	glm::mat4 view = camera->LookAtCurrent();
-	glm::mat4 projection = glm::perspective(glm::radians(camera->GetZoom()), ASPECT_RATIO, 0.1f, 100.0f);
+	view = camera->LookAtCurrent();
 	shader->SetMat4f("view", view);
 	shader->SetMat4f("projection", projection);
 	// Floor
@@ -288,6 +382,9 @@ void Game::MVP() {
 		shader->SetMat4f("model", glm::mat4(1.0f));
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 	}
+	glBindVertexArray(0);
+
+
 	//Cubes
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
@@ -303,6 +400,8 @@ void Game::MVP() {
 		shader->SetMat4f("model", model);
 		glDrawElements(GL_TRIANGLES, cubeIndicesNumber, GL_UNSIGNED_INT, 0);
 	}
+	glBindVertexArray(0);
+
 
 	//Windows
 	glDisable(GL_CULL_FACE);
@@ -322,4 +421,5 @@ void Game::MVP() {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 	}
 	glBindVertexArray(0);
+
 }
