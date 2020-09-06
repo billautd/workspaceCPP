@@ -12,7 +12,7 @@ public:
 	// C/D
 	Game() = default;
 	Game(GLuint width, GLuint height);
-	~Game() = default;
+	~Game();
 
 	//Init game state (load shaders, textures, levels)
 	int Init();

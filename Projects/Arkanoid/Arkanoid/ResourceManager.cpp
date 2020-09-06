@@ -10,18 +10,10 @@ Shader ResourceManager::LoadShader(const char* vShaderFile, const char* fShaderF
 	return (shaders.emplace(name, LoadShaderFromFile(vShaderFile, fShaderFile, gShaderFile))).first->second;
 }
 
-Shader ResourceManager::GetShader(std::string name) {
-	return shaders.at(name);
-}
-
 Texture2D ResourceManager::LoadTexture(const char* file, bool alpha, std::string name) {
 	//First = iterator to value inserted
 	//first->second = texture
 	return (textures.emplace(name, LoadTextureFromFile(file, alpha))).first->second;
-}
-
-Texture2D ResourceManager::GetTexture(std::string name) {
-	return textures.at(name);
 }
 
 void ResourceManager::Clear() {
@@ -65,7 +57,9 @@ Shader ResourceManager::LoadShaderFromFile(const char* vShaderFile, const char* 
 	}
 	const char* vShaderCode = vertexCode.c_str();
 	const char* fShaderCode = fragmentCode.c_str();
-	const char* gShaderCode = geometryCode.c_str();
+	const char* gShaderCode = nullptr;
+	if (gShaderFile != nullptr)
+		gShaderCode = geometryCode.c_str();
 	//Create shader from source
 	Shader shader;
 	shader.Compile(vShaderCode, fShaderCode, gShaderCode);
@@ -76,15 +70,22 @@ Shader ResourceManager::LoadShaderFromFile(const char* vShaderFile, const char* 
 Texture2D ResourceManager::LoadTextureFromFile(const char* file, bool alpha) {
 	//Create texture
 	Texture2D texture;
-	if (alpha) {
-		texture.SetInternalFormat(GL_RGBA);
-		texture.SetImageFormat(GL_RGBA);
-	}
+
 	//Load image
 	int width, height, nbrChannels;
 	unsigned char* data = stbi_load(file, &width, &height, &nbrChannels, 0);
-	//Generate
-	texture.Generate(width, height, data);
+	if (data) {
+		//Set alpha
+		if (alpha) {
+			texture.SetInternalFormat(GL_RGBA);
+			texture.SetImageFormat(GL_RGBA);
+		}
+		//Generate
+		texture.Generate(width, height, data);
+	}
+	else
+		std::cout << "Texture failed to load at path: " << file << std::endl;
+
 	//Free
 	stbi_image_free(data);
 	return texture;

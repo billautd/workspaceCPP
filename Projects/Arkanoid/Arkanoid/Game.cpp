@@ -1,5 +1,12 @@
 #include "Game.h"
+#include "SpriteRenderer.h"
+#include "ResourceManager.h"
+SpriteRenderer* renderer;
 Game::Game(GLuint width, GLuint height) {}
+
+Game::~Game() {
+	delete renderer;
+}
 
 int Game::Init() {
 	//SDL init
@@ -57,8 +64,18 @@ int Game::Init() {
 	//Enable blend
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	this->state = GameStateEnum::GAME_ACTIVE;
+
+	//Load shaders
+	ResourceManager::LoadShader("./Shaders/SpriteRendering.vert", "./Shaders/SpriteRendering.frag", nullptr, "SpriteRendering");
+	//Config shaders
+	glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(this->width), static_cast<GLfloat>(this->height), 0.0f, -10.0f, 1.0f);
+	ResourceManager::GetShader("SpriteRendering").Use().SetInteger("image", 0);
+	ResourceManager::GetShader("SpriteRendering").Use().SetMatrix4("projection", projection);
+	//Set render-specific controls
+	renderer = new SpriteRenderer(ResourceManager::GetShader("SpriteRendering"));
+	ResourceManager::LoadTexture("./Assets/Textures/awesomeface.png", true, "face");
+
 
 	return 0;
 }
@@ -79,12 +96,10 @@ void Game::ProcessInput(SDL_Event& e, GLfloat dt) {
 	}
 
 	keys = SDL_GetKeyboardState(&keysNbr);
-	for (int i = 0; i < keysNbr; i++) {
-		if (keys[i])
-			std::cout << i << " ";
-	}
 }
 
 void Game::Update(GLfloat dt) {}
 
-void Game::Render() {}
+void Game::Render() {
+	renderer->DrawSprite(ResourceManager::GetTexture("face"), glm::vec2(200.0f, 200.0f), glm::vec2(300.0f, 400.0f), 45.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+}
