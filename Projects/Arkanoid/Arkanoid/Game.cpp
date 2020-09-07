@@ -2,13 +2,14 @@
 #include "SpriteRenderer.h"
 #include "ResourceManager.h"
 #include "BallObject.h"
-SpriteRenderer* renderer{ nullptr };
-GameObject* player{ nullptr };
-BallObject* ball{ nullptr };
+//Static
+SpriteRenderer* Game::renderer{ nullptr };
 Game::Game(GLuint width, GLuint height) {}
 
 Game::~Game() {
 	delete renderer;
+	delete player;
+	delete ball;
 }
 
 int Game::BackEndInit() {
@@ -182,43 +183,46 @@ void Game::DoCollisions() {
 	for (size_t i = 0; i < this->levels.at(this->level).GetBricks().size(); i++) {
 		GameObject& obj = this->levels.at(this->level).GetBricks().at(i);
 		if (!obj.IsDestroyed()) {
-			if (CheckCollision(*ball, obj)) {
+			//Ball collision
+			Collision collision = ball->CheckCollision(obj);
+			//If collision
+			if (std::get<0>(collision)) {
+				//If not solid, destroy
 				if (!obj.IsSolid())
 					obj.SetDestroyed(true);
+				//Collision resolution
+				DirectionEnum dir = std::get<1>(collision);
+				glm::vec2 difference = std::get<2>(collision);
+
+				//Horizontal
+				if (dir == DirectionEnum::LEFT || dir == DirectionEnum::RIGHT) {
+					//Reverse horizontal velocity
+					ball->SetVelocity(glm::vec2(-ball->GetVelocity().x, ball->GetVelocity().y));
+
+					//Reloate
+					GLfloat penetration = ball->GetRadius() - std::abs(difference.x);
+					if (dir == DirectionEnum::LEFT)
+						ball->SetPosition(glm::vec2(ball->GetPosition().x - penetration, ball->GetPosition().y));
+					else
+						ball->SetPosition(glm::vec2(ball->GetPosition().x + penetration, ball->GetPosition().y));
+				}
+				//Vertical
+				else {
+					//Reverse vertical velocity
+					ball->SetVelocity(glm::vec2(ball->GetVelocity().x, -ball->GetVelocity().y));
+
+					//Reloate
+					GLfloat penetration = ball->GetRadius() - std::abs(difference.y);
+					if (dir == DirectionEnum::UP)
+						ball->SetPosition(glm::vec2(ball->GetPosition().x, ball->GetPosition().y + penetration));
+					else
+						ball->SetPosition(glm::vec2(ball->GetPosition().x, ball->GetPosition().y - penetration));
+				}
 			}
 		}
 	}
 }
 
-
-bool Game::CheckCollision(GameObject& obj1, GameObject& obj2) {
-	// collision x-axis?
-	bool collisionX = obj1.GetPosition().x + obj1.GetSize().x >= obj2.GetPosition().x &&
-		obj2.GetPosition().x + obj2.GetSize().x >= obj1.GetPosition().x;
-	// collision y-axis?
-	bool collisionY = obj1.GetPosition().y + obj1.GetSize().y >= obj2.GetPosition().y &&
-		obj2.GetPosition().y + obj2.GetSize().y >= obj1.GetPosition().y;
-	// collision only if on both axes
-	return collisionX && collisionY;
-}
-
-//AABB-circle => distance between closest point of circle to rectangle <= radius => collision
-bool Game::CheckCollision(BallObject& ball, GameObject& obj) {
-	//Get centers
-	glm::vec2 ballCenter = ball.GetPosition() + ball.GetRadius();
-	glm::vec2 aabbHalfExtents = obj.GetSize() / 2.0f;
-	glm::vec2 aabbCenter = obj.GetPosition() + aabbHalfExtents;
-
-	// get difference vector between both centers
-	glm::vec2 difference = ballCenter - aabbCenter;
-	glm::vec2 clamped = glm::clamp(difference, -aabbHalfExtents, aabbHalfExtents);
-	// add clamped value to AABB_center and we get the value of box closest to circle
-	glm::vec2 closest = aabbCenter + clamped;
-	// retrieve vector between center circle and closest point AABB and check if length <= radius
-	difference = closest - ballCenter;
-	return glm::length(difference) < ball.GetRadius();
-
-}
 
 
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "GameObject.h"
-#include "Constants.h"
+#include "Constants.h" 
 
 class BallObject : public GameObject {
 public:
@@ -10,6 +10,8 @@ public:
 	glm::vec2 Move(GLfloat dt, GLuint windowWidth);
 	void Reset(glm::vec2 position, glm::vec2 velocity);
 
+	Collision CheckCollision(GameObject& obj) override;
+
 	bool IsStuck() { return isStuck; }
 	void SetStuck(bool stuck) { this->isStuck = stuck; }
 
@@ -17,5 +19,8 @@ public:
 private:
 	GLfloat radius{ BALL_RADIUS };
 	bool isStuck{ true };
+
+	//After collision
+	DirectionEnum VectorDirection(glm::vec2 target);
 };
 

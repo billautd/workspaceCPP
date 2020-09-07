@@ -8,4 +8,17 @@ void GameObject::Draw(SpriteRenderer& renderer) {
 	renderer.DrawSprite(sprite, position, size, rotation, color);
 }
 
+Collision GameObject::CheckCollision(GameObject& obj) {
+	// collision x-axis?
+	bool collisionX = this->position.x + this->size.x >= obj.position.x &&
+		obj.position.x + obj.size.x >= this->position.x;
+	// collision y-axis?
+	bool collisionY = this->position.y + this->size.y >= obj.position.y &&
+		obj.position.y + obj.size.y >= this->position.y;
+	// collision only if on both axes
+
+	//TODO Maybe find a way to make full tuples out of this instea dof just using the boolean
+	return std::make_tuple(collisionX && collisionY, DirectionEnum::UP, glm::vec2(0.0f));
+}
+
 

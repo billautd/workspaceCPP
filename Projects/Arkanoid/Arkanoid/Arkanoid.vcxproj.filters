@@ -95,6 +95,9 @@
     <ClInclude Include="BallObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DirectionEnum.h">
+      <Filter>Header Files\Enums</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\SpriteRendering.vert">

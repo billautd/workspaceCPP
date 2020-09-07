@@ -1,7 +1,14 @@
 #pragma once
 #include "Texture2D.h"
 #include "SpriteRenderer.h"
+#include <tuple>
+#include "DirectionEnum.h"
 #include "glm/glm.hpp"
+
+//Bool = is colliding
+//DirectionEnum = if colliding, direction of collision
+//glm::vec2 = difference vector 
+typedef std::tuple<bool, DirectionEnum, glm::vec2> Collision;
 
 class GameObject {
 public:
@@ -11,6 +18,7 @@ public:
 
 	//Draw
 	virtual void Draw(SpriteRenderer& renderer);
+	virtual Collision CheckCollision(GameObject& obj);
 
 	//Utility
 	void SetSolid(bool solid) { isSolid = solid; }
@@ -20,6 +28,8 @@ public:
 	glm::vec2 GetPosition() { return position; }
 	void SetPosition(glm::vec2 position) { this->position = position; }
 	glm::vec2 GetSize() { return size; }
+	glm::vec2 GetVelocity() { return velocity; }
+	void SetVelocity(glm::vec2 vel) { this->velocity = vel; }
 
 protected:
 	glm::vec2 position{ glm::vec2(0.0f) };
@@ -31,6 +41,5 @@ protected:
 	bool isDestroyed{ false };
 
 	Texture2D sprite;
-
 };
 

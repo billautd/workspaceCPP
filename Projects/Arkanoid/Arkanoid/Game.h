@@ -29,12 +29,11 @@ public:
 	GameStateEnum GetState() { return this->state; }
 	SDL_Window* GetWindow() { return this->window; }
 
+	static SpriteRenderer* renderer;
+
 private:
 	//SDL, OpenGl, Glad, ...
 	int BackEndInit();
-
-	bool CheckCollision(GameObject& obj1, GameObject& obj2);
-	bool CheckCollision(BallObject& ball, GameObject& obj);
 
 	GameStateEnum state{ GameStateEnum::GAME_INACTIVE };
 
@@ -44,6 +43,8 @@ private:
 	GLuint width{ SCREEN_WIDTH };
 	GLuint height{ SCREEN_HEIGHT };
 	SDL_Window* window{ nullptr };
+	GameObject* player{ nullptr };
+	BallObject* ball{ nullptr };
 
 	std::vector<GameLevel> levels{};
 	GLuint level{ 3 };
