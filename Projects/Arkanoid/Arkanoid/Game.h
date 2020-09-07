@@ -8,6 +8,7 @@
 #include <iostream>
 #include <vector>
 #include "GameLevel.h"
+#include "ParticleGenerator.h"
 
 
 class Game {
@@ -31,7 +32,6 @@ public:
 	GameStateEnum GetState() { return this->state; }
 	SDL_Window* GetWindow() { return this->window; }
 
-	static SpriteRenderer* renderer;
 
 private:
 	//SDL, OpenGl, Glad, ...
@@ -50,6 +50,8 @@ private:
 	SDL_Window* window{ nullptr };
 	GameObject* player{ nullptr };
 	BallObject* ball{ nullptr };
+	SpriteRenderer* renderer{ nullptr };
+	ParticleGenerator* particleGenerator{ nullptr };
 
 	std::vector<GameLevel> levels{};
 	GLuint level{ 3 };

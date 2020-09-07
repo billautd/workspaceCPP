@@ -1,4 +1,5 @@
 #include "SpriteRenderer.h"
+#include "Constants.h"
 
 SpriteRenderer::SpriteRenderer(Shader& shader) : shader(shader) {
 	InitRenderData();
@@ -35,16 +36,6 @@ void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec
 void SpriteRenderer::InitRenderData() {
 	//Config VAO/VBO
 	GLuint VBO{ 0 };
-	GLfloat vertices[] = {
-		//Pos       //Tex
-		0.0f, 1.0f, 0.0f, 1.0f, //Bottom left
-		1.0f, 0.0f, 1.0f, 0.0f, //Bottom right
-		0.0f, 0.0f, 0.0f, 0.0f, //Top left
-
-		0.0f, 1.0f, 0.0f, 1.0f, //Bottom right
-		1.0f, 1.0f, 1.0f, 1.0f, //Top left
-		1.0f, 0.0f, 1.0f, 0.0f //Top right
-	};
 
 	glGenVertexArrays(1, &this->quadVAO);
 	glGenBuffers(1, &VBO);
@@ -52,7 +43,7 @@ void SpriteRenderer::InitRenderData() {
 	glBindVertexArray(this->quadVAO);
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(QUAD_TEXTURE_VERTICES), QUAD_TEXTURE_VERTICES, GL_STATIC_DRAW);
 
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)0);

@@ -2,8 +2,7 @@
 #include "SpriteRenderer.h"
 #include "ResourceManager.h"
 #include "BallObject.h"
-//Static
-SpriteRenderer* Game::renderer{ nullptr };
+
 Game::Game(GLuint width, GLuint height) {}
 
 Game::~Game() {
@@ -80,13 +79,13 @@ int Game::Init() {
 
 	//Load shaders
 	ResourceManager::LoadShader("./Shaders/SpriteRendering.vert", "./Shaders/SpriteRendering.frag", nullptr, "SpriteRendering");
+	ResourceManager::LoadShader("./Shaders/ParticleRendering.vert", "./Shaders/ParticleRendering.frag", nullptr, "ParticleRendering");
 	//Config shaders
 	glm::mat4 projection{ glm::ortho(0.0f, static_cast<GLfloat>(this->width), static_cast<GLfloat>(this->height), 0.0f, -10.0f, 1.0f) };
-	ResourceManager::GetShader("SpriteRendering").Use().SetInteger("image", 0);
+	ResourceManager::GetShader("SpriteRendering").Use().SetInteger("sprite", 0);
 	ResourceManager::GetShader("SpriteRendering").Use().SetMatrix4("projection", projection);
-
-	//Set render-specific controls
-	renderer = new SpriteRenderer(ResourceManager::GetShader("SpriteRendering"));
+	ResourceManager::GetShader("ParticleRendering").Use().SetInteger("sprite", 0);
+	ResourceManager::GetShader("ParticleRendering").Use().SetMatrix4("projection", projection);
 
 	//Load textures
 	ResourceManager::LoadTexture("./Textures/solidTile.png", false, "solidTile");
@@ -94,6 +93,12 @@ int Game::Init() {
 	ResourceManager::LoadTexture("./Textures/background.jpg", false, "background");
 	ResourceManager::LoadTexture("./Textures/paddle.png", true, "paddle");
 	ResourceManager::LoadTexture("./Textures/awesomeface.png", true, "ball");
+	ResourceManager::LoadTexture("./Textures/particle.png", true, "particle");
+
+	//Set render-specific controls
+	renderer = new SpriteRenderer(ResourceManager::GetShader("SpriteRendering"));
+	particleGenerator = new ParticleGenerator(ResourceManager::GetShader("ParticleRendering"), ResourceManager::GetTexture("particle"), 500);
+
 
 	//Load levels
 	GameLevel level1; level1.Load("./Levels/one.lvl", this->width, this->height / 2);
@@ -163,6 +168,8 @@ void Game::ProcessInput(SDL_Event& e, GLfloat dt) {
 void Game::Update(GLfloat dt) {
 	//Update objects
 	ball->Move(dt, this->width);
+	//Update particles
+	particleGenerator->Update(dt, *ball, glm::vec2(ball->GetRadius() / 2.0f), 2);
 	//Collisions
 	this->DoCollisions();
 
@@ -170,7 +177,7 @@ void Game::Update(GLfloat dt) {
 		this->ResetBallPlayer();
 
 	if (this->levels.at(this->level).IsCompleted()) {
-		this->level = (this->level + 1) % this->levels.size();
+		this->level = (this->level++) % this->levels.size();
 		this->ResetBallPlayer();
 	}
 }
@@ -185,6 +192,8 @@ void Game::Render() {
 		player->Draw(*renderer);
 		//Draw ball
 		ball->Draw(*renderer);
+		//Draw particles
+		particleGenerator->Render();
 	}
 }
 
