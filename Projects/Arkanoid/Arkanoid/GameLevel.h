@@ -18,6 +18,7 @@ public:
 	bool IsCompleted();
 
 	//Utility
+	std::vector<GameObject>& GetBricks() { return bricks; }
 
 private:
 	std::vector<GameObject> bricks{};

@@ -1,8 +1,10 @@
 #include "Game.h"
 #include "SpriteRenderer.h"
 #include "ResourceManager.h"
+#include "BallObject.h"
 SpriteRenderer* renderer{ nullptr };
 GameObject* player{ nullptr };
+BallObject* ball{ nullptr };
 Game::Game(GLuint width, GLuint height) {}
 
 Game::~Game() {
@@ -89,6 +91,7 @@ int Game::Init() {
 	ResourceManager::LoadTexture("./Textures/nonSolidTile.png", false, "nonSolidTile");
 	ResourceManager::LoadTexture("./Textures/background.jpg", false, "background");
 	ResourceManager::LoadTexture("./Textures/paddle.png", true, "paddle");
+	ResourceManager::LoadTexture("./Textures/awesomeface.png", true, "ball");
 
 	//Load levels
 	GameLevel level1; level1.Load("./Levels/one.lvl", this->width, this->height / 2);
@@ -102,8 +105,12 @@ int Game::Init() {
 
 
 	//Setup player
-	glm::vec2 position(this->width / 2.0f - PLAYER_SIZE.x / 2.0f, this->height - PLAYER_SIZE.y);
-	player = new GameObject(position, PLAYER_SIZE, ResourceManager::GetTexture("paddle"));
+	glm::vec2 playerPosition(this->width / 2.0f - PLAYER_SIZE.x / 2.0f, this->height - PLAYER_SIZE.y);
+	player = new GameObject(playerPosition, PLAYER_SIZE, ResourceManager::GetTexture("paddle"));
+
+	//Setup ball
+	glm::vec2 ballPosition(this->width / 2.0f - BALL_RADIUS, this->height - PLAYER_SIZE.y - 2 * BALL_RADIUS);
+	ball = new BallObject(ballPosition, BALL_RADIUS, INITIAL_BALL_VELOCITY, ResourceManager::GetTexture("ball"));
 
 	return 0;
 }
@@ -130,19 +137,33 @@ void Game::ProcessInput(SDL_Event& e, GLfloat dt) {
 
 		//Left
 		if (keys[SDL_SCANCODE_LEFT]) {
-			if (player->GetPosition().x > 0.0f)
+			if (player->GetPosition().x > 0.0f) {
 				player->SetPosition(glm::vec2(player->GetPosition().x - velocity, player->GetPosition().y));
+				if (ball->IsStuck())
+					ball->SetPosition(glm::vec2(ball->GetPosition().x - velocity, ball->GetPosition().y));
+			}
 		}
 		//Right
 		if (keys[SDL_SCANCODE_RIGHT]) {
-			if (player->GetPosition().x + PLAYER_SIZE.x < this->width)
+			if (player->GetPosition().x + PLAYER_SIZE.x < this->width) {
 				player->SetPosition(glm::vec2(player->GetPosition().x + velocity, player->GetPosition().y));
+				if (ball->IsStuck())
+					ball->SetPosition(glm::vec2(ball->GetPosition().x + velocity, ball->GetPosition().y));
+			}
 		}
+		//Space to set ball free
+		if (keys[SDL_SCANCODE_SPACE])
+			ball->SetStuck(false);
 	}
 
 }
 
-void Game::Update(GLfloat dt) {}
+void Game::Update(GLfloat dt) {
+	//Update objects
+	ball->Move(dt, this->width);
+	//Collisions
+	this->DoCollisions();
+}
 
 void Game::Render() {
 	if (this->state == GameStateEnum::GAME_ACTIVE) {
@@ -152,7 +173,52 @@ void Game::Render() {
 		this->levels.at(this->level).Draw(*renderer);
 		//Draw player
 		player->Draw(*renderer);
+		//Draw ball
+		ball->Draw(*renderer);
 	}
 }
+
+void Game::DoCollisions() {
+	for (size_t i = 0; i < this->levels.at(this->level).GetBricks().size(); i++) {
+		GameObject& obj = this->levels.at(this->level).GetBricks().at(i);
+		if (!obj.IsDestroyed()) {
+			if (CheckCollision(*ball, obj)) {
+				if (!obj.IsSolid())
+					obj.SetDestroyed(true);
+			}
+		}
+	}
+}
+
+
+bool Game::CheckCollision(GameObject& obj1, GameObject& obj2) {
+	// collision x-axis?
+	bool collisionX = obj1.GetPosition().x + obj1.GetSize().x >= obj2.GetPosition().x &&
+		obj2.GetPosition().x + obj2.GetSize().x >= obj1.GetPosition().x;
+	// collision y-axis?
+	bool collisionY = obj1.GetPosition().y + obj1.GetSize().y >= obj2.GetPosition().y &&
+		obj2.GetPosition().y + obj2.GetSize().y >= obj1.GetPosition().y;
+	// collision only if on both axes
+	return collisionX && collisionY;
+}
+
+//AABB-circle => distance between closest point of circle to rectangle <= radius => collision
+bool Game::CheckCollision(BallObject& ball, GameObject& obj) {
+	//Get centers
+	glm::vec2 ballCenter = ball.GetPosition() + ball.GetRadius();
+	glm::vec2 aabbHalfExtents = obj.GetSize() / 2.0f;
+	glm::vec2 aabbCenter = obj.GetPosition() + aabbHalfExtents;
+
+	// get difference vector between both centers
+	glm::vec2 difference = ballCenter - aabbCenter;
+	glm::vec2 clamped = glm::clamp(difference, -aabbHalfExtents, aabbHalfExtents);
+	// add clamped value to AABB_center and we get the value of box closest to circle
+	glm::vec2 closest = aabbCenter + clamped;
+	// retrieve vector between center circle and closest point AABB and check if length <= radius
+	difference = closest - ballCenter;
+	return glm::length(difference) < ball.GetRadius();
+
+}
+
 
 

@@ -2,6 +2,7 @@
 #include "GameStateEnum.h"
 #include "glad/glad.h"
 #include "Constants.h"
+#include "BallObject.h"
 #include "SDL.h"
 #include "SDL_main.h"
 #include <iostream>
@@ -22,6 +23,7 @@ public:
 	void ProcessInput(SDL_Event& e, GLfloat dt);
 	void Update(GLfloat dt);
 	void Render();
+	void DoCollisions();
 
 	//Utilitie
 	GameStateEnum GetState() { return this->state; }
@@ -30,6 +32,9 @@ public:
 private:
 	//SDL, OpenGl, Glad, ...
 	int BackEndInit();
+
+	bool CheckCollision(GameObject& obj1, GameObject& obj2);
+	bool CheckCollision(BallObject& ball, GameObject& obj);
 
 	GameStateEnum state{ GameStateEnum::GAME_INACTIVE };
 
