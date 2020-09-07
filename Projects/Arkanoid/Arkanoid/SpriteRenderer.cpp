@@ -7,7 +7,7 @@ SpriteRenderer::SpriteRenderer(Shader& shader) : shader(shader) {
 void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec2 size, GLfloat rotate, glm::vec3 color) {
 	this->shader.Use();
 	//Model
-	glm::mat4 model = glm::mat4(1.0f);
+	glm::mat4 model{ glm::mat4(1.0f) };
 	//Translate
 	model = glm::translate(model, glm::vec3(position, 0.0f));
 

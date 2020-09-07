@@ -38,15 +38,15 @@ void BallObject::Reset(glm::vec2 position, glm::vec2 velocity) {
 //AABB-circle => distance between closest point of circle to rectangle <= radius => collision
 Collision BallObject::CheckCollision(GameObject& obj) {
 	//Get centers  
-	glm::vec2 ballCenter = this->position + this->radius;
-	glm::vec2 aabbHalfExtents = obj.GetSize() / 2.0f;
-	glm::vec2 aabbCenter = obj.GetPosition() + aabbHalfExtents;
+	glm::vec2 ballCenter{ this->position + this->radius };
+	glm::vec2 aabbHalfExtents{ obj.GetSize() / 2.0f };
+	glm::vec2 aabbCenter{ obj.GetPosition() + aabbHalfExtents };
 
 	// get difference vector between both centers
-	glm::vec2 difference = ballCenter - aabbCenter;
-	glm::vec2 clamped = glm::clamp(difference, -aabbHalfExtents, aabbHalfExtents);
+	glm::vec2 difference{ ballCenter - aabbCenter };
+	glm::vec2 clamped{ glm::clamp(difference, -aabbHalfExtents, aabbHalfExtents) };
 	// add clamped value to AABB_center and we get the value of box closest to circle
-	glm::vec2 closest = aabbCenter + clamped;
+	glm::vec2 closest{ aabbCenter + clamped };
 	// retrieve vector between center circle and closest point AABB and check if length <= radius
 	difference = closest - ballCenter;
 
@@ -61,8 +61,8 @@ DirectionEnum BallObject::VectorDirection(glm::vec2 target) {
 	GLfloat max{ 0.0f };
 	DirectionEnum bestMatch{ static_cast<DirectionEnum>(0) };
 
-	for (size_t i = 0; i < COMPASS.size(); i++) {
-		GLfloat dot = glm::dot(glm::normalize(target), COMPASS.at(static_cast<DirectionEnum>(i)));
+	for (size_t i{ 0 }; i < COMPASS.size(); i++) {
+		GLfloat dot{ glm::dot(glm::normalize(target), COMPASS.at(static_cast<DirectionEnum>(i))) };
 		if (dot > max) {
 			max = dot;
 			bestMatch = static_cast<DirectionEnum>(i);

@@ -22,14 +22,24 @@ public:
 
 	//Utility
 	void SetSolid(bool solid) { isSolid = solid; }
+	bool IsSolid() { return isSolid; }
+
 	bool IsDestroyed() { return isDestroyed; }
 	void SetDestroyed(bool destroy) { this->isDestroyed = destroy; }
-	bool IsSolid() { return isSolid; }
+
 	glm::vec2 GetPosition() { return position; }
 	void SetPosition(glm::vec2 position) { this->position = position; }
+	void SetPosition(GLfloat x, GLfloat y) { this->position = glm::vec2(x, y); }
+	void SetPositionX(GLfloat x) { this->position.x = x; }
+	void SetPositionY(GLfloat y) { this->position.y = y; }
+
 	glm::vec2 GetSize() { return size; }
+
 	glm::vec2 GetVelocity() { return velocity; }
 	void SetVelocity(glm::vec2 vel) { this->velocity = vel; }
+	void SetVelocity(GLfloat x, GLfloat y) { this->velocity = glm::vec2(x, y); }
+	void SetVelocityX(GLfloat x) { this->velocity.x = x; }
+	void SetVelocityY(GLfloat y) { this->velocity.y = y; }
 
 protected:
 	glm::vec2 position{ glm::vec2(0.0f) };
@@ -40,6 +50,6 @@ protected:
 	bool isSolid{ false };
 	bool isDestroyed{ false };
 
-	Texture2D sprite;
+	Texture2D sprite{};
 };
 

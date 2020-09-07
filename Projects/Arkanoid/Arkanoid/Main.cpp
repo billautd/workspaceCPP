@@ -2,12 +2,13 @@
 #include "Constants.h"
 #include "ResourceManager.h"
 
-Game game = Game();
+Game game{ };
 SDL_Event event{};
 GLuint ticksLastFrame{ 0 };
 
 int main(int argc, char** argv) {
-	if (int success = game.Init() != 0)
+	int success{ game.Init() };
+	if (success != 0)
 		return success;
 
 	while (game.GetState() != GameStateEnum::GAME_INACTIVE) {

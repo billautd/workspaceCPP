@@ -25,7 +25,9 @@ public:
 	void Render();
 	void DoCollisions();
 
-	//Utilitie
+	void ResetBallPlayer();
+
+	//Utility
 	GameStateEnum GetState() { return this->state; }
 	SDL_Window* GetWindow() { return this->window; }
 
@@ -34,6 +36,9 @@ public:
 private:
 	//SDL, OpenGl, Glad, ...
 	int BackEndInit();
+
+	void BallTileCollision(GameObject& obj);
+	void BallPlayerCollision();
 
 	GameStateEnum state{ GameStateEnum::GAME_INACTIVE };
 

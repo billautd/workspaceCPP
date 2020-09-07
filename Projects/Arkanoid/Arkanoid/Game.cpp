@@ -74,13 +74,14 @@ int Game::BackEndInit() {
 }
 
 int Game::Init() {
-	if (int success = BackEndInit() != 0)
+	int success{ BackEndInit() };
+	if (success != 0)
 		return success;
 
 	//Load shaders
 	ResourceManager::LoadShader("./Shaders/SpriteRendering.vert", "./Shaders/SpriteRendering.frag", nullptr, "SpriteRendering");
 	//Config shaders
-	glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(this->width), static_cast<GLfloat>(this->height), 0.0f, -10.0f, 1.0f);
+	glm::mat4 projection{ glm::ortho(0.0f, static_cast<GLfloat>(this->width), static_cast<GLfloat>(this->height), 0.0f, -10.0f, 1.0f) };
 	ResourceManager::GetShader("SpriteRendering").Use().SetInteger("image", 0);
 	ResourceManager::GetShader("SpriteRendering").Use().SetMatrix4("projection", projection);
 
@@ -134,22 +135,22 @@ void Game::ProcessInput(SDL_Event& e, GLfloat dt) {
 	keys = SDL_GetKeyboardState(&keysNbr);
 
 	if (this->state == GameStateEnum::GAME_ACTIVE) {
-		GLfloat velocity = PLAYER_VELOCITY * dt;
+		GLfloat velocity{ PLAYER_VELOCITY * dt };
 
 		//Left
 		if (keys[SDL_SCANCODE_LEFT]) {
 			if (player->GetPosition().x > 0.0f) {
-				player->SetPosition(glm::vec2(player->GetPosition().x - velocity, player->GetPosition().y));
+				player->SetPositionX(player->GetPosition().x - velocity);
 				if (ball->IsStuck())
-					ball->SetPosition(glm::vec2(ball->GetPosition().x - velocity, ball->GetPosition().y));
+					ball->SetPositionX(ball->GetPosition().x - velocity);
 			}
 		}
 		//Right
 		if (keys[SDL_SCANCODE_RIGHT]) {
 			if (player->GetPosition().x + PLAYER_SIZE.x < this->width) {
-				player->SetPosition(glm::vec2(player->GetPosition().x + velocity, player->GetPosition().y));
+				player->SetPositionX(player->GetPosition().x + velocity);
 				if (ball->IsStuck())
-					ball->SetPosition(glm::vec2(ball->GetPosition().x + velocity, ball->GetPosition().y));
+					ball->SetPositionX(ball->GetPosition().x + velocity);
 			}
 		}
 		//Space to set ball free
@@ -164,6 +165,14 @@ void Game::Update(GLfloat dt) {
 	ball->Move(dt, this->width);
 	//Collisions
 	this->DoCollisions();
+
+	if (ball->GetPosition().y >= this->height)
+		this->ResetBallPlayer();
+
+	if (this->levels.at(this->level).IsCompleted()) {
+		this->level = (this->level + 1) % this->levels.size();
+		this->ResetBallPlayer();
+	}
 }
 
 void Game::Render() {
@@ -180,49 +189,77 @@ void Game::Render() {
 }
 
 void Game::DoCollisions() {
-	for (size_t i = 0; i < this->levels.at(this->level).GetBricks().size(); i++) {
-		GameObject& obj = this->levels.at(this->level).GetBricks().at(i);
+	for (size_t i{ 0 }; i < this->levels.at(this->level).GetBricks().size(); i++) {
+		GameObject& obj{ this->levels.at(this->level).GetBricks().at(i) };
 		if (!obj.IsDestroyed()) {
-			//Ball collision
-			Collision collision = ball->CheckCollision(obj);
-			//If collision
-			if (std::get<0>(collision)) {
-				//If not solid, destroy
-				if (!obj.IsSolid())
-					obj.SetDestroyed(true);
-				//Collision resolution
-				DirectionEnum dir = std::get<1>(collision);
-				glm::vec2 difference = std::get<2>(collision);
+			BallTileCollision(obj);
+		}
+	}
+	BallPlayerCollision();
+}
 
-				//Horizontal
-				if (dir == DirectionEnum::LEFT || dir == DirectionEnum::RIGHT) {
-					//Reverse horizontal velocity
-					ball->SetVelocity(glm::vec2(-ball->GetVelocity().x, ball->GetVelocity().y));
+void Game::ResetBallPlayer() {
+	player->SetPositionX(this->width / 2.0f - player->GetSize().x / 2.0f);
+	glm::vec2 ballPosition(this->width / 2.0f - BALL_RADIUS, this->height - PLAYER_SIZE.y - 2 * BALL_RADIUS);
+	ball->Reset(ballPosition, ball->GetVelocity());
+}
 
-					//Reloate
-					GLfloat penetration = ball->GetRadius() - std::abs(difference.x);
-					if (dir == DirectionEnum::LEFT)
-						ball->SetPosition(glm::vec2(ball->GetPosition().x - penetration, ball->GetPosition().y));
-					else
-						ball->SetPosition(glm::vec2(ball->GetPosition().x + penetration, ball->GetPosition().y));
-				}
-				//Vertical
-				else {
-					//Reverse vertical velocity
-					ball->SetVelocity(glm::vec2(ball->GetVelocity().x, -ball->GetVelocity().y));
+void Game::BallTileCollision(GameObject& obj) {
+	//Ball-tile collision
+	Collision collision{ ball->CheckCollision(obj) };
+	//If collision
+	if (std::get<0>(collision)) {
+		//If not solid, destroy
+		if (!obj.IsSolid())
+			obj.SetDestroyed(true);
+		//Collision resolution
+		DirectionEnum dir{ std::get<1>(collision) };
+		glm::vec2 difference{ std::get<2>(collision) };
 
-					//Reloate
-					GLfloat penetration = ball->GetRadius() - std::abs(difference.y);
-					if (dir == DirectionEnum::UP)
-						ball->SetPosition(glm::vec2(ball->GetPosition().x, ball->GetPosition().y + penetration));
-					else
-						ball->SetPosition(glm::vec2(ball->GetPosition().x, ball->GetPosition().y - penetration));
-				}
-			}
+		//Horizontal
+		if (dir == DirectionEnum::LEFT || dir == DirectionEnum::RIGHT) {
+			//Reverse horizontal velocity
+			ball->SetVelocityX(-ball->GetVelocity().x);
+
+			//Reloate
+			GLfloat penetration{ ball->GetRadius() - std::abs(difference.x) };
+			if (dir == DirectionEnum::LEFT)
+				ball->SetPositionX(ball->GetPosition().x + penetration);
+			else
+				ball->SetPositionX(ball->GetPosition().x - penetration);
+		}
+		//Vertical
+		else {
+			//Reverse vertical velocity
+			ball->SetVelocityY(-ball->GetVelocity().y);
+
+			//Reloate
+			GLfloat penetration{ ball->GetRadius() - std::abs(difference.y) };
+			if (dir == DirectionEnum::UP)
+				ball->SetPositionY(ball->GetPosition().y + penetration);
+			else
+				ball->SetPositionY(ball->GetPosition().y - penetration);
 		}
 	}
 }
 
+void Game::BallPlayerCollision() {
+	Collision collision{ ball->CheckCollision(*player) };
+	//If collision
+	if (!ball->IsStuck() && std::get<0>(collision)) {
+		//Check if hit the board and change velocity based on where it hits the paddle
+		GLfloat centerBoard{ player->GetPosition().x + player->GetSize().x / 2.0f };
+		GLfloat distance{ ball->GetPosition().x + ball->GetRadius() - centerBoard };
+		GLfloat percentage{ distance / player->GetSize().x / 2.0f };
 
+		//Move accordingly
+		GLfloat strength{ 18.0f };
+		glm::vec2 oldVelocity{ ball->GetVelocity() };
+		GLfloat xVel{ INITIAL_BALL_VELOCITY.x * percentage * strength };
+		GLfloat yVel{ -1.0f * glm::abs(ball->GetVelocity().y) };
+		ball->SetVelocity(glm::length(oldVelocity) * glm::normalize(glm::vec2(xVel, yVel)));
+	}
+
+}
 
 

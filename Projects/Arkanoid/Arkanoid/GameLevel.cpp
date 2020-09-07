@@ -26,8 +26,8 @@ void GameLevel::Load(const char* file, GLuint levelWidth, GLuint levelHeight) {
 }
 
 void GameLevel::Draw(SpriteRenderer& renderer) {
-	for (size_t i = 0; i < this->bricks.size(); ++i) {
-		GameObject tile = this->bricks.at(i);
+	for (size_t i{ 0 }; i < this->bricks.size(); ++i) {
+		GameObject& tile{ this->bricks.at(i) };
 		if (!tile.IsDestroyed())
 			tile.Draw(renderer);
 	}
@@ -43,16 +43,16 @@ bool GameLevel::IsCompleted() {
 
 void GameLevel::Init(std::vector<std::vector<GLuint>> tileData, GLuint levelWidth, GLuint levelHeight) {
 	//Dimensions
-	size_t height = tileData.size();
-	size_t width = tileData.at(0).size();
-	GLfloat unitWidth = levelWidth / static_cast<GLfloat>(width);
-	GLfloat unitHeight = levelHeight / static_cast<GLfloat>(height);
+	size_t height{ tileData.size() };
+	size_t width{ tileData.at(0).size() };
+	GLfloat unitWidth{ levelWidth / static_cast<GLfloat>(width) };
+	GLfloat unitHeight{ levelHeight / static_cast<GLfloat>(height) };
 
 	//Init level tiles
-	for (size_t y = 0; y < height; y++) {
-		for (size_t x = 0; x < width; x++) {
+	for (size_t y{ 0 }; y < height; y++) {
+		for (size_t x{ 0 }; x < width; x++) {
 			//If solid (id = 1)
-			GLuint tileId = tileData.at(y).at(x);
+			GLuint tileId{ tileData.at(y).at(x) };
 			if (tileId == 1) {
 				glm::vec2 pos(unitWidth * x, unitHeight * y);
 				glm::vec2 size(unitWidth, unitHeight);
@@ -64,7 +64,7 @@ void GameLevel::Init(std::vector<std::vector<GLuint>> tileData, GLuint levelWidt
 			else if (tileId > 1) {
 				glm::vec2 pos(unitWidth * x, unitHeight * y);
 				glm::vec2 size(unitWidth, unitHeight);
-				glm::vec3 color{};
+				glm::vec3 color(1.0f);
 				if (tileId == 2)
 					color = glm::vec3(0.2f, 0.6f, 1.0f);
 				else if (tileId == 3)

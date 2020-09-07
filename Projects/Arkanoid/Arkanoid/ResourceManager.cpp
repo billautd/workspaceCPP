@@ -55,9 +55,9 @@ Shader ResourceManager::LoadShaderFromFile(const char* vShaderFile, const char* 
 	catch (std::exception e) {
 		std::cout << "ERROR::SHADER: Failed to read shader files" << std::endl;
 	}
-	const char* vShaderCode = vertexCode.c_str();
-	const char* fShaderCode = fragmentCode.c_str();
-	const char* gShaderCode = nullptr;
+	const char* vShaderCode{ vertexCode.c_str() };
+	const char* fShaderCode{ fragmentCode.c_str() };
+	const char* gShaderCode{ nullptr };
 	if (gShaderFile != nullptr)
 		gShaderCode = geometryCode.c_str();
 	//Create shader from source
@@ -73,7 +73,7 @@ Texture2D ResourceManager::LoadTextureFromFile(const char* file, bool alpha) {
 
 	//Load image
 	int width, height, nbrChannels;
-	unsigned char* data = stbi_load(file, &width, &height, &nbrChannels, 0);
+	unsigned char* data{ stbi_load(file, &width, &height, &nbrChannels, 0) };
 	if (data) {
 		//Set alpha
 		if (alpha) {
