@@ -158,10 +158,13 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ParticleGenerator.cpp" />
+    <ClCompile Include="PostProcessor.cpp" />
+    <ClCompile Include="PowerUp.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SpriteRenderer.cpp" />
     <ClCompile Include="Texture2D.cpp" />
+    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BallObject.h" />
@@ -172,15 +175,20 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameStateEnum.h" />
     <ClInclude Include="ParticleGenerator.h" />
+    <ClInclude Include="PostProcessor.h" />
+    <ClInclude Include="PowerUp.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SpriteRenderer.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Texture2D.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\ParticleRendering.frag" />
     <None Include="Shaders\ParticleRendering.vert" />
+    <None Include="Shaders\PostProcessing.frag" />
+    <None Include="Shaders\PostProcessing.vert" />
     <None Include="Shaders\SpriteRendering.frag" />
     <None Include="Shaders\SpriteRendering.vert" />
   </ItemGroup>

@@ -33,13 +33,20 @@ public:
 	void SetPositionX(GLfloat x) { this->position.x = x; }
 	void SetPositionY(GLfloat y) { this->position.y = y; }
 
-	glm::vec2 GetSize() { return size; }
-
 	glm::vec2 GetVelocity() { return velocity; }
 	void SetVelocity(glm::vec2 vel) { this->velocity = vel; }
 	void SetVelocity(GLfloat x, GLfloat y) { this->velocity = glm::vec2(x, y); }
 	void SetVelocityX(GLfloat x) { this->velocity.x = x; }
 	void SetVelocityY(GLfloat y) { this->velocity.y = y; }
+
+	void SetColor(glm::vec3 color) { this->color = color; }
+	void SetColor(GLfloat r, GLfloat g, GLfloat b) { this->color = glm::vec3(r, g, b); }
+
+	glm::vec2 GetSize() { return size; }
+	void SetSize(glm::vec2 size) { this->size = size; }
+	void SetSize(GLfloat x, GLfloat y) { this->size = glm::vec2(x, y); }
+	void SetSizeX(GLfloat x) { this->size.x = x; }
+	void SetSizeY(GLfloat y) { this->size.y = y; }
 
 protected:
 	glm::vec2 position{ glm::vec2(0.0f) };

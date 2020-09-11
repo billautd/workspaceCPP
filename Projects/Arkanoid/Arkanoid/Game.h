@@ -2,6 +2,7 @@
 #include "GameStateEnum.h"
 #include "glad/glad.h"
 #include "Constants.h"
+#include "PowerUp.h"
 #include "BallObject.h"
 #include "SDL.h"
 #include "SDL_main.h"
@@ -9,6 +10,7 @@
 #include <vector>
 #include "GameLevel.h"
 #include "ParticleGenerator.h"
+#include "PostProcessor.h"
 
 
 class Game {
@@ -28,6 +30,9 @@ public:
 
 	void ResetBallPlayer();
 
+	void SpawnPowerUp(GameObject& block);
+	void UpdatePowerUps(GLfloat dt);
+
 	//Utility
 	GameStateEnum GetState() { return this->state; }
 	SDL_Window* GetWindow() { return this->window; }
@@ -39,6 +44,12 @@ private:
 
 	void BallTileCollision(GameObject& obj);
 	void BallPlayerCollision();
+	void PowerUpPlayerCollision(PowerUp& powerUp);
+
+	bool ShouldSpawn(GLuint chance);
+	void ActivatePowerUp(PowerUp& powerUp);
+	bool IsOtherPowerUpActive(std::string type);
+	void ResetPowerUps();
 
 	GameStateEnum state{ GameStateEnum::GAME_INACTIVE };
 
@@ -52,8 +63,11 @@ private:
 	BallObject* ball{ nullptr };
 	SpriteRenderer* renderer{ nullptr };
 	ParticleGenerator* particleGenerator{ nullptr };
+	PostProcessor* postProcessor{ nullptr };
 
 	std::vector<GameLevel> levels{};
 	GLuint level{ 3 };
+
+	std::vector<PowerUp> powerUps{};
 };
 

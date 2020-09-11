@@ -17,7 +17,6 @@ Collision GameObject::CheckCollision(GameObject& obj) {
 		obj.position.y + obj.size.y >= this->position.y };
 	// collision only if on both axes
 
-	//TODO Maybe find a way to make full tuples out of this instea dof just using the boolean
 	return std::make_tuple(collisionX && collisionY, DirectionEnum::UP, glm::vec2(0.0f));
 }
 
