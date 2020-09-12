@@ -3,6 +3,7 @@
 
 std::map<std::string, Texture2D> ResourceManager::textures;
 std::map<std::string, Shader> ResourceManager::shaders;
+std::map<std::string, Mix_Music*> ResourceManager::musics;
 
 Shader ResourceManager::LoadShader(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile, std::string name) {
 	//First = iterator to value inserted
@@ -21,6 +22,16 @@ void ResourceManager::Clear() {
 		iter.second.Delete();
 	for (auto iter : textures)
 		iter.second.Delete();
+}
+
+Mix_Music* ResourceManager::LoadMusic(const char* file, std::string name) {
+	Mix_Music* music = Mix_LoadMUS(file);
+	if (music != nullptr)
+		return (musics.emplace(name, music)).first->second;
+	else {
+		std::cerr << Mix_GetError() << "Error while loading music : " << file << '\n';
+		return nullptr;
+	}
 }
 
 Shader ResourceManager::LoadShaderFromFile(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile) {

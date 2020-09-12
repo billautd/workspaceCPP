@@ -4,6 +4,7 @@
 #include "Texture2D.h"
 #include <string>
 #include <fstream>
+#include "SDL_mixer.h"
 #include <sstream>
 #include <map>
 
@@ -17,6 +18,9 @@ public:
 	static Texture2D& GetTexture(std::string name) { return textures.at(name); }
 	//Properly re-allocate all loaded resources
 	static void Clear();
+	//Loads music
+	static Mix_Music* LoadMusic(const char* file, std::string name);
+	static Mix_Music* GetMusic(std::string name) { return musics.at(name); }
 
 private:
 	//Private Constructor for no instanciation
@@ -30,5 +34,6 @@ private:
 	//Resource storage
 	static std::map<std::string, Shader> shaders;
 	static std::map<std::string, Texture2D> textures;
+	static std::map<std::string, Mix_Music*> musics;
 };
 

@@ -72,6 +72,9 @@
     <ClCompile Include="PowerUp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MusicManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -120,6 +123,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PowerUp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MusicManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

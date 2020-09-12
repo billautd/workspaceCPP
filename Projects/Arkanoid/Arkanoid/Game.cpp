@@ -19,6 +19,13 @@ int Game::BackEndInit() {
 		return 1;
 	}
 
+	//SDL_mixer init
+	if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) != 0) {
+		std::cerr << "Error initializing SDL audio.\n";
+		SDL_Quit();
+		return 1;
+	}
+
 	//Set backup OpenGl version to 3.3
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
@@ -102,10 +109,14 @@ int Game::Init() {
 	ResourceManager::LoadTexture("./Textures/PowerUps/speed.png", true, "powerup_speed");
 	ResourceManager::LoadTexture("./Textures/PowerUps/sticky.png", true, "powerup_sticky");
 
+	//Load music
+	ResourceManager::LoadMusic("C://Users//David//workspaceC++//Projects//Arkanoid//Arkanoid//Musics//breakout.mp3", "breakout");
+
 	//Init renderer
 	renderer = new SpriteRenderer(ResourceManager::GetShader("SpriteRendering"));
 	particleGenerator = new ParticleGenerator(ResourceManager::GetShader("ParticleRendering"), ResourceManager::GetTexture("particle"), 500);
 	postProcessor = new PostProcessor(ResourceManager::GetShader("PostProcessing"), this->width, this->height);
+	musicManager = new MusicManager();
 
 	//Load levels
 	GameLevel level1; level1.Load("./Levels/one.lvl", this->width, this->height / 2);
@@ -125,6 +136,9 @@ int Game::Init() {
 	//Setup ball
 	glm::vec2 ballPosition(this->width / 2.0f - BALL_RADIUS, this->height - PLAYER_SIZE.y - 2 * BALL_RADIUS);
 	ball = new BallObject(ballPosition, BALL_RADIUS, INITIAL_BALL_VELOCITY, ResourceManager::GetTexture("ball"));
+
+	//Play music
+	musicManager->PlayMusic("breakout", true);
 
 	return 0;
 }
