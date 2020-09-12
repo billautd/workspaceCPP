@@ -4,6 +4,7 @@
 std::map<std::string, Texture2D> ResourceManager::textures;
 std::map<std::string, Shader> ResourceManager::shaders;
 std::map<std::string, Mix_Music*> ResourceManager::musics;
+std::map<std::string, Mix_Chunk*> ResourceManager::chunks;
 
 Shader ResourceManager::LoadShader(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile, std::string name) {
 	//First = iterator to value inserted
@@ -11,10 +12,20 @@ Shader ResourceManager::LoadShader(const char* vShaderFile, const char* fShaderF
 	return (shaders.emplace(name, LoadShaderFromFile(vShaderFile, fShaderFile, gShaderFile))).first->second;
 }
 
+Shader& ResourceManager::GetShader(std::string name) {
+	//Can't really set protection for these
+	return shaders.at(name);
+}
+
 Texture2D ResourceManager::LoadTexture(const char* file, bool alpha, std::string name) {
 	//First = iterator to value inserted
 	//first->second = texture
 	return (textures.emplace(name, LoadTextureFromFile(file, alpha))).first->second;
+}
+
+Texture2D& ResourceManager::GetTexture(std::string name) {
+	//TODO Return blank texture on !ItemExists()
+	return textures.at(name);
 }
 
 void ResourceManager::Clear() {
@@ -32,6 +43,45 @@ Mix_Music* ResourceManager::LoadMusic(const char* file, std::string name) {
 		std::cerr << Mix_GetError() << "Error while loading music : " << file << '\n';
 		return nullptr;
 	}
+}
+
+Mix_Music* ResourceManager::GetMusic(std::string name) {
+	if (ResourceManager::ItemExists("musics", name))
+		return musics.at(name);
+	else {
+		std::cerr << "Music " << name << " does not exist";
+		return nullptr;
+	}
+}
+
+Mix_Chunk* ResourceManager::LoadChunk(const char* file, std::string name) {
+	Mix_Chunk* chunk = Mix_LoadWAV(file);
+	if (chunk != nullptr)
+		return (chunks.emplace(name, chunk)).first->second;
+	else {
+		std::cerr << Mix_GetError() << "Error while loading chunk : " << file << '\n';
+		return nullptr;
+	}
+}
+
+Mix_Chunk* ResourceManager::GetChunk(std::string name) {
+	if (ResourceManager::ItemExists("chunks", name))
+		return chunks.at(name);
+	else {
+		std::cerr << "Chunk " << name << " does not exist";
+		return nullptr;
+	}
+}
+
+bool ResourceManager::ItemExists(std::string type, std::string name) {
+	if (type == "texture")
+		return textures.find(name) != textures.end();
+	else if (type == "shaders")
+		return shaders.find(name) != shaders.end();
+	else if (type == "musics")
+		return musics.find(name) != musics.end();
+	else if (type == "chunks")
+		return chunks.find(name) != chunks.end();
 }
 
 Shader ResourceManager::LoadShaderFromFile(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile) {

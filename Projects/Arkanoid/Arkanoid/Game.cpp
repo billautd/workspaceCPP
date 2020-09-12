@@ -109,14 +109,20 @@ int Game::Init() {
 	ResourceManager::LoadTexture("./Textures/PowerUps/speed.png", true, "powerup_speed");
 	ResourceManager::LoadTexture("./Textures/PowerUps/sticky.png", true, "powerup_sticky");
 
-	//Load music
-	ResourceManager::LoadMusic("C://Users//David//workspaceC++//Projects//Arkanoid//Arkanoid//Musics//breakout.mp3", "breakout");
+	//Load musics
+	ResourceManager::LoadMusic("./Musics/breakout.mp3", "breakout");
+
+	//Load sounds
+	ResourceManager::LoadChunk("./Sounds/bleep_non_solid.mp3", "bleep_non_solid");
+	ResourceManager::LoadChunk("./Sounds/bleep_player.wav", "bleep_player");
+	ResourceManager::LoadChunk("./Sounds/bleep_solid.wav", "bleep_solid");
+	ResourceManager::LoadChunk("./Sounds/powerup.wav", "powerup");
 
 	//Init renderer
 	renderer = new SpriteRenderer(ResourceManager::GetShader("SpriteRendering"));
 	particleGenerator = new ParticleGenerator(ResourceManager::GetShader("ParticleRendering"), ResourceManager::GetTexture("particle"), 500);
 	postProcessor = new PostProcessor(ResourceManager::GetShader("PostProcessing"), this->width, this->height);
-	musicManager = new MusicManager();
+	musicPlayer = new MusicPlayer();
 
 	//Load levels
 	GameLevel level1; level1.Load("./Levels/one.lvl", this->width, this->height / 2);
@@ -138,7 +144,7 @@ int Game::Init() {
 	ball = new BallObject(ballPosition, BALL_RADIUS, INITIAL_BALL_VELOCITY, ResourceManager::GetTexture("ball"));
 
 	//Play music
-	musicManager->PlayMusic("breakout", true);
+	musicPlayer->PlayMusic("breakout", true);
 
 	return 0;
 }
@@ -390,10 +396,16 @@ void Game::BallTileCollision(GameObject& obj) {
 	if (std::get<0>(collision)) {
 		//If not solid, destroy
 		if (!obj.IsSolid()) {
+			//Play SFX
+			musicPlayer->PlaySound("bleep_non_solid");
+
 			obj.SetDestroyed(true);
 			this->SpawnPowerUp(obj);
 		}
 		else {
+			//Play SFX
+			musicPlayer->PlaySound("bleep_solid");
+
 			shakeTime = SHAKE_TIME;
 			postProcessor->SetShake(true);
 		}
@@ -437,6 +449,9 @@ void Game::BallPlayerCollision() {
 	Collision collision{ ball->CheckCollision(*player) };
 	//If collision
 	if (!ball->IsStuck() && std::get<0>(collision)) {
+		//Play SFX
+		musicPlayer->PlaySound("bleep_player");
+
 		if (ball->IsSticky())
 			ball->SetStuck(true);
 
@@ -460,6 +475,8 @@ void Game::PowerUpPlayerCollision(PowerUp& powerUp) {
 		if (powerUp.GetPosition().y >= this->height)
 			powerUp.SetDestroyed(true);
 		if (std::get<0>(collision)) {
+			//Play SFK
+			musicPlayer->PlaySound("powerup");
 			//Collision with player, activate powerup
 			ActivatePowerUp(powerUp);
 			powerUp.SetDestroyed(true);

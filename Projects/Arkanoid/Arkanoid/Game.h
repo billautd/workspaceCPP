@@ -6,7 +6,7 @@
 #include "BallObject.h"
 #include "SDL.h"
 #include "SDL_main.h"
-#include "MusicManager.h"
+#include "MusicPlayer.h"
 #include <iostream>
 #include <vector>
 #include "GameLevel.h"
@@ -66,7 +66,7 @@ private:
 	SpriteRenderer* renderer{ nullptr };
 	ParticleGenerator* particleGenerator{ nullptr };
 	PostProcessor* postProcessor{ nullptr };
-	MusicManager* musicManager{ nullptr };
+	MusicPlayer* musicPlayer{ nullptr };
 
 
 	std::vector<GameLevel> levels{};
