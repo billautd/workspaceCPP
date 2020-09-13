@@ -3,8 +3,6 @@
 #include "ResourceManager.h"
 #include "BallObject.h"
 
-Game::Game(GLuint width, GLuint height) {}
-
 Game::~Game() {
 	delete renderer;
 	delete player;
@@ -20,7 +18,7 @@ int Game::BackEndInit() {
 	}
 
 	//SDL_mixer init
-	if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) != 0) {
+	if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024) != 0) {
 		std::cerr << "Error initializing SDL audio.\n";
 		SDL_Quit();
 		return 1;
@@ -74,7 +72,7 @@ int Game::BackEndInit() {
 	//Enable blend
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	this->state = GameStateEnum::GAME_ACTIVE;
+	this->state = GameStateEnum::GAME_MENU;
 
 	return 0;
 }
@@ -88,6 +86,7 @@ int Game::Init() {
 	ResourceManager::LoadShader("./Shaders/SpriteRendering.vert", "./Shaders/SpriteRendering.frag", nullptr, "SpriteRendering");
 	ResourceManager::LoadShader("./Shaders/ParticleRendering.vert", "./Shaders/ParticleRendering.frag", nullptr, "ParticleRendering");
 	ResourceManager::LoadShader("./Shaders/PostProcessing.vert", "./Shaders/PostProcessing.frag", nullptr, "PostProcessing");
+	ResourceManager::LoadShader("./Shaders/TextRendering.vert", "./Shaders/TextRendering.frag", nullptr, "TextRendering");
 	//Config shaders
 	glm::mat4 projection{ glm::ortho(0.0f, static_cast<GLfloat>(this->width), static_cast<GLfloat>(this->height), 0.0f, -10.0f, 1.0f) };
 	ResourceManager::GetShader("SpriteRendering").Use().SetInteger("sprite", 0);
@@ -123,17 +122,22 @@ int Game::Init() {
 	particleGenerator = new ParticleGenerator(ResourceManager::GetShader("ParticleRendering"), ResourceManager::GetTexture("particle"), 500);
 	postProcessor = new PostProcessor(ResourceManager::GetShader("PostProcessing"), this->width, this->height);
 	musicPlayer = new MusicPlayer();
+	textRenderer = new TextRenderer(this->width, this->height);
 
 	//Load levels
 	GameLevel level1; level1.Load("./Levels/one.lvl", this->width, this->height / 2);
 	GameLevel level2; level2.Load("./Levels/two.lvl", this->width, this->height / 2);
 	GameLevel level3; level3.Load("./Levels/three.lvl", this->width, this->height / 2);
 	GameLevel level4; level4.Load("./Levels/four.lvl", this->width, this->height / 2);
+	GameLevel test; test.Load("./Levels/test.lvl", this->width, this->height / 2);
+	//this->levels.emplace_back(test);
 	this->levels.emplace_back(level1);
 	this->levels.emplace_back(level2);
 	this->levels.emplace_back(level3);
 	this->levels.emplace_back(level4);
 
+	//Load font
+	textRenderer->Load("./Fonts/OCRAEXT.TTF", 24);
 
 	//Setup player
 	glm::vec2 playerPosition(this->width / 2.0f - PLAYER_SIZE.x / 2.0f, this->height - PLAYER_SIZE.y);
@@ -166,6 +170,40 @@ void Game::ProcessInput(SDL_Event& e, GLfloat dt) {
 
 	keys = SDL_GetKeyboardState(&keysNbr);
 
+	if (this->state == GameStateEnum::GAME_MENU) {
+		//Left
+		if (keys[SDL_SCANCODE_LEFT]) {
+			if (!keysProcessed[SDL_SCANCODE_LEFT]) {
+				keysProcessed[SDL_SCANCODE_LEFT] = true;
+				if (level > 0) {
+					musicPlayer->PlaySound("bleep_non_solid");
+					level--;
+				}
+			}
+		}
+		else
+			keysProcessed[SDL_SCANCODE_LEFT] = false;
+
+		//Right
+		if (keys[SDL_SCANCODE_RIGHT]) {
+			if (!keysProcessed[SDL_SCANCODE_RIGHT]) {
+				keysProcessed[SDL_SCANCODE_RIGHT] = true;
+				if (level < 4) {
+					musicPlayer->PlaySound("bleep_player");
+					level++;
+				}
+			}
+		}
+		else
+			keysProcessed[SDL_SCANCODE_RIGHT] = false;
+
+		if (keys[SDL_SCANCODE_RETURN]) {
+			lives = 3;
+			state = GameStateEnum::GAME_ACTIVE;
+			musicPlayer->PlaySound("powerup");
+		}
+	}
+
 	if (this->state == GameStateEnum::GAME_ACTIVE) {
 		GLfloat velocity{ PLAYER_VELOCITY * dt };
 
@@ -190,38 +228,122 @@ void Game::ProcessInput(SDL_Event& e, GLfloat dt) {
 			ball->SetStuck(false);
 	}
 
+	if (this->state == GameStateEnum::GAME_WIN) {
+		if (keys[SDL_SCANCODE_RETURN]) {
+			state = GameStateEnum::GAME_ACTIVE;
+			musicPlayer->PlaySound("powerup");
+		}
+	}
+
+	if (this->state == GameStateEnum::GAME_COMPLETE) {
+		if (keys[SDL_SCANCODE_RETURN]) {
+			this->Quit();
+		}
+	}
+
+
 }
 
 GLfloat shakeTime{ 0.0f };
 void Game::Update(GLfloat dt) {
-	//Update objects
-	ball->Move(dt, this->width);
-	//Update particles
-	particleGenerator->Update(dt, *ball, glm::vec2(ball->GetRadius() / 2.0f), 2);
-	//Update powerups
-	this->UpdatePowerUps(dt);
-	//Collisions
-	this->DoCollisions();
-	//Update post processing effects
-	if (shakeTime > 0.0f) {
-		shakeTime -= dt;
-		if (shakeTime <= 0.0f)
-			postProcessor->SetShake(false);
-	}
+	if (this->state == GameStateEnum::GAME_ACTIVE) {
+		//Update objects
+		ball->Move(dt, this->width);
+		//Update particles
+		particleGenerator->Update(dt, *ball, glm::vec2(ball->GetRadius() / 2.0f), 2);
+		//Update powerups
+		this->UpdatePowerUps(dt);
+		//Collisions
+		this->DoCollisions();
+		//Update post processing effects
+		if (shakeTime > 0.0f) {
+			shakeTime -= dt;
+			if (shakeTime <= 0.0f)
+				postProcessor->SetShake(false);
+		}
 
-	if (ball->GetPosition().y >= this->height) {
-		this->ResetBallPlayer();
-		this->ResetPowerUps();
-	}
+		//If ball hits bottom
+		if (ball->GetPosition().y >= this->height) {
+			this->ResetBallPlayer();
+			this->ResetPowerUps();
+			lives--;
+			if (lives == 0)
+				state = GameStateEnum::GAME_MENU;
+		}
 
-	if (this->levels.at(this->level).IsCompleted()) {
-		this->level = (this->level++) % this->levels.size();
-		this->ResetBallPlayer();
-		this->ResetPowerUps();
+		//If level completed
+		if (this->levels.at(this->level).IsCompleted()) {
+			state = GameStateEnum::GAME_WIN;
+			this->level = this->level++;
+			if (this->level == levels.size()) {
+				state = GameStateEnum::GAME_COMPLETE;
+			}
+			this->ResetBallPlayer();
+			this->ResetPowerUps();
+		}
 	}
 }
 
 void Game::Render() {
+	if (this->state == GameStateEnum::GAME_MENU) {
+		//Draw BG
+		renderer->DrawSprite(ResourceManager::GetTexture("background"), glm::vec2(0.0f, 0.0f), glm::vec2(this->width, this->height));
+		//Draw Level
+		this->levels.at(this->level).Draw(*renderer);
+		//Display level selection text
+		std::stringstream levelSelectionString; levelSelectionString << "Press Left and Right to select the level";
+		std::stringstream levelSelectionString2; levelSelectionString2 << "Press Enter to start the game";
+		glm::vec2 stringSize{ textRenderer->GetStringSize(levelSelectionString.str(), 1.0f) };
+		glm::vec2 stringSize2{ textRenderer->GetStringSize(levelSelectionString2.str(), 1.0f) };
+		textRenderer->RenderText(levelSelectionString.str(),
+			this->width / 2.0f - stringSize.x / 2.0f,
+			this->height / 2.0f - 20.0f,
+			1.0f);
+		textRenderer->RenderText(levelSelectionString2.str(),
+			this->width / 2.0f - stringSize2.x / 2.0f,
+			this->height / 2.0f + 20.0f,
+			1.0f);
+		if (this->lives == 0) {
+			//Display you lose text
+			std::stringstream youLoseString; youLoseString << "You lost all your lives !";
+			glm::vec2 stringSize3{ textRenderer->GetStringSize(youLoseString.str(), 1.0f) };
+			textRenderer->RenderText(youLoseString.str(),
+				this->width / 2.0f - stringSize3.x / 2.0f,
+				this->height / 2.0f - 40.0f,
+				1.0f);
+		}
+		//Display level text
+		std::stringstream levelString; levelString << "Level " << level + 1;
+		textRenderer->RenderText(levelString.str(), width - textRenderer->GetStringSize(levelString.str(), 1.0f).x - 10.0f, 5.0f, 1.0f);
+	}
+	if (this->state == GameStateEnum::GAME_WIN || this->state == GameStateEnum::GAME_COMPLETE) {
+		//Draw BG
+		renderer->DrawSprite(ResourceManager::GetTexture("background"), glm::vec2(0.0f, 0.0f), glm::vec2(this->width, this->height));
+
+		std::stringstream youWonString; youWonString << "You won Level " << level;
+		std::stringstream youWonString2;
+		glm::vec2 stringSize{ textRenderer->GetStringSize(youWonString.str(), 1.0f) };
+		if (this->state == GameStateEnum::GAME_WIN) {
+			//Draw next level
+			this->levels.at(this->level).Draw(*renderer);
+			youWonString2 << "Press Enter to start Level " << level + 1;
+			//Display level text
+			std::stringstream levelString; levelString << "Level " << level + 1;
+			textRenderer->RenderText(levelString.str(), width - textRenderer->GetStringSize(levelString.str(), 1.0f).x - 10.0f, 5.0f, 1.0f);
+		}
+		else
+			youWonString2 << "Press Enter to quit the game";
+
+		glm::vec2 stringSize2{ textRenderer->GetStringSize(youWonString2.str(), 1.0f) };
+		textRenderer->RenderText(youWonString2.str(),
+			this->width / 2.0f - stringSize2.x / 2.0f,
+			this->height / 2.0f + 20.0f,
+			1.0f);
+		textRenderer->RenderText(youWonString.str(),
+			this->width / 2.0f - stringSize.x / 2.0f,
+			this->height / 2.0f - 20.0f,
+			1.0f);
+	}
 	if (this->state == GameStateEnum::GAME_ACTIVE) {
 		postProcessor->BeginRender();
 		//Draw BG
@@ -241,6 +363,11 @@ void Game::Render() {
 			if (!powerUp.IsDestroyed())
 				powerUp.Draw(*renderer);
 		}
+		//Draw text
+		std::stringstream livesString; livesString << "Lives : " << lives;
+		textRenderer->RenderText(livesString.str(), 5.0f, 5.0f, 1.0f);
+		std::stringstream levelString; levelString << "Level " << level + 1;
+		textRenderer->RenderText(levelString.str(), width - textRenderer->GetStringSize(levelString.str(), 1.0f).x - 10.0f, 5.0f, 1.0f);
 		//Post processing
 		postProcessor->EndRender();
 		postProcessor->Render(SDL_GetTicks() / 1000.0f);
@@ -485,3 +612,7 @@ void Game::PowerUpPlayerCollision(PowerUp& powerUp) {
 	}
 }
 
+
+void Game::Quit() {
+	SDL_Quit();
+}

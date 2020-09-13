@@ -6,6 +6,7 @@
 #include "BallObject.h"
 #include "SDL.h"
 #include "SDL_main.h"
+#include "TextRenderer.h"
 #include "MusicPlayer.h"
 #include <iostream>
 #include <vector>
@@ -19,7 +20,6 @@ class Game {
 public:
 	// C/D
 	Game() = default;
-	Game(GLuint width, GLuint height);
 	~Game();
 
 	//Init game state (load shaders, textures, levels)
@@ -53,10 +53,13 @@ private:
 	bool IsOtherPowerUpActive(std::string type);
 	void ResetPowerUps();
 
+	void Quit();
+
 	GameStateEnum state{ GameStateEnum::GAME_INACTIVE };
 
 	int keysNbr{ 1024 };
 	const Uint8* keys{ new Uint8[keysNbr] };
+	bool* keysProcessed{ new bool[keysNbr] {false} };
 
 	GLuint width{ SCREEN_WIDTH };
 	GLuint height{ SCREEN_HEIGHT };
@@ -67,11 +70,14 @@ private:
 	ParticleGenerator* particleGenerator{ nullptr };
 	PostProcessor* postProcessor{ nullptr };
 	MusicPlayer* musicPlayer{ nullptr };
+	TextRenderer* textRenderer{ nullptr };
 
 
 	std::vector<GameLevel> levels{};
-	GLuint level{ 3 };
+	GLuint level{ 0 };
 
 	std::vector<PowerUp> powerUps{};
+
+	GLuint lives{ 3 };
 };
 

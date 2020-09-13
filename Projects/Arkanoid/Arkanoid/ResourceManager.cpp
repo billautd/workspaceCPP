@@ -82,6 +82,10 @@ bool ResourceManager::ItemExists(std::string type, std::string name) {
 		return musics.find(name) != musics.end();
 	else if (type == "chunks")
 		return chunks.find(name) != chunks.end();
+	else {
+		std::cerr << "Cannot process type : " << type << '\n';
+		return false;
+	}
 }
 
 Shader ResourceManager::LoadShaderFromFile(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile) {

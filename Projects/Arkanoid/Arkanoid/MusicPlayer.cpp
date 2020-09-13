@@ -8,5 +8,5 @@ void MusicPlayer::PlayMusic(std::string name, bool loop) {
 
 void MusicPlayer::PlaySound(std::string name) {
 	if (ResourceManager::ItemExists("chunks", name))
-		Mix_PlayChannel(-1, ResourceManager::GetChunk(name), 0);
+		Mix_PlayChannel(0, ResourceManager::GetChunk(name), 0);
 }
