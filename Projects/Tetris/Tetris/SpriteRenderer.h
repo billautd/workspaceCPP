@@ -9,7 +9,7 @@ public:
 	~SpriteRenderer() = default;
 
 	//Draw sprite
-	void DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec2 size, GLfloat rotateDegrees = 0.0f, glm::vec3 color = glm::vec3(1.0f));
+	void DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec2 size, GLfloat rotateDegrees = 0.0f, glm::vec3 color = glm::vec3(1.0f), GLfloat alpha = 1.0f);
 
 private:
 	Shader shader{};

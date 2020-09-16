@@ -1,12 +1,12 @@
 #include "SpriteRenderer.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "Constants.h"
-
+#include "ResourceManager.h"
 SpriteRenderer::SpriteRenderer(Shader& shader) :shader(shader) {
 	InitRenderData();
 }
 
-void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec2 size, GLfloat rotateDegrees, glm::vec3 color) {
+void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec2 size, GLfloat rotateDegrees, glm::vec3 color, GLfloat alpha) {
 	this->shader.Use();
 
 	//Model
@@ -22,6 +22,9 @@ void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec
 
 	this->shader.SetMatrix4("model", model);
 	this->shader.SetVector3f("spriteColor", color);
+	if (texture.GetImageFormat() == GL_RGBA) {
+		this->shader.SetFloat("alpha", alpha);
+	}
 
 	glActiveTexture(GL_TEXTURE0);
 	texture.Bind();

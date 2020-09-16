@@ -7,7 +7,8 @@ in VS_OUT{
 
 uniform sampler2D image;
 uniform vec3 spriteColor;
+uniform float alpha;
 
 void main(){
-	color = vec4(spriteColor, 1.0f) * texture(image, fs_in.textureCoords);
+	color = vec4(spriteColor, alpha) * texture(image, fs_in.textureCoords);
 }

@@ -20,7 +20,8 @@ int Game::Init() {
 	ResourceManager::GetShader("SpriteRendering").Use().SetMatrix4("projection", projection);
 
 	//Load textures
-
+	ResourceManager::LoadTexture("grid", "./Textures/grid.png", true);
+	ResourceManager::LoadTexture("background", "./Textures/background.jpg", false);
 
 	//Init renderers
 	spriteRenderer = new SpriteRenderer(ResourceManager::GetShader("SpriteRendering"));
@@ -107,7 +108,9 @@ void Game::Update(GLfloat dt) {}
 
 void Game::Render() {
 	if (this->state == GameStateEnum::GAME_ACTIVE) {
-
+		//Draw grid & BG
+		spriteRenderer->DrawSprite(ResourceManager::GetTexture("background"), glm::vec2(0.0f), glm::vec2(WINDOW_WIDTH, WINDOW_HEIGHT));
+		spriteRenderer->DrawSprite(ResourceManager::GetTexture("grid"), glm::vec2(WINDOW_WIDTH / 2 - GRID_WIDTH / 2, WINDOW_HEIGHT / 2 - GRID_HEIGHT / 2), glm::vec2(GRID_WIDTH, GRID_HEIGHT), 0.0f, glm::vec3(1.0f), 0.8f);
 	}
 }
 

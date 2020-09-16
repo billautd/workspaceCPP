@@ -15,7 +15,9 @@ public:
 
 	//Utility
 	GLuint GetID() { return id; }
+	GLuint GetInternalFormat() { return internalFormat; }
 	void SetInternalFormat(GLuint internalFormat) { this->internalFormat = internalFormat; }
+	GLuint GetImageFormat() { return imageFormat; }
 	void SetImageFormat(GLuint imageFormat) { this->imageFormat = imageFormat; }
 
 private:
