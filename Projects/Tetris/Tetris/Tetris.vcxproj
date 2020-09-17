@@ -152,22 +152,28 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\Libraries\GLAD\src\glad.c" />
+    <ClCompile Include="Block.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SpriteRenderer.cpp" />
     <ClCompile Include="Texture2D.cpp" />
+    <ClCompile Include="UtilsPiece.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Block.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameStateEnum.h" />
+    <ClInclude Include="Grid.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SpriteRenderer.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Texture2D.h" />
+    <ClInclude Include="UtilsPiece.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\SpriteRendering.frag" />

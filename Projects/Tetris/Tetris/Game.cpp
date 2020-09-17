@@ -2,6 +2,7 @@
 #include "ResourceManager.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include <iostream>
+#include "UtilsPiece.h"
 #include "SDL.h"
 
 Game::~Game() {
@@ -18,10 +19,16 @@ int Game::Init() {
 	//Config shaders
 	glm::mat4 projection{ glm::ortho(0.0f, static_cast<GLfloat>(this->width), static_cast<GLfloat>(this->height), 0.0f, -10.0f, 1.0f) };
 	ResourceManager::GetShader("SpriteRendering").Use().SetMatrix4("projection", projection);
+	ResourceManager::GetShader("SpriteRendering").Use().SetFloat("alpha", 1.0f);
 
 	//Load textures
 	ResourceManager::LoadTexture("grid", "./Textures/grid.png", true);
 	ResourceManager::LoadTexture("background", "./Textures/background.jpg", false);
+
+	//Init grid
+	grid = new Grid();
+	currentPiece = UtilsPiece::SpawnIPiece();
+	grid->SetPiece(currentPiece);
 
 	//Init renderers
 	spriteRenderer = new SpriteRenderer(ResourceManager::GetShader("SpriteRendering"));
@@ -104,18 +111,31 @@ void Game::ProcessInput(SDL_Event& e, GLfloat dt) {
 	}
 }
 
-void Game::Update(GLfloat dt) {}
+//Stores fall time
+GLfloat fallTime{ 0.0f };
+void Game::Update(GLfloat dt) {
+	if (fallTime < fallSpeed)
+		fallTime += dt;
+	else {
+		if (grid->IsLineEmpty(UtilsPiece::PieceBottomY(currentPiece) - 1)) {
+			UtilsPiece::MovePieceDown(&currentPiece);
+			fallTime = 0.0f;
+		}
+	}
+}
 
 void Game::Render() {
 	if (this->state == GameStateEnum::GAME_ACTIVE) {
 		//Draw grid & BG
 		spriteRenderer->DrawSprite(ResourceManager::GetTexture("background"), glm::vec2(0.0f), glm::vec2(WINDOW_WIDTH, WINDOW_HEIGHT));
-		spriteRenderer->DrawSprite(ResourceManager::GetTexture("grid"), glm::vec2(WINDOW_WIDTH / 2 - GRID_WIDTH / 2, WINDOW_HEIGHT / 2 - GRID_HEIGHT / 2), glm::vec2(GRID_WIDTH, GRID_HEIGHT), 0.0f, glm::vec3(1.0f), 0.8f);
+		spriteRenderer->DrawSprite(ResourceManager::GetTexture("grid"), glm::vec2(GRID_X, GRID_Y), glm::vec2(GRID_WIDTH, GRID_HEIGHT), 0.0f, glm::vec3(1.0f), 0.8f);
+
+		//Render pieces
+		grid->Render(spriteRenderer);
 	}
 }
 
 void Game::Quit() {
 	this->state = GameStateEnum::GAME_INACTIVE;
 	SDL_Quit();
-	//delete this->spriteRenderer;
 }

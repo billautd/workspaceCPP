@@ -9,11 +9,13 @@ std::map<std::string, Shader> ResourceManager::shaders{};
 std::map<std::string, Texture2D> ResourceManager::textures{};
 
 Shader ResourceManager::LoadShader(std::string name, const char* vShaderFile, const char* fShaderFile, const char* gShaderFile) {
-	return shaders.emplace(name, LoadShaderFromFile(vShaderFile, fShaderFile, gShaderFile)).first->second;
+	shaders[name] = LoadShaderFromFile(vShaderFile, fShaderFile, gShaderFile);
+	return shaders[name];
 }
 
 Texture2D ResourceManager::LoadTexture(std::string name, const char* textureFile, bool alpha) {
-	return textures.emplace(name, LoadTextureFromFile(textureFile, alpha)).first->second;
+	textures[name] = LoadTextureFromFile(textureFile, alpha);
+	return textures[name];
 
 }
 

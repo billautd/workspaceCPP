@@ -4,6 +4,7 @@
 #include "SpriteRenderer.h"
 #include "glad/glad.h"
 #include "Constants.h"
+#include "Grid.h"
 
 class Game {
 public:
@@ -33,9 +34,15 @@ private:
 
 	SpriteRenderer* spriteRenderer{ nullptr };
 
+	Grid* grid{ nullptr };
+
 	GLuint width{ WINDOW_WIDTH };
 	GLuint height{ WINDOW_HEIGHT };
 
 	GameStateEnum state{ GameStateEnum::GAME_INACTIVE };
+
+	GLfloat fallSpeed{ INITIAL_FALLING_SPEED };
+
+	Piece currentPiece{};
 };
 

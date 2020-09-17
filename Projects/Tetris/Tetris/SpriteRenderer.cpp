@@ -22,9 +22,10 @@ void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec
 
 	this->shader.SetMatrix4("model", model);
 	this->shader.SetVector3f("spriteColor", color);
-	if (texture.GetImageFormat() == GL_RGBA) {
+	if (texture.GetImageFormat() == GL_RGBA)
 		this->shader.SetFloat("alpha", alpha);
-	}
+	else
+		this->shader.SetFloat("alpha", 1.0f);
 
 	glActiveTexture(GL_TEXTURE0);
 	texture.Bind();
