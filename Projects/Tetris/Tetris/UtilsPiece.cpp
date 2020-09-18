@@ -1,4 +1,5 @@
 #include "UtilsPiece.h"
+#include "UtilsGeneral.h"
 
 GLshort UtilsPiece::PieceBottom(Piece& piece) {
 	GLshort bottom{ piece[0].GetY() };
@@ -118,7 +119,7 @@ Piece* UtilsPiece::SpawnIPiece() {
 }
 
 Piece* UtilsPiece::SpawnRandomPiece() {
-	GLshort id{ rand() % 7 };
+	GLshort id{ UtilsGeneral::RandomInt() % 7 };
 	switch (id) {
 		case 0:
 			return SpawnIPiece();
