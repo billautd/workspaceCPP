@@ -2,6 +2,7 @@
 #include "glad/glad.h"
 #include "ResourceManager.h"
 #include "SpriteRenderer.h"
+#include <iostream>
 #include "Texture2D.h"
 
 struct Position {
@@ -38,6 +39,15 @@ public:
 	void SetY(GLshort y) { pos.y = y; }
 	glm::vec3 GetColor() { return color; }
 	void SetColor(glm::vec3 color) { this->color = color; }
+
+	friend std::ostream& operator<<(std::ostream& os, const Block& block) {
+		os << block.pos.x << ", " << block.pos.y << ", (" << block.color.r << ", " << block.color.g << ", " << block.color.b << ")";
+		return os;
+	}
+	bool operator==(const Block& block) const {
+		//Color should not be necessary
+		return block.pos.x == pos.x && block.pos.y == pos.y;
+	}
 private:
 	Texture2D texture{ texture = ResourceManager::LoadTexture("block", "./Textures/block.png", false) };
 	glm::vec3 color{ glm::vec3(1.0f) };

@@ -165,6 +165,7 @@
   <ItemGroup>
     <ClInclude Include="Block.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="DirectionEnum.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameStateEnum.h" />
     <ClInclude Include="Grid.h" />

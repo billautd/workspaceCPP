@@ -27,8 +27,8 @@ int Game::Init() {
 
 	//Init grid
 	grid = new Grid();
-	currentPiece = UtilsPiece::SpawnIPiece();
-	grid->SetPiece(currentPiece);
+	currentPiece = UtilsPiece::SpawnRandomPiece();
+	grid->SetPiece(*currentPiece);
 
 	//Init renderers
 	spriteRenderer = new SpriteRenderer(ResourceManager::GetShader("SpriteRendering"));
@@ -109,6 +109,46 @@ void Game::ProcessInput(SDL_Event& e, GLfloat dt) {
 		this->Quit();
 		return;
 	}
+
+	keys = SDL_GetKeyboardState(&keysNbr);
+
+	if (this->state == GameStateEnum::GAME_ACTIVE) {
+		//Left
+		if (keys[SDL_SCANCODE_LEFT]) {
+			if (!keysProcessed[SDL_SCANCODE_LEFT]) {
+				keysProcessed[SDL_SCANCODE_LEFT] = true;
+				if (UtilsPiece::PieceLeft(*(this->currentPiece)) != 0)
+					grid->MovePiece(currentPiece, DirectionEnum::LEFT);
+			}
+		}
+		else
+			keysProcessed[SDL_SCANCODE_LEFT] = false;
+
+		//Right
+		if (keys[SDL_SCANCODE_RIGHT]) {
+			if (!keysProcessed[SDL_SCANCODE_RIGHT]) {
+				keysProcessed[SDL_SCANCODE_RIGHT] = true;
+				if (UtilsPiece::PieceRight(*(this->currentPiece)) != X_TILES - 1)
+					grid->MovePiece(currentPiece, DirectionEnum::RIGHT);
+			}
+		}
+		else
+			keysProcessed[SDL_SCANCODE_RIGHT] = false;
+
+		//Drop down
+		if (keys[SDL_SCANCODE_DOWN]) {
+			if (!keysProcessed[SDL_SCANCODE_DOWN]) {
+				keysProcessed[SDL_SCANCODE_DOWN] = true;
+				this->fallSpeed = 0.05f;
+			}
+		}
+		else {
+			keysProcessed[SDL_SCANCODE_DOWN] = false;
+			this->fallSpeed = INITIAL_FALLING_SPEED;
+		}
+
+
+	}
 }
 
 //Stores fall time
@@ -117,10 +157,11 @@ void Game::Update(GLfloat dt) {
 	if (fallTime < fallSpeed)
 		fallTime += dt;
 	else {
-		if (grid->IsLineEmpty(UtilsPiece::PieceBottomY(currentPiece) - 1)) {
-			UtilsPiece::MovePieceDown(&currentPiece);
-			fallTime = 0.0f;
-		}
+		if (this->grid->CanPieceMoveDown(*currentPiece))
+			grid->MovePiece(currentPiece, DirectionEnum::DOWN);
+		else
+			currentPiece = UtilsPiece::SpawnRandomPiece();
+		fallTime = 0.0f;
 	}
 }
 

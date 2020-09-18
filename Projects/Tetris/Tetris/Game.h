@@ -40,9 +40,12 @@ private:
 	GLuint height{ WINDOW_HEIGHT };
 
 	GameStateEnum state{ GameStateEnum::GAME_INACTIVE };
+	int keysNbr{ 1024 };
+	const Uint8* keys{ new Uint8[keysNbr] };
+	bool* keysProcessed{ new bool[keysNbr] {false} };
 
 	GLfloat fallSpeed{ INITIAL_FALLING_SPEED };
 
-	Piece currentPiece{};
+	Piece* currentPiece{ nullptr };
 };
 
