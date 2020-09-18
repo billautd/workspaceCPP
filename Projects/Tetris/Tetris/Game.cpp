@@ -96,6 +96,8 @@ int Game::BackEndInit() {
 	return 0;
 }
 
+GLfloat moveLTime{ 0.0f };
+GLfloat moveRTime{ 0.0f };
 void Game::ProcessInput(SDL_Event& e, GLfloat dt) {
 	if (e.type == SDL_WINDOWEVENT) {
 		switch (e.window.event) {
@@ -117,23 +119,41 @@ void Game::ProcessInput(SDL_Event& e, GLfloat dt) {
 		if (keys[SDL_SCANCODE_LEFT]) {
 			if (!keysProcessed[SDL_SCANCODE_LEFT]) {
 				keysProcessed[SDL_SCANCODE_LEFT] = true;
-				if (UtilsPiece::PieceLeft(*(this->currentPiece)) != 0)
+				if (this->grid->CanPieceMove(*currentPiece, DirectionEnum::LEFT))
 					grid->MovePiece(currentPiece, DirectionEnum::LEFT);
 			}
+			else {
+				if (this->grid->CanPieceMove(*currentPiece, DirectionEnum::LEFT) && moveLTime >= INITIAL_MOVE_LR_SPEED) {
+					grid->MovePiece(currentPiece, DirectionEnum::LEFT);
+					moveLTime = 0.0f;
+				}
+			}
+			moveLTime += dt;
+			moveRTime = 0.0f;
 		}
 		else
 			keysProcessed[SDL_SCANCODE_LEFT] = false;
+
 
 		//Right
 		if (keys[SDL_SCANCODE_RIGHT]) {
 			if (!keysProcessed[SDL_SCANCODE_RIGHT]) {
 				keysProcessed[SDL_SCANCODE_RIGHT] = true;
-				if (UtilsPiece::PieceRight(*(this->currentPiece)) != X_TILES - 1)
+				if (this->grid->CanPieceMove(*currentPiece, DirectionEnum::RIGHT))
 					grid->MovePiece(currentPiece, DirectionEnum::RIGHT);
 			}
+			else {
+				if (this->grid->CanPieceMove(*currentPiece, DirectionEnum::RIGHT) && moveRTime >= INITIAL_MOVE_LR_SPEED) {
+					grid->MovePiece(currentPiece, DirectionEnum::RIGHT);
+					moveRTime = 0.0f;
+				}
+			}
+			moveRTime += dt;
+			moveLTime = 0.0f;
 		}
 		else
 			keysProcessed[SDL_SCANCODE_RIGHT] = false;
+
 
 		//Drop down
 		if (keys[SDL_SCANCODE_DOWN]) {
@@ -157,7 +177,7 @@ void Game::Update(GLfloat dt) {
 	if (fallTime < fallSpeed)
 		fallTime += dt;
 	else {
-		if (this->grid->CanPieceMoveDown(*currentPiece))
+		if (this->grid->CanPieceMove(*currentPiece, DirectionEnum::DOWN))
 			grid->MovePiece(currentPiece, DirectionEnum::DOWN);
 		else
 			currentPiece = UtilsPiece::SpawnRandomPiece();

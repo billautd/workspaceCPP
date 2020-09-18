@@ -48,16 +48,41 @@ bool Grid::IsLineEmpty(GLshort y) {
 	return true;
 }
 
-bool Grid::CanPieceMoveDown(Piece& piece) {
-	for (size_t i = 0; i < piece.size(); i++) {
-		//If there is a tile below but it's a piece block, then continue
-		if (UtilsPiece::HasBlockAtPos(piece, piece[i].GetX(), piece[i].GetY() - 1))
-			continue;
-		//If bottom or has a tile below
-		if (piece[i].GetY() == 0 || HasTile(piece[i].GetX(), piece[i].GetY() - 1))
-			return false;
+bool Grid::CanPieceMove(Piece& piece, DirectionEnum dir) {
+	if (dir == DirectionEnum::DOWN) {
+		for (size_t i = 0; i < piece.size(); i++) {
+			//If there is a tile below but it's a piece block, then continue
+			if (UtilsPiece::HasBlockAtPos(piece, piece[i].GetX(), piece[i].GetY() - 1))
+				continue;
+			//If bottom or has a tile below
+			if (piece[i].GetY() == 0 || HasTile(piece[i].GetX(), piece[i].GetY() - 1))
+				return false;
+		}
+		return true;
 	}
-	return true;
+	else if (dir == DirectionEnum::LEFT) {
+		for (size_t i = 0; i < piece.size(); i++) {
+			//If there is a tile to the left but it's a piece block, then continue
+			if (UtilsPiece::HasBlockAtPos(piece, piece[i].GetX() - 1, piece[i].GetY()))
+				continue;
+			//If left or has tile
+			if (piece[i].GetX() == 0 || HasTile(piece[i].GetX() - 1, piece[i].GetY()))
+				return false;
+		}
+		return true;
+	}
+	else if (dir == DirectionEnum::RIGHT) {
+		for (size_t i = 0; i < piece.size(); i++) {
+			//If there is a tile to the right but it's a piece block, then continue
+			if (UtilsPiece::HasBlockAtPos(piece, piece[i].GetX() + 1, piece[i].GetY()))
+				continue;
+			//If left or has tile
+			if (piece[i].GetX() == X_TILES - 1 || HasTile(piece[i].GetX() + 1, piece[i].GetY()))
+				return false;
+		}
+		return true;
+	}
+	return false;
 }
 
 void Grid::MovePiece(Piece* piece, DirectionEnum dir) {

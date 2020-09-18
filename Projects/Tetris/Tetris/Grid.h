@@ -21,7 +21,7 @@ public:
 	void DestroyTile(GLshort x, GLshort y);
 	void DestroyLine(GLshort x);
 	bool IsLineEmpty(GLshort x);
-	bool CanPieceMoveDown(Piece& piece);
+	bool CanPieceMove(Piece& piece, DirectionEnum dir);
 
 
 	void MovePiece(Piece* piece, DirectionEnum dir);

@@ -21,7 +21,7 @@ GLshort UtilsPiece::PieceLeft(Piece& piece) {
 GLshort UtilsPiece::PieceRight(Piece& piece) {
 	GLshort right{ piece[0].GetX() };
 	for (size_t i = 1; i < piece.size(); i++) {
-		if (piece[i].GetY() > right)
+		if (piece[i].GetX() > right)
 			right = piece[i].GetX();
 	}
 	return right;

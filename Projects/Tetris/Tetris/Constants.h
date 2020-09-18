@@ -42,3 +42,4 @@ const std::map<DirectionEnum, glm::vec2> COMPASS{
 
 //Game
 const GLfloat INITIAL_FALLING_SPEED{ 1.0f };
+const GLfloat INITIAL_MOVE_LR_SPEED{ 0.2f };
