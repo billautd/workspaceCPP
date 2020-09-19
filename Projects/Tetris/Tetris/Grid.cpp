@@ -131,7 +131,34 @@ void Grid::MovePiece(Piece* piece, DirectionEnum dir) {
 }
 
 bool Grid::CanPieceRotate(Piece& piece, DirectionEnum dir) {
-	return true;
+	if (piece.type == PieceTypeEnum::O)
+		return false;
+	if (dir == DirectionEnum::LEFT) {
+		for (size_t i = 0; i < piece.blocks.size(); i++) {
+			GLfloat directionVecX{ piece.blocks[i].GetX() - piece.rotationCenter.x + 1 };
+			GLfloat directionVecY{ piece.blocks[i].GetY() - piece.rotationCenter.y };
+			GLshort newX{ static_cast<GLshort>(piece.rotationCenter.x - directionVecY) };
+			GLshort newY{ static_cast<GLshort>(piece.rotationCenter.y + directionVecX) };
+
+			//If outside of grid                               //If already a piece where it should move
+			if (newX < 0 || newX > X_TILES - 1 || newY < 0 || (HasTile(newX, newY) && !UtilsPiece::HasBlockAtPos(piece, newX, newY)))
+				return false;
+		}
+		return true;
+	}
+	if (dir == DirectionEnum::RIGHT) {
+		for (size_t i = 0; i < piece.blocks.size(); i++) {
+			GLfloat directionVecX{ piece.blocks[i].GetX() - piece.rotationCenter.x };
+			GLfloat directionVecY{ piece.blocks[i].GetY() - piece.rotationCenter.y };
+			GLshort newX{ static_cast<GLshort>(piece.rotationCenter.x + directionVecY - 1) };
+			GLshort newY{ static_cast<GLshort>(piece.rotationCenter.y - directionVecX) };
+
+			if (newX < 0 || newX > X_TILES - 1 || newY < 0 || (HasTile(newX, newY) && !UtilsPiece::HasBlockAtPos(piece, newX, newY)))
+				return false;
+		}
+		return true;
+	}
+	return false;
 }
 
 void Grid::RotatePiece(Piece* piece, DirectionEnum dir) {

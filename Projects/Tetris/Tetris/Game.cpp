@@ -159,7 +159,8 @@ void Game::ProcessInput(SDL_Event& e, GLfloat dt) {
 		if (keys[SDL_SCANCODE_Z]) {
 			if (!keysProcessed[SDL_SCANCODE_Z]) {
 				keysProcessed[SDL_SCANCODE_Z] = true;
-				grid->RotatePieceIfPossible(currentPiece, DirectionEnum::LEFT);
+				if (grid->CanPieceRotate(*currentPiece, DirectionEnum::LEFT))
+					grid->RotatePiece(currentPiece, DirectionEnum::LEFT);
 			}
 		}
 		else
@@ -168,7 +169,8 @@ void Game::ProcessInput(SDL_Event& e, GLfloat dt) {
 		if (keys[SDL_SCANCODE_X]) {
 			if (!keysProcessed[SDL_SCANCODE_X]) {
 				keysProcessed[SDL_SCANCODE_X] = true;
-				grid->RotatePieceIfPossible(currentPiece, DirectionEnum::RIGHT);
+				if (grid->CanPieceRotate(*currentPiece, DirectionEnum::RIGHT))
+					grid->RotatePiece(currentPiece, DirectionEnum::RIGHT);
 			}
 		}
 		else
