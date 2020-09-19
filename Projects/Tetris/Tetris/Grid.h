@@ -18,9 +18,10 @@ public:
 	Block* GetTile(GLshort x, GLshort y);
 	void SetTile(Block* block);
 	void SetPiece(Piece& piece);
-	void DestroyTile(GLshort x, GLshort y);
-	void DestroyLine(GLshort x);
-	bool IsLineEmpty(GLshort x);
+	void ClearTile(GLshort x, GLshort y);
+	void ClearLine(GLshort y);
+	bool IsLineEmpty(GLshort y);
+	bool IsLineFull(GLshort y);
 
 	bool CanPieceMove(Piece& piece, DirectionEnum dir);
 	void MovePiece(Piece* piece, DirectionEnum dir);
@@ -28,6 +29,7 @@ public:
 	bool CanPieceRotate(Piece& piece, DirectionEnum dir);
 	void RotatePiece(Piece* piece, DirectionEnum dir);
 
+	void MovePiecesAboveDown(GLshort y);
 
 	void Render(SpriteRenderer* renderer);
 private:

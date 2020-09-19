@@ -18,6 +18,7 @@ struct Piece {
 
 class UtilsPiece {
 public:
+	static GLshort PieceTop(Piece& piece);
 	static GLshort PieceBottom(Piece& piece);
 	static GLshort PieceLeft(Piece& piece);
 	static GLshort PieceRight(Piece& piece);

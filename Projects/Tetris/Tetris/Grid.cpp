@@ -29,13 +29,13 @@ void Grid::SetPiece(Piece& piece) {
 		SetTile(&piece.blocks.at(i));
 }
 
-void Grid::DestroyTile(GLshort x, GLshort y) {
-	free(tiles[Position(x, y)]);
+void Grid::ClearTile(GLshort x, GLshort y) {
+	tiles[Position(x, y)] = nullptr;
 }
 
-void Grid::DestroyLine(GLshort y) {
+void Grid::ClearLine(GLshort y) {
 	for (GLshort x = 0; x < X_TILES; x++)
-		DestroyTile(x, y);
+		ClearTile(x, y);
 }
 
 bool Grid::IsLineEmpty(GLshort y) {
@@ -43,6 +43,16 @@ bool Grid::IsLineEmpty(GLshort y) {
 		return false;
 	for (GLshort x = 0; x < X_TILES; x++) {
 		if (HasTile(x, y))
+			return false;
+	}
+	return true;
+}
+
+bool Grid::IsLineFull(GLshort y) {
+	if (y < 0)
+		return false;
+	for (GLshort x = 0; x < X_TILES; x++) {
+		if (!HasTile(x, y))
 			return false;
 	}
 	return true;
@@ -189,6 +199,19 @@ void Grid::RotatePiece(Piece* piece, DirectionEnum dir) {
 		}
 	}
 	return;
+}
+
+void Grid::MovePiecesAboveDown(GLshort y) {
+	for (GLshort i = y + 1; i < Y_TILES; i++) {
+		for (GLshort x = 0; x < X_TILES; x++) {
+			if (HasTile(x, i)) {
+				Block* block{ GetTile(x, i) };
+				block->SetY(block->GetY() - 1);
+				SetTile(GetTile(x, i));
+				ClearTile(x, i);
+			}
+		}
+	}
 }
 
 void Grid::Render(SpriteRenderer* renderer) {

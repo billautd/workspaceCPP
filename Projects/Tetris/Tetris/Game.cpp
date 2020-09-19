@@ -196,14 +196,28 @@ void Game::ProcessInput(SDL_Event& e, GLfloat dt) {
 //Stores fall time
 GLfloat fallTime{ 0.0f };
 void Game::Update(GLfloat dt) {
-	if (fallTime < fallSpeed)
-		fallTime += dt;
-	else {
-		if (this->grid->CanPieceMove(*currentPiece, DirectionEnum::DOWN))
-			grid->MovePiece(currentPiece, DirectionEnum::DOWN);
-		else
-			currentPiece = UtilsPiece::SpawnRandomPiece();
-		fallTime = 0.0f;
+	if (this->state == GameStateEnum::GAME_ACTIVE) {
+		//Move current piece down
+		if (fallTime < fallSpeed)
+			fallTime += dt;
+		else {
+			if (this->grid->CanPieceMove(*currentPiece, DirectionEnum::DOWN))
+				grid->MovePiece(currentPiece, DirectionEnum::DOWN);
+			else {
+				//Update on full lines (from top to bottom of piece)
+				for (GLshort y = UtilsPiece::PieceTop(*currentPiece); y >= UtilsPiece::PieceBottom(*currentPiece); y--) {
+					if (grid->IsLineFull(y)) {
+						grid->ClearLine(y);
+						grid->MovePiecesAboveDown(y);
+					}
+				}
+
+				currentPiece = UtilsPiece::SpawnRandomPiece();
+			}
+			fallTime = 0.0f;
+		}
+
+
 	}
 }
 
@@ -216,11 +230,11 @@ void Game::Render() {
 		//Render pieces
 		grid->Render(spriteRenderer);
 		//Draw rotation center (DEBUG)
-		spriteRenderer->DrawSprite(ResourceManager::GetTexture("block"),
-			glm::vec2(
-				GRID_X + currentPiece->rotationCenter.x * TILE_SIZE,
-				GRID_Y + (Y_TILES - currentPiece->rotationCenter.y - 1) * TILE_SIZE),
-			glm::vec2(5.0f));
+		//spriteRenderer->DrawSprite(ResourceManager::GetTexture("block"),
+		//	glm::vec2(
+		//		GRID_X + currentPiece->rotationCenter.x * TILE_SIZE,
+		//		GRID_Y + (Y_TILES - currentPiece->rotationCenter.y - 1) * TILE_SIZE),
+		//	glm::vec2(5.0f));
 	}
 }
 

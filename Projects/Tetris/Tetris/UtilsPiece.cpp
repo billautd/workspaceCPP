@@ -1,6 +1,15 @@
 #include "UtilsPiece.h"
 #include "UtilsGeneral.h"
 
+GLshort UtilsPiece::PieceTop(Piece& piece) {
+	GLshort top{ piece.blocks[0].GetY() };
+	for (size_t i = 1; i < piece.blocks.size(); i++) {
+		if (piece.blocks[i].GetY() > top)
+			top = piece.blocks[i].GetY();
+	}
+	return top;
+}
+
 GLshort UtilsPiece::PieceBottom(Piece& piece) {
 	GLshort bottom{ piece.blocks[0].GetY() };
 	for (size_t i = 1; i < piece.blocks.size(); i++) {
