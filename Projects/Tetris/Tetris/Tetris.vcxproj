@@ -170,6 +170,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameStateEnum.h" />
     <ClInclude Include="Grid.h" />
+    <ClInclude Include="PieceTypeEnum.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SpriteRenderer.h" />

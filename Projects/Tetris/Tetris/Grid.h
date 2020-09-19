@@ -21,10 +21,14 @@ public:
 	void DestroyTile(GLshort x, GLshort y);
 	void DestroyLine(GLshort x);
 	bool IsLineEmpty(GLshort x);
+
 	bool CanPieceMove(Piece& piece, DirectionEnum dir);
-
-
 	void MovePiece(Piece* piece, DirectionEnum dir);
+
+	bool CanPieceRotate(Piece& piece, DirectionEnum dir);
+	void RotatePiece(Piece* piece, DirectionEnum dir);
+
+
 	void Render(SpriteRenderer* renderer);
 private:
 	std::map<Position, Block*> tiles{};

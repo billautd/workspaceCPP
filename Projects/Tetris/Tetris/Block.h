@@ -6,8 +6,8 @@
 #include "Texture2D.h"
 
 struct Position {
-	GLshort x;
-	GLshort y;
+	GLshort x{ 0 };
+	GLshort y{ 0 };
 
 	Position(GLshort x, GLshort y) : x(x), y(y) {};
 
@@ -49,7 +49,7 @@ public:
 		return block.pos.x == pos.x && block.pos.y == pos.y;
 	}
 private:
-	Texture2D texture{ texture = ResourceManager::LoadTexture("block", "./Textures/block.png", false) };
+	Texture2D texture{ ResourceManager::GetTexture("block") };
 	glm::vec3 color{ glm::vec3(1.0f) };
 	Position pos{ 0,0 };
 };

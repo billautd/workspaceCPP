@@ -1,8 +1,20 @@
 #pragma once
 #include "Block.h"
 #include <vector>
+#include "PieceTypeEnum.h"
 
-typedef std::vector<Block> Piece;
+struct Piece {
+	std::vector<Block> blocks{};
+	PieceTypeEnum type;
+	glm::vec2 rotationCenter{ 0.0f };
+
+	Piece(std::vector<Block> blocks, PieceTypeEnum type, glm::vec2 rotationCenter) :
+		blocks(blocks), type(type), rotationCenter(rotationCenter) {}
+
+	bool operator==(const Piece& piece) const {
+		return type == piece.type && rotationCenter == piece.rotationCenter;
+	}
+};
 
 class UtilsPiece {
 public:
@@ -18,8 +30,6 @@ public:
 	static Piece* SpawnJPiece();
 	static Piece* SpawnIPiece();
 	static Piece* SpawnRandomPiece();
-
-	static void FreePiece(Piece& piece);
 
 	static bool HasBlockAtPos(Piece& piece, GLshort x, GLshort y);
 };

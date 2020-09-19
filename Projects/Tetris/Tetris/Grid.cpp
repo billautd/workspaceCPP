@@ -25,8 +25,8 @@ void Grid::SetTile(Block* block) {
 }
 
 void Grid::SetPiece(Piece& piece) {
-	for (size_t i = 0; i < piece.size(); i++)
-		SetTile(&piece.at(i));
+	for (size_t i = 0; i < piece.blocks.size(); i++)
+		SetTile(&piece.blocks.at(i));
 }
 
 void Grid::DestroyTile(GLshort x, GLshort y) {
@@ -50,34 +50,34 @@ bool Grid::IsLineEmpty(GLshort y) {
 
 bool Grid::CanPieceMove(Piece& piece, DirectionEnum dir) {
 	if (dir == DirectionEnum::DOWN) {
-		for (size_t i = 0; i < piece.size(); i++) {
+		for (size_t i = 0; i < piece.blocks.size(); i++) {
 			//If there is a tile below but it's a piece block, then continue
-			if (UtilsPiece::HasBlockAtPos(piece, piece[i].GetX(), piece[i].GetY() - 1))
+			if (UtilsPiece::HasBlockAtPos(piece, piece.blocks[i].GetX(), piece.blocks[i].GetY() - 1))
 				continue;
 			//If bottom or has a tile below
-			if (piece[i].GetY() == 0 || HasTile(piece[i].GetX(), piece[i].GetY() - 1))
+			if (piece.blocks[i].GetY() == 0 || HasTile(piece.blocks[i].GetX(), piece.blocks[i].GetY() - 1))
 				return false;
 		}
 		return true;
 	}
 	else if (dir == DirectionEnum::LEFT) {
-		for (size_t i = 0; i < piece.size(); i++) {
+		for (size_t i = 0; i < piece.blocks.size(); i++) {
 			//If there is a tile to the left but it's a piece block, then continue
-			if (UtilsPiece::HasBlockAtPos(piece, piece[i].GetX() - 1, piece[i].GetY()))
+			if (UtilsPiece::HasBlockAtPos(piece, piece.blocks[i].GetX() - 1, piece.blocks[i].GetY()))
 				continue;
 			//If left or has tile
-			if (piece[i].GetX() == 0 || HasTile(piece[i].GetX() - 1, piece[i].GetY()))
+			if (piece.blocks[i].GetX() == 0 || HasTile(piece.blocks[i].GetX() - 1, piece.blocks[i].GetY()))
 				return false;
 		}
 		return true;
 	}
 	else if (dir == DirectionEnum::RIGHT) {
-		for (size_t i = 0; i < piece.size(); i++) {
+		for (size_t i = 0; i < piece.blocks.size(); i++) {
 			//If there is a tile to the right but it's a piece block, then continue
-			if (UtilsPiece::HasBlockAtPos(piece, piece[i].GetX() + 1, piece[i].GetY()))
+			if (UtilsPiece::HasBlockAtPos(piece, piece.blocks[i].GetX() + 1, piece.blocks[i].GetY()))
 				continue;
 			//If left or has tile
-			if (piece[i].GetX() == X_TILES - 1 || HasTile(piece[i].GetX() + 1, piece[i].GetY()))
+			if (piece.blocks[i].GetX() == X_TILES - 1 || HasTile(piece.blocks[i].GetX() + 1, piece.blocks[i].GetY()))
 				return false;
 		}
 		return true;
@@ -87,44 +87,81 @@ bool Grid::CanPieceMove(Piece& piece, DirectionEnum dir) {
 
 void Grid::MovePiece(Piece* piece, DirectionEnum dir) {
 	//Clear previous tiles
-	for (size_t i = 0; i < piece->size(); i++)
-		tiles[Position((*piece)[i].GetX(), (*piece)[i].GetY())] = nullptr;
+	for (size_t i = 0; i < piece->blocks.size(); i++)
+		tiles[Position(piece->blocks[i].GetX(), piece->blocks[i].GetY())] = nullptr;
 	switch (dir) {
 		case DirectionEnum::LEFT: {
 
 			//Set new tiles on grid and change piece
-			for (size_t i = 0; i < piece->size(); i++) {
-				GLshort x{ (*piece)[i].GetX() };
-				GLshort y{ (*piece)[i].GetY() };
+			for (size_t i = 0; i < piece->blocks.size(); i++) {
+				GLshort x{ piece->blocks[i].GetX() };
+				GLshort y{ piece->blocks[i].GetY() };
 
-				(*piece)[i].SetX(x - 1);
-				SetTile(&(*piece)[i]);
+				piece->blocks[i].SetX(x - 1);
+				SetTile(&piece->blocks[i]);
 			}
+			piece->rotationCenter.x--;
 			break;
 		}
 		case DirectionEnum::RIGHT: {
 			//Set new tiles on grid and change piece
-			for (size_t i = 0; i < piece->size(); i++) {
-				GLshort x{ (*piece)[i].GetX() };
-				GLshort y{ (*piece)[i].GetY() };
+			for (size_t i = 0; i < piece->blocks.size(); i++) {
+				GLshort x{ piece->blocks[i].GetX() };
+				GLshort y{ piece->blocks[i].GetY() };
 
-				(*piece)[i].SetX(x + 1);
-				SetTile(&(*piece)[i]);
+				piece->blocks[i].SetX(x + 1);
+				SetTile(&piece->blocks[i]);
 			}
+			piece->rotationCenter.x++;
 			break;
 		}
 		case DirectionEnum::DOWN: {
 			//Set new tiles on grid and change piece
-			for (size_t i = 0; i < piece->size(); i++) {
-				GLshort x{ (*piece)[i].GetX() };
-				GLshort y{ (*piece)[i].GetY() };
+			for (size_t i = 0; i < piece->blocks.size(); i++) {
+				GLshort x{ piece->blocks[i].GetX() };
+				GLshort y{ piece->blocks[i].GetY() };
 
-				(*piece)[i].SetY(y - 1);
-				SetTile(&(*piece)[i]);
+				piece->blocks[i].SetY(y - 1);
+				SetTile(&piece->blocks[i]);
 			}
+			piece->rotationCenter.y--;
 			break;
 		}
 	}
+}
+
+bool Grid::CanPieceRotate(Piece& piece, DirectionEnum dir) {
+	return true;
+}
+
+void Grid::RotatePiece(Piece* piece, DirectionEnum dir) {
+	if (piece->type == PieceTypeEnum::O)
+		return;
+
+	//Clear previous tiles
+	for (size_t i = 0; i < piece->blocks.size(); i++)
+		tiles[Position(piece->blocks[i].GetX(), piece->blocks[i].GetY())] = nullptr;
+	if (dir == DirectionEnum::LEFT) {
+		for (size_t i = 0; i < piece->blocks.size(); i++) {
+			GLfloat directionVecX{ piece->blocks[i].GetX() - piece->rotationCenter.x + 1 };
+			GLfloat directionVecY{ piece->blocks[i].GetY() - piece->rotationCenter.y };
+
+			piece->blocks[i].SetX(static_cast<GLshort>(piece->rotationCenter.x - directionVecY));
+			piece->blocks[i].SetY(static_cast<GLshort>(piece->rotationCenter.y + directionVecX));
+			SetTile(&piece->blocks[i]);
+		}
+	}
+	if (dir == DirectionEnum::RIGHT) {
+		for (size_t i = 0; i < piece->blocks.size(); i++) {
+			GLfloat directionVecX{ piece->blocks[i].GetX() - piece->rotationCenter.x };
+			GLfloat directionVecY{ piece->blocks[i].GetY() - piece->rotationCenter.y };
+
+			piece->blocks[i].SetX(static_cast<GLshort>(piece->rotationCenter.x + directionVecY - 1));
+			piece->blocks[i].SetY(static_cast<GLshort>(piece->rotationCenter.y - directionVecX));
+			SetTile(&piece->blocks[i]);
+		}
+	}
+	return;
 }
 
 void Grid::Render(SpriteRenderer* renderer) {

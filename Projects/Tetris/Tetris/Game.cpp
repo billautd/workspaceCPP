@@ -24,6 +24,7 @@ int Game::Init() {
 	//Load textures
 	ResourceManager::LoadTexture("grid", "./Textures/grid.png", true);
 	ResourceManager::LoadTexture("background", "./Textures/background.jpg", false);
+	ResourceManager::LoadTexture("block", "./Textures/block.png", false);
 
 	//Init grid
 	grid = new Grid();
@@ -154,6 +155,25 @@ void Game::ProcessInput(SDL_Event& e, GLfloat dt) {
 		else
 			keysProcessed[SDL_SCANCODE_RIGHT] = false;
 
+		//Rotate left
+		if (keys[SDL_SCANCODE_Z]) {
+			if (!keysProcessed[SDL_SCANCODE_Z]) {
+				keysProcessed[SDL_SCANCODE_Z] = true;
+				grid->RotatePieceIfPossible(currentPiece, DirectionEnum::LEFT);
+			}
+		}
+		else
+			keysProcessed[SDL_SCANCODE_Z] = false;
+		//Rotate right
+		if (keys[SDL_SCANCODE_X]) {
+			if (!keysProcessed[SDL_SCANCODE_X]) {
+				keysProcessed[SDL_SCANCODE_X] = true;
+				grid->RotatePieceIfPossible(currentPiece, DirectionEnum::RIGHT);
+			}
+		}
+		else
+			keysProcessed[SDL_SCANCODE_X] = false;
+
 
 		//Drop down
 		if (keys[SDL_SCANCODE_DOWN]) {
@@ -193,6 +213,12 @@ void Game::Render() {
 
 		//Render pieces
 		grid->Render(spriteRenderer);
+		//Draw rotation center (DEBUG)
+		spriteRenderer->DrawSprite(ResourceManager::GetTexture("block"),
+			glm::vec2(
+				GRID_X + currentPiece->rotationCenter.x * TILE_SIZE,
+				GRID_Y + (Y_TILES - currentPiece->rotationCenter.y - 1) * TILE_SIZE),
+			glm::vec2(5.0f));
 	}
 }
 
