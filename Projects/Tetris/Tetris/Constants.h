@@ -5,7 +5,7 @@
 
 //Display
 const GLfloat ASPECT_RATIO{ 16.0f / 9.0f };
-const GLuint WINDOW_HEIGHT{ 600 };
+const GLuint WINDOW_HEIGHT{ 1000 };
 const GLuint WINDOW_WIDTH{ static_cast<GLuint>(ASPECT_RATIO * WINDOW_HEIGHT) };
 const GLuint GRID_HEIGHT{ WINDOW_HEIGHT - 20 };
 const GLuint GRID_WIDTH{ GRID_HEIGHT / 2 };

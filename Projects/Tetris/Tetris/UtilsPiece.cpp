@@ -53,7 +53,7 @@ Piece* UtilsPiece::SpawnOPiece() {
 
 Piece* UtilsPiece::SpawnIPiece() {
 	//Clear blue
-	glm::vec3 color = glm::vec3(0.5f, 0.7f, 0.1f);
+	glm::vec3 color = glm::vec3(0.6f, 0.8f, 1.0f);
 	Piece* piece = new Piece({
 	Block(3, 19, color),
 		Block(4, 19, color),
@@ -66,7 +66,7 @@ Piece* UtilsPiece::SpawnIPiece() {
 
 Piece* UtilsPiece::SpawnTPiece() {
 	//Yellow
-	glm::vec3 color = glm::vec3(0.9f, 0.9f, 0.0f);
+	glm::vec3 color = glm::vec3(1.0f, 0.9f, 0.0f);
 	Piece* piece = new Piece({
 	Block(4, 18, color),
 		Block(5, 18, color),
@@ -80,7 +80,7 @@ Piece* UtilsPiece::SpawnTPiece() {
 
 Piece* UtilsPiece::SpawnLPiece() {
 	//Green
-	glm::vec3 color = glm::vec3(0.8f, 0.8f, 0.0f);
+	glm::vec3 color = glm::vec3(0.0f, 0.8f, 0.0f);
 	Piece* piece = new Piece({
 	Block(6, 19, color),
 		Block(4, 18, color),
@@ -93,7 +93,7 @@ Piece* UtilsPiece::SpawnLPiece() {
 
 Piece* UtilsPiece::SpawnJPiece() {
 	// Blue
-	glm::vec3 color = glm::vec3(0.0f, 0.0f, 0.9f);
+	glm::vec3 color = glm::vec3(0.05f, 0.05f, 0.9f);
 	Piece* piece = new Piece({
 		Block(4, 19, color),
 			Block(4, 18, color),
@@ -118,10 +118,10 @@ Piece* UtilsPiece::SpawnZPiece() {
 
 Piece* UtilsPiece::SpawnSPiece() {
 	//Purple
-	glm::vec3 color = glm::vec3(0.5f, 0.8f, 0.5f);
+	glm::vec3 color = glm::vec3(0.9f, 0.2f, 0.9f);
 	Piece* piece = new Piece({
 	Block(5, 19, color),
-		Block(6, 18, color),
+		Block(6, 19, color),
 		Block(4, 18, color),
 		Block(5, 18, color)
 		}, PieceTypeEnum::S, glm::vec2(5.5f, 17.5f));
