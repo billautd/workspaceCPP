@@ -11,6 +11,8 @@ const GLuint GRID_HEIGHT{ WINDOW_HEIGHT - 20 };
 const GLuint GRID_WIDTH{ GRID_HEIGHT / 2 };
 const GLuint GRID_X{ (WINDOW_WIDTH - GRID_WIDTH) / 2 };
 const GLuint GRID_Y{ (WINDOW_HEIGHT - GRID_HEIGHT) / 2 };
+const GLuint UI1_X{ 50 };
+const GLuint UI2_X{ WINDOW_WIDTH - GRID_WIDTH - 50 };
 
 //FPS
 const GLfloat FPS{ 60.0f };

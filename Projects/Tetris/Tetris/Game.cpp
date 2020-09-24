@@ -4,6 +4,8 @@
 #include <iostream>
 #include "UtilsPiece.h"
 #include "SDL.h"
+#include <sstream>
+#include "UtilsData.h"
 
 Game::~Game() {
 	this->Quit();
@@ -16,6 +18,7 @@ int Game::Init() {
 
 	//Load Shaders
 	ResourceManager::LoadShader("SpriteRendering", "./Shaders/SpriteRendering.vert", "./Shaders/SpriteRendering.frag");
+	ResourceManager::LoadShader("TextRendering", "./Shaders/TextRendering.vert", "./Shaders/TextRendering.frag");
 	//Config shaders
 	glm::mat4 projection{ glm::ortho(0.0f, static_cast<GLfloat>(this->width), static_cast<GLfloat>(this->height), 0.0f, -10.0f, 1.0f) };
 	ResourceManager::GetShader("SpriteRendering").Use().SetMatrix4("projection", projection);
@@ -26,15 +29,20 @@ int Game::Init() {
 	ResourceManager::LoadTexture("background", "./Textures/background.jpg", false);
 	ResourceManager::LoadTexture("block", "./Textures/block.png", false);
 
+
+
+	//Init renderers
+	spriteRenderer = new SpriteRenderer(ResourceManager::GetShader("SpriteRendering"));
+	textRenderer = new TextRenderer(this->width, this->height);
+	textRenderer->Load("./Fonts/OCRAEXT.TTF", 30);
+
+
+	this->state = GameStateEnum::GAME_ACTIVE;
+
 	//Init grid
 	grid = new Grid();
 	currentPiece = UtilsPiece::SpawnRandomPiece();
 	grid->SetPiece(*currentPiece);
-
-	//Init renderers
-	spriteRenderer = new SpriteRenderer(ResourceManager::GetShader("SpriteRendering"));
-
-	this->state = GameStateEnum::GAME_ACTIVE;
 
 	return 0;
 }
@@ -223,9 +231,37 @@ void Game::Update(GLfloat dt) {
 
 void Game::Render() {
 	if (this->state == GameStateEnum::GAME_ACTIVE) {
-		//Draw grid & BG
-		spriteRenderer->DrawSprite(ResourceManager::GetTexture("background"), glm::vec2(0.0f), glm::vec2(WINDOW_WIDTH, WINDOW_HEIGHT));
-		spriteRenderer->DrawSprite(ResourceManager::GetTexture("grid"), glm::vec2(GRID_X, GRID_Y), glm::vec2(GRID_WIDTH, GRID_HEIGHT), 0.0f, glm::vec3(1.0f), 0.8f);
+		//Draw BG & UI
+		spriteRenderer->DrawSprite(ResourceManager::GetTexture("background"), glm::vec2(0.0f), glm::vec2(width, height));
+		spriteRenderer->DrawSprite(ResourceManager::GetTexture("grid"), glm::vec2(GRID_X, GRID_Y), glm::vec2(GRID_WIDTH, GRID_HEIGHT), 0.0f, glm::vec3(1.0f), 0.7f);
+		spriteRenderer->DrawSprite(ResourceManager::GetTexture("grid"), glm::vec2(UI1_X, GRID_Y), glm::vec2(GRID_WIDTH, GRID_HEIGHT), 0.0f, glm::vec3(0.2f), 1.0f);
+		spriteRenderer->DrawSprite(ResourceManager::GetTexture("grid"), glm::vec2(UI2_X, GRID_Y), glm::vec2(GRID_WIDTH, GRID_HEIGHT), 0.0f, glm::vec3(0.2f), 1.0f);
+		spriteRenderer->DrawSprite(ResourceManager::GetTexture("grid"), glm::vec2(UI1_X + 20.0f, GRID_Y + 300.0f), glm::vec2(GRID_WIDTH - 40.0f, 500.0f), 0.0f, glm::vec3(0.8f), 1.0f);
+
+		//Render text
+		std::stringstream tetrisRateStr; tetrisRateStr << "TETRIS RATE ";
+		std::stringstream tetrisRateValueStr; tetrisRateValueStr << UtilsData::TetrisRate << " %";
+		textRenderer->RenderText(tetrisRateStr.str(), UI1_X + 10.0f, GRID_Y + 20.0f, 1.0f);
+		textRenderer->RenderText(tetrisRateValueStr.str(), UI1_X + GRID_WIDTH / 2 + 10.0f, GRID_Y + 20.0f, 1.0f);
+
+		std::stringstream bumpinessStr; bumpinessStr << "BUMPINESS ";
+		std::stringstream bumpinessValueStr; bumpinessValueStr << UtilsData::Bumpiness;
+		textRenderer->RenderText(bumpinessStr.str(), UI1_X + 10.0f, GRID_Y + 70.0f, 1.0f);
+		textRenderer->RenderText(bumpinessValueStr.str(), UI1_X + GRID_WIDTH / 2 + 10.0f, GRID_Y + 70.0f, 1.0f);
+
+		std::stringstream fallSpeedStr; fallSpeedStr << "DROP SPEED ";
+		std::stringstream fallSpeedValueStr; fallSpeedValueStr << 1 / this->fallSpeed;
+		textRenderer->RenderText(fallSpeedStr.str(), UI1_X + 10.0f, GRID_Y + 120.0f, 1.0f);
+		textRenderer->RenderText(fallSpeedValueStr.str(), UI1_X + GRID_WIDTH / 2 + 10.0f, GRID_Y + 120.0f, 1.0f);
+
+		std::stringstream dasSpeedStr; dasSpeedStr << "DAS SPEED ";
+		std::stringstream dasSpeedValueStr; dasSpeedValueStr << 1 / INITIAL_MOVE_LR_SPEED;
+		textRenderer->RenderText(dasSpeedStr.str(), UI1_X + 10.0f, GRID_Y + 170.0f, 1.0f);
+		textRenderer->RenderText(dasSpeedValueStr.str(), UI1_X + GRID_WIDTH / 2 + 10.0f, GRID_Y + 170.0f, 1.0f);
+
+		//std::stringstream statsStr; statsStr << "STATISTICS";
+		//textRenderer->RenderText(statsStr.str(), UI1_X + GRID_WIDTH / 2 - textRenderer->GetStringSize(statsStr.str(), 1.0f).x / 2, GRID_Y + 250.0f, 1.0f);
+
 
 		//Render pieces
 		grid->Render(spriteRenderer);

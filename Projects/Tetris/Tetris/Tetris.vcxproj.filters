@@ -60,6 +60,12 @@
     <ClCompile Include="UtilsGeneral.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="TextRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilsData.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -104,12 +110,24 @@
     <ClInclude Include="PieceTypeEnum.h">
       <Filter>Header Files\Enums</Filter>
     </ClInclude>
+    <ClInclude Include="TextRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UtilsData.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\SpriteRendering.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
     <None Include="Shaders\SpriteRendering.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\TextRendering.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\TextRendering.vert">
       <Filter>Resource Files\Shaders</Filter>
     </None>
   </ItemGroup>

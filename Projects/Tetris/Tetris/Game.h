@@ -1,5 +1,6 @@
 #pragma once
 #include "GameStateEnum.h"
+#include "TextRenderer.h"
 #include "SDL.h"
 #include "SpriteRenderer.h"
 #include "glad/glad.h"
@@ -33,6 +34,7 @@ private:
 	SDL_Window* mainWindow{ nullptr };
 
 	SpriteRenderer* spriteRenderer{ nullptr };
+	TextRenderer* textRenderer{ nullptr };
 
 	Grid* grid{ nullptr };
 
