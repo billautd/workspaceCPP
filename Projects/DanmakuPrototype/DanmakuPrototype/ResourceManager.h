@@ -22,9 +22,6 @@ public:
 	static Mix_Chunk* GetChunk(std::string name);
 	//Properly re-allocate all loaded resources
 	static void Clear();
-
-	//Check if item is in map before using it
-	static bool ItemExists(std::string type, std::string name);
 private:
 	//Private Constructor for no instanciation
 	ResourceManager() = default;
