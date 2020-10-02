@@ -469,11 +469,11 @@ void Game::SpawnPowerUp(GameObject& block) {
 		this->powerUps.emplace_back(PowerUp("pad_size_increase", glm::vec3(1.0f, 0.6f, 0.4f), 0.0f, block.GetPosition(), ResourceManager::GetTexture("powerup_pad_size_increase")));
 		return;
 	}
-	if (ShouldSpawn(75)) {
+	if (ShouldSpawn(2)) {
 		this->powerUps.emplace_back(PowerUp("chaos", glm::vec3(1.0f, 0.3f, 0.3f), 15.0f, block.GetPosition(), ResourceManager::GetTexture("powerup_chaos")));
 		return;
 	}
-	if (ShouldSpawn(75)) {
+	if (ShouldSpawn(2)) {
 		this->powerUps.emplace_back(PowerUp("confuse", glm::vec3(0.9f, 0.25f, 0.25f), 15.0f, block.GetPosition(), ResourceManager::GetTexture("powerup_confuse")));
 		return;
 	}

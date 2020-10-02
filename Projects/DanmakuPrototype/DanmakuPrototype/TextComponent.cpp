@@ -1,10 +1,11 @@
-#include "TextRenderer.h"
+#include "TextComponent.h"
 #include "ResourceManager.h"
 #include <iostream>
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-TextRenderer::TextRenderer(GLuint width, GLuint height) {
+TextComponent::TextComponent(glm::vec2 position, std::string text, std::string fontFamily, GLuint fontSize, glm::vec3 color, GLuint width, GLuint height)
+	: position(position), text(text), fontFamily(fontFamily), color(color), fontSize(fontSize) {
 	this->textShader = ResourceManager::GetShader("TextRendering");
 	textShader.Use();
 	this->textShader.SetMatrix4("projection", glm::ortho(0.0f, static_cast<GLfloat>(width), static_cast<GLfloat>(height), 0.0f));
@@ -25,7 +26,7 @@ TextRenderer::TextRenderer(GLuint width, GLuint height) {
 	glBindVertexArray(0);
 }
 
-void TextRenderer::Load(std::string font, GLuint fontSize) {
+void TextComponent::Load() {
 	//Clear previously loaded characters
 	characters.clear();
 
@@ -36,7 +37,7 @@ void TextRenderer::Load(std::string font, GLuint fontSize) {
 
 	//Load font
 	FT_Face face;
-	if (FT_New_Face(ft, font.c_str(), 0, &face))
+	if (FT_New_Face(ft, fontFamily.c_str(), 0, &face))
 		std::cout << "ERROR::FREETYPE: Failed to load font\n";
 
 	//Set size for glyphs
@@ -80,7 +81,7 @@ void TextRenderer::Load(std::string font, GLuint fontSize) {
 
 }
 
-void TextRenderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color) {
+void TextComponent::Render() {
 	this->textShader.Use();
 	this->textShader.SetVector3f("textColor", color);
 	glActiveTexture(GL_TEXTURE0);
@@ -90,11 +91,11 @@ void TextRenderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat sc
 		for (c = text.begin(); c != text.end(); c++) {
 			Character ch{ characters.at(*c) };
 
-			GLfloat xpos{ x + ch.bearing.x * scale };
-			GLfloat ypos{ y + (characters.at('H').bearing.y - ch.bearing.y) * scale };
+			GLfloat xpos{ position.x + ch.bearing.x };
+			GLfloat ypos{ position.y + (characters.at('H').bearing.y - ch.bearing.y) };
 
-			GLfloat w{ ch.size.x * scale };
-			GLfloat h{ ch.size.y * scale };
+			GLfloat w{ ch.size.x };
+			GLfloat h{ ch.size.y };
 
 			//Update VBO
 			GLfloat vertices[6][4] = {
@@ -119,14 +120,14 @@ void TextRenderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat sc
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 
 			//Advance cursor for next glyph
-			x += (ch.advance >> 6) * scale;
+			position.x += (ch.advance >> 6);
 		}
 	}
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-glm::vec2 TextRenderer::GetStringSize(std::string text, GLfloat scale) {
+glm::vec2 TextComponent::GetStringSize(std::string text, GLfloat scale) {
 	glm::vec2 size{};
 	std::string::const_iterator c;
 	for (c = text.begin(); c != text.end(); c++) {

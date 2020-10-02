@@ -5,6 +5,7 @@
 #include "glm/glm.hpp"
 #include <map>
 #include "Shader.h"
+#include "Component.h"
 
 struct Character {
 	GLuint textureId;
@@ -13,17 +14,23 @@ struct Character {
 	GLuint advance;
 };
 
-class TextRenderer {
+class TextComponent : public Component {
 public:
-	TextRenderer(GLuint width, GLuint height);
-	void Load(std::string font, GLuint pixelSize);
-	void RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale = 1.0f, glm::vec3 color = glm::vec3(1.0f));
+	TextComponent(glm::vec2 position, std::string text, std::string fontFamily, GLuint fontSize, glm::vec3 color, GLuint width, GLuint height);
+	void Load();
+	void Render() override;
 	glm::vec2 GetStringSize(std::string text, GLfloat scale = 1.0f);
 private:
 	std::map<char, Character> characters;
 	Shader textShader;
 	GLuint VAO{ 0 };
 	GLuint VBO{ 0 };
+
+	glm::vec2 position{};
+	std::string text{ "" };
+	std::string fontFamily{ "" };
+	GLuint fontSize{ 14 };
+	glm::vec3 color{ glm::vec3(1.0f) };
 
 };
 

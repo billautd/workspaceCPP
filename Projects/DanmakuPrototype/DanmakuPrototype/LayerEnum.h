@@ -1,0 +1,9 @@
+#pragma once
+enum class LayerEnum {
+	BEGIN,
+	ENEMY_LAYER = BEGIN,
+	PLAYER_LAYER,
+	PROJECTILE_LAYER,
+	UI_LAYER,
+	END = UI_LAYER
+};

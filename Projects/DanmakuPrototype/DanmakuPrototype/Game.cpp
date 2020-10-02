@@ -7,6 +7,8 @@
 #include <sstream>
 #include <iomanip>
 
+//Static
+SDL_Event Game::event{};
 
 int Game::BackEndInit() {
 	//SDL init
@@ -81,7 +83,7 @@ int Game::Init() {
 	if (success != 0)
 		return success;
 
-	//Load an set shaders
+	//Load and set shaders
 	ResourceManager::LoadShader("./Shaders/SpriteRendering.vert", "./Shaders/SpriteRendering.frag", nullptr, "SpriteRendering");
 	glm::mat4 projection{ glm::ortho(0.0f, static_cast<GLfloat>(this->width), static_cast<GLfloat>(this->height), 0.0f, -10.0f, 1.0f) };
 	ResourceManager::GetShader("SpriteRendering").Use().SetInteger("sprite", 0);
@@ -92,11 +94,7 @@ int Game::Init() {
 	//Load textures
 	ResourceManager::LoadTexture("./Textures/blank.png", true, "blank");
 
-
-	//Init renderers
-	this->spriteRenderer = new SpriteRenderer(ResourceManager::GetShader("SpriteRendering"));
-	this->textRenderer = new TextRenderer(this->width, this->height);
-	this->textRenderer->Load("./Fonts/Logopixies-owwBB.ttf", 22);
+	LoadUI();
 
 	return 0;
 }
@@ -115,50 +113,52 @@ void Game::ProcessInput(SDL_Event& e, GLfloat dt) {
 		SDL_Quit();
 		return;
 	}
-
-	keys = SDL_GetKeyboardState(&keysNbr);
 }
 
 void Game::Update(GLfloat dt) {}
 
 void Game::Render() {
+	//Clear
+	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (this->state == GameStateEnum::GAME_ACTIVE) {
-		//Game BG
-		spriteRenderer->DrawSprite(ResourceManager::GetTexture("blank"), GAME_POSITION, GAME_SIZE, 1.0f, glm::vec3(0.0f));
-		//Right UI
-		//Hi Score
-		textRenderer->RenderText("HI SCORE", GAME_POSITION.x + GAME_SIZE.x + 20.0f, 30.0f);
-		std::stringstream hiScoreSS; hiScoreSS << std::setw(10) << std::setfill('0') << GameData::hi_score;
-		textRenderer->RenderText(hiScoreSS.str(), this->width - 20.0f - textRenderer->GetStringSize(hiScoreSS.str()).x, 30.0f);
+		////Game BG
+		//spriteRenderer->DrawSprite(ResourceManager::GetTexture("blank"), GAME_POSITION, GAME_SIZE, 1.0f, glm::vec3(0.0f));
+		////Right UI
+		////Hi Score
+		//textRenderer->RenderText("HI SCORE", GAME_POSITION.x + GAME_SIZE.x + 20.0f, 30.0f);
+		//std::stringstream hiScoreSS; hiScoreSS << std::setw(10) << std::setfill('0') << GameData::hi_score;
+		//textRenderer->RenderText(hiScoreSS.str(), this->width - 20.0f - textRenderer->GetStringSize(hiScoreSS.str()).x, 30.0f);
 
-		//Score
-		textRenderer->RenderText("SCORE", GAME_POSITION.x + GAME_SIZE.x + 20.0f, 80.0f);
-		std::stringstream scoreSS; scoreSS << std::setw(10) << std::setfill('0') << GameData::score;
-		textRenderer->RenderText(scoreSS.str(), this->width - 20.0f - textRenderer->GetStringSize(scoreSS.str()).x, 80.0f);
+		////Score
+		//textRenderer->RenderText("SCORE", GAME_POSITION.x + GAME_SIZE.x + 20.0f, 80.0f);
+		//std::stringstream scoreSS; scoreSS << std::setw(10) << std::setfill('0') << GameData::score;
+		//textRenderer->RenderText(scoreSS.str(), this->width - 20.0f - textRenderer->GetStringSize(scoreSS.str()).x, 80.0f);
 
-		//Lives
-		textRenderer->RenderText("LIVES", GAME_POSITION.x + GAME_SIZE.x + 20.0f, 200.0f);
-		std::stringstream livesSS; livesSS << GameData::lives;
-		textRenderer->RenderText(livesSS.str(), this->width - 50.0f - textRenderer->GetStringSize(livesSS.str()).x, 200.0f);
+		////Lives
+		//textRenderer->RenderText("LIVES", GAME_POSITION.x + GAME_SIZE.x + 20.0f, 200.0f);
+		//std::stringstream livesSS; livesSS << GameData::lives;
+		//textRenderer->RenderText(livesSS.str(), this->width - 50.0f - textRenderer->GetStringSize(livesSS.str()).x, 200.0f);
 
-		//Bombs 
-		textRenderer->RenderText("BOMBS", GAME_POSITION.x + GAME_SIZE.x + 20.0f, 250.0f);
-		std::stringstream bombsSS; bombsSS << GameData::bombs;
-		textRenderer->RenderText(bombsSS.str(), this->width - 50.0f - textRenderer->GetStringSize(bombsSS.str()).x, 250.0f);
+		////Bombs 
+		//textRenderer->RenderText("BOMBS", GAME_POSITION.x + GAME_SIZE.x + 20.0f, 250.0f);
+		//std::stringstream bombsSS; bombsSS << GameData::bombs;
+		//textRenderer->RenderText(bombsSS.str(), this->width - 50.0f - textRenderer->GetStringSize(bombsSS.str()).x, 250.0f);
 
-		//Power
-		textRenderer->RenderText("POWER", GAME_POSITION.x + GAME_SIZE.x + 20.0f, 350.0f);
-		std::stringstream powerSS; powerSS << GameData::power;
-		textRenderer->RenderText(powerSS.str(), this->width - 50.0f - textRenderer->GetStringSize(powerSS.str()).x, 350.0f);
+		////Power
+		//textRenderer->RenderText("POWER", GAME_POSITION.x + GAME_SIZE.x + 20.0f, 350.0f);
+		//std::stringstream powerSS; powerSS << GameData::power;
+		//textRenderer->RenderText(powerSS.str(), this->width - 50.0f - textRenderer->GetStringSize(powerSS.str()).x, 350.0f);
 
-		//Graze
-		textRenderer->RenderText("GRAZE", GAME_POSITION.x + GAME_SIZE.x + 20.0f, 400.0f);
-		std::stringstream grazeSS; grazeSS << GameData::graze;
-		textRenderer->RenderText(grazeSS.str(), this->width - 50.0f - textRenderer->GetStringSize(grazeSS.str()).x, 400.0f);
+		////Graze
+		//textRenderer->RenderText("GRAZE", GAME_POSITION.x + GAME_SIZE.x + 20.0f, 400.0f);
+		//std::stringstream grazeSS; grazeSS << GameData::graze;
+		//textRenderer->RenderText(grazeSS.str(), this->width - 50.0f - textRenderer->GetStringSize(grazeSS.str()).x, 400.0f);
 
 	}
 }
 
 void Game::Quit() {
+	ResourceManager::Clear();
 	SDL_Quit();
 }
