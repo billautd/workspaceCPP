@@ -17,8 +17,16 @@ void EntityManager::Update(GLfloat dt) {
 	DestroyInactiveEntities();
 }
 
+void EntityManager::ProcessInput(SDL_Event& e, GLfloat dt) {
+	for (auto& ent : entities) {
+		if (ent->IsActive()) {
+			ent->ProcessInput(e, dt);
+		}
+	}
+}
+
 void EntityManager::DestroyInactiveEntities() {
-	for (int i = 0; i < entities.size(); i++) {
+	for (GLuint i = 0; i < entities.size(); i++) {
 		if (!entities[i]->IsActive()) {
 			entities.erase(entities.begin() + i);
 		}
@@ -43,12 +51,12 @@ std::vector<Entity*> EntityManager::GetEntities() {
 }
 
 Entity* EntityManager::GetEntityByName(std::string entityName) {
-	for (auto* entity : entities) {
+	for (auto& entity : entities) {
 		if (entity->GetName().compare(entityName) == 0) {
 			return entity;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 std::vector<Entity*> EntityManager::GetEntitiesByLayer(LayerEnum layer) {
@@ -65,8 +73,7 @@ CollisionTypeEnum EntityManager::CheckCollisions() {
 	return CollisionTypeEnum::NO_COLLISION;
 }
 
-Entity& EntityManager::AddEntity(std::string entityName, LayerEnum layer) {
-	Entity* entity = new Entity(entityName, layer);
+Entity& EntityManager::AddEntity(Entity* entity) {
 	entities.emplace_back(entity);
 	return *entity;
 }

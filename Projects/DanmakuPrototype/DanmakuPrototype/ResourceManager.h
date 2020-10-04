@@ -34,7 +34,7 @@ public:
 	static Font LoadFont(const char* file, std::string name, GLuint fontSize);
 	static Font GetFont(std::string name);
 	//Properly re-allocate all loaded resources
-	static void Clear();
+	static void ClearData();
 private:
 	//Private Constructor for no instanciation
 	ResourceManager() = default;

@@ -2,9 +2,9 @@
 #include "Constants.h"
 #include "SDL.h"
 #include "glad/glad.h"
+#include "EventManager.h"
 
 Game game{};
-SDL_Event event{};
 GLuint ticksLastFrame{ 0 };
 
 int main(int argc, char** argv) {
@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
 		return success;
 
 	while (game.GetState() != GameStateEnum::GAME_INACTIVE) {
-		SDL_PollEvent(&event);
+		SDL_PollEvent(&EventManager::event);
 
 		//Delta time
 		GLuint timeToWait{ static_cast<GLuint>(FRAME_TIME_TARGET) - (SDL_GetTicks() - ticksLastFrame) };
@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
 		deltaTime = (deltaTime > 0.05f) ? 0.05f : deltaTime;
 		ticksLastFrame = SDL_GetTicks();
 
-		game.ProcessInput(event, deltaTime);
+		game.ProcessInput(EventManager::event, deltaTime);
 		game.Update(deltaTime);
 		game.Render();
 

@@ -7,11 +7,14 @@ const GLfloat FPS_TARGET{ 60.0f };
 const GLfloat FRAME_TIME_TARGET{ 1000 / FPS_TARGET };
 const GLfloat ASPECT_RATIO{ 16.0f / 9.0f };
 
-const GLuint SCREEN_HEIGHT{ 600 };
+const GLuint SCREEN_HEIGHT{ 900 };
 const GLuint SCREEN_WIDTH{ static_cast<GLuint>(SCREEN_HEIGHT * ASPECT_RATIO) };
 
 const glm::vec2 GAME_POSITION{ glm::vec2(10.0f) };
-const glm::vec2 GAME_SIZE(3 * SCREEN_WIDTH / 5 - 20.0f, SCREEN_HEIGHT - 20.0f);
+const glm::vec2 GAME_SIZE(2 * SCREEN_WIDTH / 3 - 20.0f, SCREEN_HEIGHT - 20.0f);
+
+const glm::vec2 PLAYER_SIZE{ glm::vec2(50.0f, 75.0f) };
+const GLfloat PLAYER_VELOCITY{ 300.0f };
 
 //TEXTURES
 const GLfloat QUAD_TEXTURE_VERTICES[] = {

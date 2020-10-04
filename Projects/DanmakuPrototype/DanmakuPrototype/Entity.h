@@ -9,6 +9,7 @@
 #include <typeinfo>
 #include "Component.h"
 #include "TransformComponent.h"
+#include "EventManager.h"
 
 class Component;
 class Entity {
@@ -16,16 +17,21 @@ public:
 	Entity() { isActive = true; };
 	Entity(std::string name, LayerEnum layer) : name(name), layer(layer) { isActive = true; };
 
-	void Update(GLfloat dt);
-	void Render();
-	void Destroy();
-	bool IsActive() { return isActive; }
-	void ListAllComponents() const;
+	//Run for each component
+	virtual void Update(GLfloat dt);
+	virtual void Render();
+	virtual void Destroy();
 
+	//Each entity has its own
+	virtual void ProcessInput(SDL_Event& e, GLfloat dt) {
+		EventManager::keys = SDL_GetKeyboardState(&EventManager::keysNbr);
+	};
+
+	bool IsActive() { return isActive; }
 	LayerEnum GetLayer() { return layer; }
 	std::string GetName() { return name; }
-	virtual void ProcessInput(SDL_Event& e, GLfloat dt) {};
 
+	//Component management
 	template <typename T, typename... TArgs>
 	T& AddComponent(TArgs&&... args) {
 		T* newComponent(new T(std::forward<TArgs>(args)...));
@@ -49,6 +55,7 @@ public:
 
 
 private:
+
 	bool isActive{ false };
 	std::string name{ "" };
 	LayerEnum layer{ LayerEnum::BEGIN };
@@ -56,10 +63,5 @@ private:
 	//Components
 	std::vector<Component*> components{};
 	std::map<const std::type_info*, Component*> componentTypeMap{};
-
-	//Input 
-	int keysNbr{ 1024 };
-	const Uint8* keys{ new Uint8[keysNbr] };
-	bool* keysProcessed{ new bool[keysNbr] {false} };
 };
 

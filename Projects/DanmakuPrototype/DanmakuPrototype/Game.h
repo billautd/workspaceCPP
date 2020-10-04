@@ -7,20 +7,19 @@
 class Game
 {
 public:
-	// C/D
 	Game() = default;
 	~Game() = default;
 
 	//Init game state (load shaders, textures, levels)
 	int Init();
+	void LoadShaders();
+	void LoadAssets();
+	void LoadEntities();
 	//Game loop
 	void ProcessInput(SDL_Event& e, GLfloat dt);
 	void Update(GLfloat dt);
 	void Render();
 	void Quit();
-
-	static SDL_Event event;
-	static EntityManager* manager;
 
 	GameStateEnum GetState() { return state; }
 	SDL_Window* GetMainWindow() { return mainWindow; }
@@ -35,5 +34,7 @@ private:
 	GLuint width{ SCREEN_WIDTH };
 	GLuint height{ SCREEN_HEIGHT };
 	SDL_Window* mainWindow{ nullptr };
+
+	//Input
 };
 

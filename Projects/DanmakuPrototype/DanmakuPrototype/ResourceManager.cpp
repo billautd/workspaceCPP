@@ -32,7 +32,7 @@ Texture2D& ResourceManager::GetTexture(std::string name) {
 	return textures.at(name);
 }
 
-void ResourceManager::Clear() {
+void ResourceManager::ClearData() {
 	for (auto iter : shaders)
 		iter.second.Delete();
 	for (auto iter : textures)

@@ -6,12 +6,8 @@
 #include "SDL_mixer.h"
 #include <sstream>
 #include <iomanip>
-#include "TransformComponent.h"
-#include "SpriteComponent.h"
-
-//Static
-SDL_Event Game::event{};
-EntityManager* Game::manager{};
+#include "ComponentsInclude.h"
+#include "Player.h"
 
 int Game::BackEndInit() {
 	//SDL init
@@ -38,8 +34,8 @@ int Game::BackEndInit() {
 	//Window init
 	this->mainWindow = SDL_CreateWindow(
 		"Sample 2D OpenGL/SDL project",
-		SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED,
+		SDL_WINDOWPOS_UNDEFINED,
+		SDL_WINDOWPOS_UNDEFINED,
 		width,
 		height,
 		SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL
@@ -86,26 +82,48 @@ int Game::Init() {
 	if (success != 0)
 		return success;
 
-	//Load shaders
+	this->LoadShaders();
+	this->LoadAssets();
+	this->LoadEntities();
+
+	return 0;
+}
+
+void Game::LoadShaders() {
 	ResourceManager::LoadShader("./Shaders/SpriteRendering.vert", "./Shaders/SpriteRendering.frag", nullptr, "SpriteRendering");
 	ResourceManager::LoadShader("./Shaders/TextRendering.vert", "./Shaders/TextRendering.frag", nullptr, "TextRendering");
 	//Set up shaders
 	glm::mat4 projection{ glm::ortho(0.0f, static_cast<GLfloat>(this->width), static_cast<GLfloat>(this->height), 0.0f, -10.0f, 1.0f) };
 	ResourceManager::GetShader("SpriteRendering").Use().SetInteger("sprite", 0);
 	ResourceManager::GetShader("SpriteRendering").Use().SetMatrix4("projection", projection);
+	ResourceManager::GetShader("TextRendering").Use().SetInteger("text", 0);
+	ResourceManager::GetShader("TextRendering").Use().SetMatrix4("projection", projection);
+}
 
-	//Load textures
+void Game::LoadAssets() {
+	//Texture
 	ResourceManager::LoadTexture("./Textures/blank.png", false, "blank");
+	ResourceManager::LoadTexture("./Textures/player.png", true, "player");
 
-	//Load Fonts
-	ResourceManager::LoadFont("./Fonts/Logopixies-owwBB.ttf", "logopixies", 14);
+	//Fonts
+	ResourceManager::LoadFont("./Fonts/Logopixies-owwBB.ttf", "logopixies", 20);
+}
 
-	//Load entities
-	auto& bg{ EntityManager::AddEntity("GameBG", LayerEnum::UI_LAYER) };
+void Game::LoadEntities() {
+	//BG
+	auto& bg{ EntityManager::AddEntity(new Entity("GameBG", LayerEnum::BG_LAYER)) };
 	bg.AddComponent<TransformComponent>(glm::vec2(10.0f), glm::vec2(0.0f), GAME_SIZE);
 	bg.AddComponent<SpriteComponent>(ResourceManager::GetShader("SpriteRendering"), ResourceManager::GetTexture("blank"), false, glm::vec3(0.0f));
+	//UI
+	auto& highScore{ EntityManager::AddEntity(new Entity("HighScoreLabel", LayerEnum::UI_LAYER)) };
+	highScore.AddComponent<TransformComponent>(glm::vec2(GAME_POSITION.x + GAME_SIZE.x + 20.0f, 30.0f), glm::vec2(0.0f), glm::vec2(30.0f));
+	highScore.AddComponent<TextComponent>(ResourceManager::GetShader("TextRendering"), "HIGH SCORE", "logopixies");
+	//Player
+	auto& player{ EntityManager::AddEntity(new Player("Player", LayerEnum::PLAYER_LAYER)) };
+	player.AddComponent<TransformComponent>(glm::vec2(GAME_POSITION.x + GAME_SIZE.x / 2.0f - PLAYER_SIZE.x / 2, GAME_POSITION.y + GAME_SIZE.y - PLAYER_SIZE.y), glm::vec2(0.0f), PLAYER_SIZE);
+	player.AddComponent<SpriteComponent>(ResourceManager::GetShader("SpriteRendering"), ResourceManager::GetTexture("player"), true);
+	player.AddComponent<KeyboardControlComponent>();
 
-	return 0;
 }
 
 
@@ -123,20 +141,23 @@ void Game::ProcessInput(SDL_Event& e, GLfloat dt) {
 		SDL_Quit();
 		return;
 	}
+
+	EntityManager::ProcessInput(e, dt);
 }
 
 void Game::Update(GLfloat dt) {
-	this->manager->Update(dt);
+	EntityManager::Update(dt);
 }
 
 void Game::Render() {
 	//Clear
 	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	this->manager->Render();
+	EntityManager::Render();
 }
 
 void Game::Quit() {
-	ResourceManager::Clear();
+	EntityManager::ClearData();
+	ResourceManager::ClearData();
 	SDL_Quit();
 }
