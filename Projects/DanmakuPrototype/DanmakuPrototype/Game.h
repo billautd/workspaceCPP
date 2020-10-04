@@ -1,7 +1,9 @@
 #pragma once
 #include "GameStateEnum.h"
 #include "Constants.h"
+#include "EntityManager.h"
 #include "SDL.h"
+
 class Game
 {
 public:
@@ -11,7 +13,6 @@ public:
 
 	//Init game state (load shaders, textures, levels)
 	int Init();
-	void LoadUI();
 	//Game loop
 	void ProcessInput(SDL_Event& e, GLfloat dt);
 	void Update(GLfloat dt);
@@ -19,6 +20,7 @@ public:
 	void Quit();
 
 	static SDL_Event event;
+	static EntityManager* manager;
 
 	GameStateEnum GetState() { return state; }
 	SDL_Window* GetMainWindow() { return mainWindow; }

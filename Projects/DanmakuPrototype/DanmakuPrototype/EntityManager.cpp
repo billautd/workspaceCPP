@@ -61,15 +61,6 @@ std::vector<Entity*> EntityManager::GetEntitiesByLayer(LayerEnum layer) {
 	return selectedEntities;
 }
 
-void EntityManager::ListAllEntities() {
-	unsigned int i = 0;
-	for (auto& entity : entities) {
-		std::cout << "Entity[" << i << "]: " << entity->GetName() << std::endl;
-		entity->ListAllComponents();
-		i++;
-	}
-}
-
 CollisionTypeEnum EntityManager::CheckCollisions() {
 	return CollisionTypeEnum::NO_COLLISION;
 }

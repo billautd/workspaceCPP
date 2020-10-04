@@ -1,13 +1,15 @@
 #pragma once
 #include "Shader.h"
 #include "Texture2D.h"
-#include "ResourceManager.h"
 #include "TransformComponent.h"
-#include "Entity.h"
+
 class SpriteComponent : public Component
 {
 public:
-	SpriteComponent(Shader& shader, Texture2D& texture, glm::vec2 size, bool isFixed, GLfloat alpha = 1.0f, glm::vec3 color = glm::vec3(1.0f), GLfloat rotation = 0.0f);
+	SpriteComponent(Shader& shader, Texture2D& texture, bool isFixed, glm::vec3 color = glm::vec3(1.0f), GLfloat alpha = 1.0f)
+		: shader(shader), texture(texture), isFixed(isFixed), alpha(alpha), color(color) {
+		InitRenderData();
+	};
 	~SpriteComponent() = default;
 
 	void Init() override;
@@ -17,16 +19,12 @@ private:
 	Shader shader{};
 	GLuint quadVAO{ 0 };
 
-	TransformComponent* transform;
+	TransformComponent* transform{ nullptr };
 	Texture2D& texture;
-	glm::vec2 size{};
 	GLfloat alpha{ 1.0f };
 	glm::vec3 color{ glm::vec3(1.0f) };
-	GLfloat rotation{ 0.0f };	//In degrees
-
 
 	bool isFixed{ false };
-
 
 	void InitRenderData();
 };

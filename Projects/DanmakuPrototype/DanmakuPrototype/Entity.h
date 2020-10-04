@@ -1,15 +1,14 @@
 #pragma once
-//
-#include "LayerEnum.h"
-#include "Component.h" 
 
+#include "LayerEnum.h"
 #include "SDL.h"
 #include "glad/glad.h"
 #include <vector>
-#include "LayerEnum.h"
 #include <string>
 #include <map>
 #include <typeinfo>
+#include "Component.h"
+#include "TransformComponent.h"
 
 class Component;
 class Entity {
@@ -30,10 +29,10 @@ public:
 	template <typename T, typename... TArgs>
 	T& AddComponent(TArgs&&... args) {
 		T* newComponent(new T(std::forward<TArgs>(args)...));
-		newComponent->owner = this;
+		newComponent->SetOwner(this);
 		components.emplace_back(newComponent);
 		componentTypeMap[&typeid(*newComponent)] = newComponent;
-		newComponent->Initialize();
+		newComponent->Init();
 		return *newComponent;
 	}
 
@@ -47,12 +46,16 @@ public:
 		return static_cast<T*>(componentTypeMap[&typeid(T)]);
 	}
 
+
+
 private:
 	bool isActive{ false };
-	std::vector<Component*> components;
-	std::map<const std::type_info*, Component*> componentTypeMap;
 	std::string name{ "" };
 	LayerEnum layer{ LayerEnum::BEGIN };
+
+	//Components
+	std::vector<Component*> components{};
+	std::map<const std::type_info*, Component*> componentTypeMap{};
 
 	//Input 
 	int keysNbr{ 1024 };

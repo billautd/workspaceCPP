@@ -1,10 +1,7 @@
 #include "SpriteComponent.h"
+#include "Entity.h"
 #include "Constants.h"
-
-SpriteComponent::SpriteComponent(Shader& shader, Texture2D& texture, glm::vec2 size, bool isFixed, GLfloat alpha, glm::vec3 color, GLfloat rotation)
-	: shader(shader), texture(texture), size(size), isFixed(isFixed), alpha(alpha), color(color), rotation(rotation) {
-	InitRenderData();
-};
+#include "GLUtils.h"
 
 void SpriteComponent::Init() {
 	transform = GetOwner()->GetComponent<TransformComponent>();
@@ -23,15 +20,14 @@ void SpriteComponent::Render() {
 	model = glm::translate(model, glm::vec3(transform->GetPosition(), 0.0f));
 
 	//Rotate (Around 0,0 so we translate to rotate around center)
-	if (rotation != 0.0f) {
-		model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
-		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-		model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
+	if (transform->GetRotation() != 0.0f) {
+		model = glm::translate(model, glm::vec3(0.5f * transform->GetWidth(), 0.5f * transform->GetHeight(), 0.0f));
+		model = glm::rotate(model, glm::radians(transform->GetRotation()), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::translate(model, glm::vec3(-0.5f * transform->GetWidth(), -0.5f * transform->GetHeight(), 0.0f));
 	}
 
 	//Scale
-	if (transform->GetScale() != glm::vec2(1.0f))
-		model = glm::scale(model, glm::vec3(transform->GetScale(), 1.0f));
+	model = glm::scale(model, glm::vec3(transform->GetSize(), 1.0f));
 
 	this->shader.SetMatrix4("model", model);
 	this->shader.SetVector3f("spriteColor", color);

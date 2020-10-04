@@ -11,7 +11,6 @@ public:
 	static void Update(GLfloat dt);
 	static void Render();
 	static bool HasNoEntities();
-	static void ListAllEntities();
 	static std::vector<Entity*> GetEntities();
 	static std::vector<Entity*> GetEntitiesByLayer(LayerEnum layer);
 	static Entity* GetEntityByName(std::string entityName);

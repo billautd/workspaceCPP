@@ -10,7 +10,7 @@ const GLfloat ASPECT_RATIO{ 16.0f / 9.0f };
 const GLuint SCREEN_HEIGHT{ 600 };
 const GLuint SCREEN_WIDTH{ static_cast<GLuint>(SCREEN_HEIGHT * ASPECT_RATIO) };
 
-const glm::vec2 GAME_POSITION(10.0f);
+const glm::vec2 GAME_POSITION{ glm::vec2(10.0f) };
 const glm::vec2 GAME_SIZE(3 * SCREEN_WIDTH / 5 - 20.0f, SCREEN_HEIGHT - 20.0f);
 
 //TEXTURES

@@ -6,9 +6,12 @@
 #include "SDL_mixer.h"
 #include <sstream>
 #include <iomanip>
+#include "TransformComponent.h"
+#include "SpriteComponent.h"
 
 //Static
 SDL_Event Game::event{};
+EntityManager* Game::manager{};
 
 int Game::BackEndInit() {
 	//SDL init
@@ -83,21 +86,28 @@ int Game::Init() {
 	if (success != 0)
 		return success;
 
-	//Load and set shaders
+	//Load shaders
 	ResourceManager::LoadShader("./Shaders/SpriteRendering.vert", "./Shaders/SpriteRendering.frag", nullptr, "SpriteRendering");
+	ResourceManager::LoadShader("./Shaders/TextRendering.vert", "./Shaders/TextRendering.frag", nullptr, "TextRendering");
+	//Set up shaders
 	glm::mat4 projection{ glm::ortho(0.0f, static_cast<GLfloat>(this->width), static_cast<GLfloat>(this->height), 0.0f, -10.0f, 1.0f) };
 	ResourceManager::GetShader("SpriteRendering").Use().SetInteger("sprite", 0);
 	ResourceManager::GetShader("SpriteRendering").Use().SetMatrix4("projection", projection);
 
-	ResourceManager::LoadShader("./Shaders/TextRendering.vert", "./Shaders/TextRendering.frag", nullptr, "TextRendering");
-
 	//Load textures
-	ResourceManager::LoadTexture("./Textures/blank.png", true, "blank");
+	ResourceManager::LoadTexture("./Textures/blank.png", false, "blank");
 
-	LoadUI();
+	//Load Fonts
+	ResourceManager::LoadFont("./Fonts/Logopixies-owwBB.ttf", "logopixies", 14);
+
+	//Load entities
+	auto& bg{ EntityManager::AddEntity("GameBG", LayerEnum::UI_LAYER) };
+	bg.AddComponent<TransformComponent>(glm::vec2(10.0f), glm::vec2(0.0f), GAME_SIZE);
+	bg.AddComponent<SpriteComponent>(ResourceManager::GetShader("SpriteRendering"), ResourceManager::GetTexture("blank"), false, glm::vec3(0.0f));
 
 	return 0;
 }
+
 
 void Game::ProcessInput(SDL_Event& e, GLfloat dt) {
 	if (e.type == SDL_WINDOWEVENT) {
@@ -115,47 +125,15 @@ void Game::ProcessInput(SDL_Event& e, GLfloat dt) {
 	}
 }
 
-void Game::Update(GLfloat dt) {}
+void Game::Update(GLfloat dt) {
+	this->manager->Update(dt);
+}
 
 void Game::Render() {
 	//Clear
 	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	if (this->state == GameStateEnum::GAME_ACTIVE) {
-		////Game BG
-		//spriteRenderer->DrawSprite(ResourceManager::GetTexture("blank"), GAME_POSITION, GAME_SIZE, 1.0f, glm::vec3(0.0f));
-		////Right UI
-		////Hi Score
-		//textRenderer->RenderText("HI SCORE", GAME_POSITION.x + GAME_SIZE.x + 20.0f, 30.0f);
-		//std::stringstream hiScoreSS; hiScoreSS << std::setw(10) << std::setfill('0') << GameData::hi_score;
-		//textRenderer->RenderText(hiScoreSS.str(), this->width - 20.0f - textRenderer->GetStringSize(hiScoreSS.str()).x, 30.0f);
-
-		////Score
-		//textRenderer->RenderText("SCORE", GAME_POSITION.x + GAME_SIZE.x + 20.0f, 80.0f);
-		//std::stringstream scoreSS; scoreSS << std::setw(10) << std::setfill('0') << GameData::score;
-		//textRenderer->RenderText(scoreSS.str(), this->width - 20.0f - textRenderer->GetStringSize(scoreSS.str()).x, 80.0f);
-
-		////Lives
-		//textRenderer->RenderText("LIVES", GAME_POSITION.x + GAME_SIZE.x + 20.0f, 200.0f);
-		//std::stringstream livesSS; livesSS << GameData::lives;
-		//textRenderer->RenderText(livesSS.str(), this->width - 50.0f - textRenderer->GetStringSize(livesSS.str()).x, 200.0f);
-
-		////Bombs 
-		//textRenderer->RenderText("BOMBS", GAME_POSITION.x + GAME_SIZE.x + 20.0f, 250.0f);
-		//std::stringstream bombsSS; bombsSS << GameData::bombs;
-		//textRenderer->RenderText(bombsSS.str(), this->width - 50.0f - textRenderer->GetStringSize(bombsSS.str()).x, 250.0f);
-
-		////Power
-		//textRenderer->RenderText("POWER", GAME_POSITION.x + GAME_SIZE.x + 20.0f, 350.0f);
-		//std::stringstream powerSS; powerSS << GameData::power;
-		//textRenderer->RenderText(powerSS.str(), this->width - 50.0f - textRenderer->GetStringSize(powerSS.str()).x, 350.0f);
-
-		////Graze
-		//textRenderer->RenderText("GRAZE", GAME_POSITION.x + GAME_SIZE.x + 20.0f, 400.0f);
-		//std::stringstream grazeSS; grazeSS << GameData::graze;
-		//textRenderer->RenderText(grazeSS.str(), this->width - 50.0f - textRenderer->GetStringSize(grazeSS.str()).x, 400.0f);
-
-	}
+	this->manager->Render();
 }
 
 void Game::Quit() {
