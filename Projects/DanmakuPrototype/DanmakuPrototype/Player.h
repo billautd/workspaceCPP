@@ -7,5 +7,7 @@ public:
 	Player(std::string name, LayerEnum layer) : Entity(name, layer) {};
 
 	void ProcessInput(SDL_Event& e, GLfloat dt) override;
+
+	bool IsOutsideGame();
 };
 
