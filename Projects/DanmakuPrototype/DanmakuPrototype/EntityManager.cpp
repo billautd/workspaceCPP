@@ -5,22 +5,25 @@
 std::vector<Entity*> EntityManager::entities;
 
 void EntityManager::ClearData() {
-	for (auto& entity : entities) {
+	for (GLuint i = 0; i < entities.size(); i++) {
+		Entity* entity{ entities.at(i) };
 		entity->Destroy();
 	}
 }
 
 void EntityManager::Update(GLfloat dt) {
-	for (auto& entity : entities) {
+	for (GLuint i = 0; i < entities.size(); i++) {
+		Entity* entity{ entities.at(i) };
 		entity->Update(dt);
 	}
 	DestroyInactiveEntities();
 }
 
 void EntityManager::ProcessInput(SDL_Event& e, GLfloat dt) {
-	for (auto& ent : entities) {
-		if (ent->IsActive()) {
-			ent->ProcessInput(e, dt);
+	for (GLuint i = 0; i < entities.size(); i++) {
+		Entity* entity{ entities.at(i) };
+		if (entity->IsActive()) {
+			entity->ProcessInput(e, dt);
 		}
 	}
 }
@@ -35,7 +38,9 @@ void EntityManager::DestroyInactiveEntities() {
 
 void EntityManager::Render() {
 	for (auto layer : Enum<LayerEnum>()) {
-		for (auto& entity : GetEntitiesByLayer(static_cast<LayerEnum>(layer))) {
+		auto layerEntites{ GetEntitiesByLayer(static_cast<LayerEnum>(layer)) };
+		for (GLuint i = 0; i < layerEntites.size(); i++) {
+			Entity* entity{ layerEntites.at(i) };
 			entity->Render();
 		}
 	}
@@ -51,7 +56,8 @@ std::vector<Entity*> EntityManager::GetEntities() {
 }
 
 Entity* EntityManager::GetEntityByName(std::string entityName) {
-	for (auto& entity : entities) {
+	for (GLuint i = 0; i < entities.size(); i++) {
+		Entity* entity{ entities.at(i) };
 		if (entity->GetName().compare(entityName) == 0) {
 			return entity;
 		}
@@ -61,7 +67,8 @@ Entity* EntityManager::GetEntityByName(std::string entityName) {
 
 std::vector<Entity*> EntityManager::GetEntitiesByLayer(LayerEnum layer) {
 	std::vector<Entity*> selectedEntities;
-	for (auto& entity : entities) {
+	for (GLuint i = 0; i < entities.size(); i++) {
+		Entity* entity{ entities.at(i) };
 		if (entity->GetLayer() == layer) {
 			selectedEntities.emplace_back(entity);
 		}

@@ -1,13 +1,22 @@
 #include "Player.h"
 #include "Constants.h"
 #include "Game.h"
+#include "Projectile.h"
+#include <iostream>
+#include <sstream>
+#include "ResourceManager.h"
 
+Player::Player(std::string name, LayerEnum layer) : Entity(name, layer) {
+	transform = &AddComponent<TransformComponent>(glm::vec2(GAME_POSITION.x + GAME_SIZE.x / 2.0f - PLAYER_SIZE.x / 2, GAME_POSITION.y + GAME_SIZE.y - PLAYER_SIZE.y), glm::vec2(0.0f), PLAYER_SIZE);
+	sprite = &AddComponent<SpriteComponent>(ResourceManager::GetShader("SpriteRendering"), ResourceManager::GetTexture("player"), true);
+	kbd = &AddComponent<KeyboardControlComponent>();
+}
+
+GLfloat emitTimer{ 0.0f };
 void Player::ProcessInput(SDL_Event& e, GLfloat dt) {
 	//Super
 	Entity::ProcessInput(e, dt);
 
-	KeyboardControlComponent* kbd{ GetComponent<KeyboardControlComponent>() };
-	TransformComponent* transform{ GetComponent<TransformComponent>() };
 
 	const Uint8* keys{ EventManager::keys };
 
@@ -45,6 +54,17 @@ void Player::ProcessInput(SDL_Event& e, GLfloat dt) {
 		if (IsOutsideGame())
 			transform->SetPositionX(GAME_POSITION.x + GAME_SIZE.x - PLAYER_SIZE.x);
 	}
+
+	SDL_Scancode shoot{ kbd->GetShootKey() };
+	if (keys[shoot]) {
+		if (emitTimer <= 0.0f) {
+			EmitProjectiles();
+			emitTimer = PROJECTILE_EMIT_SPEED;
+		}
+		else {
+			emitTimer -= dt;
+		}
+	}
 }
 
 bool Player::IsOutsideGame() {
@@ -54,4 +74,31 @@ bool Player::IsOutsideGame() {
 
 	return x < GAME_POSITION.x || x + PLAYER_SIZE.x > GAME_POSITION.x + GAME_SIZE.x
 		|| y < GAME_POSITION.y || y + PLAYER_SIZE.y > GAME_POSITION.y + GAME_SIZE.y;
+}
+
+GLuint projectileCount{ 0 };
+void Player::EmitProjectiles() {
+	GLfloat x{ transform->GetPosition().x };
+	GLfloat y{ transform->GetPosition().y };
+	GLfloat w{ transform->GetWidth() };
+
+	std::stringstream projectileName; projectileName << "projectile " << projectileCount++;
+	EntityManager::AddEntity(new Projectile(
+		glm::vec2(x + w / 2 - 8.0f, y - 20.0f),
+		glm::vec2(0.0f, -PROJECTILE_SPEED),
+		PLAYER_PROJECTILE_SIZE,
+		0.0f,
+		ResourceManager::GetTexture("playerProjectile"),
+		glm::vec3(1.0f),
+		1.0f,
+		projectileName.str()));
+	EntityManager::AddEntity(new Projectile(
+		glm::vec2(x + w / 2 + 8.0f, y - 20.0f),
+		glm::vec2(0.0f, -PROJECTILE_SPEED),
+		PLAYER_PROJECTILE_SIZE,
+		0.0f,
+		ResourceManager::GetTexture("playerProjectile"),
+		glm::vec3(1.0f),
+		1.0f,
+		projectileName.str()));
 }

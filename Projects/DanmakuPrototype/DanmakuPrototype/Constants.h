@@ -16,6 +16,8 @@ const glm::vec2 GAME_SIZE(2 * SCREEN_WIDTH / 3 - 20.0f, SCREEN_HEIGHT - 20.0f);
 const glm::vec2 PLAYER_SIZE{ glm::vec2(50.0f, 75.0f) };
 const GLfloat PLAYER_VELOCITY{ 300.0f };
 
+const glm::vec2 PLAYER_PROJECTILE_SIZE{ glm::vec2(7.0f, 39.0f) };
+
 //TEXTURES
 const GLfloat QUAD_TEXTURE_VERTICES[] = {
 	//Pos       //Tex
@@ -27,3 +29,7 @@ const GLfloat QUAD_TEXTURE_VERTICES[] = {
 	1.0f, 1.0f, 1.0f, 1.0f, //Top left
 	1.0f, 0.0f, 1.0f, 0.0f //Top right
 };
+
+//GAME
+const GLfloat PROJECTILE_EMIT_SPEED{ 0.04f };
+const GLfloat PROJECTILE_SPEED{ 200.0f };

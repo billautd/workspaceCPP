@@ -104,6 +104,7 @@ void Game::LoadAssets() {
 	//Texture
 	ResourceManager::LoadTexture("./Textures/blank.png", false, "blank");
 	ResourceManager::LoadTexture("./Textures/player.png", true, "player");
+	ResourceManager::LoadTexture("./Textures/playerProjectile.png", false, "playerProjectile");
 
 	//Fonts
 	ResourceManager::LoadFont("./Fonts/Logopixies-owwBB.ttf", "logopixies", 20);
@@ -120,9 +121,7 @@ void Game::LoadEntities() {
 	highScore.AddComponent<TextComponent>(ResourceManager::GetShader("TextRendering"), "HIGH SCORE", "logopixies");
 	//Player
 	auto& player{ EntityManager::AddEntity(new Player("Player", LayerEnum::PLAYER_LAYER)) };
-	player.AddComponent<TransformComponent>(glm::vec2(GAME_POSITION.x + GAME_SIZE.x / 2.0f - PLAYER_SIZE.x / 2, GAME_POSITION.y + GAME_SIZE.y - PLAYER_SIZE.y), glm::vec2(0.0f), PLAYER_SIZE);
-	player.AddComponent<SpriteComponent>(ResourceManager::GetShader("SpriteRendering"), ResourceManager::GetTexture("player"), true);
-	player.AddComponent<KeyboardControlComponent>();
+
 
 }
 

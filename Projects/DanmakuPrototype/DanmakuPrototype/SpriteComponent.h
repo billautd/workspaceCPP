@@ -16,6 +16,12 @@ public:
 	void Init() override;
 	void Update(GLfloat dt) override;
 	void Render() override;
+
+	Shader& GetShader() { return shader; }
+	Texture2D& GetTexture() { return texture; }
+	bool IsFixed() { return isFixed; }
+	glm::vec3 GetColor() { return color; }
+	GLfloat GetAlpha() { return alpha; }
 private:
 	Shader shader{};
 	GLuint quadVAO{ 0 };

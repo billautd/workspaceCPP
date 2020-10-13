@@ -8,7 +8,7 @@
 #include <map>
 #include <typeinfo>
 #include "Component.h"
-#include "TransformComponent.h"
+#include "ComponentsInclude.h"
 #include "EventManager.h"
 
 class Component;
@@ -27,6 +27,7 @@ public:
 		EventManager::keys = SDL_GetKeyboardState(&EventManager::keysNbr);
 	};
 
+	void SetActive(bool active) { this->isActive = active; }
 	bool IsActive() { return isActive; }
 	LayerEnum GetLayer() { return layer; }
 	std::string GetName() { return name; }
