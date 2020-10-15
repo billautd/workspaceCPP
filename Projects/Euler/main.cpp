@@ -21,5 +21,7 @@ int main() {
 	//std::cout << "6 : " << euler6(100) << '\n';
 	//std::cout << "7 : " << euler7(10001) << '\n';
 	//std::cout << "8 : " << euler8(euler8String, 13) << '\n';
+	//std::cout << "9 : " << euler9(1000) << '\n';
+	std::cout << "10 : " << euler10(2000000) << '\n';
 	return 0;
 }

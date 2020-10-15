@@ -155,3 +155,25 @@ uint64_t euler8(std::string number, size_t consecutive) {
 	}
 	return max;
 }
+
+//Can't do with floor(sqrt(a² + b²)) == sqrt(a² + b²) because of double precision
+uint64_t euler9(uint64_t sum) {
+	for (uint64_t c = 1; c <= sum; c++) {
+		for (uint64_t b = 1; b < c; b++) {
+			for (uint64_t a = 1; a < b; a++) {
+				if (a * a + b * b == c * c && a + b + c == sum)
+					return a * b * c;
+			}
+		}
+	}
+	return 0;
+}
+
+uint64_t euler10(uint64_t limit) {
+	uint64_t sum{ 0 };
+	for (uint64_t i = 2; i < limit; i++) {
+		if (isPrime(i))
+			sum += i;
+	}
+	return sum;
+}
