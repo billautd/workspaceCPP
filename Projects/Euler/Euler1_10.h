@@ -1,53 +1,5 @@
 #pragma once
-#include <vector>
-#include <string>
-#include <string>
-
-bool isPrime(const uint64_t value) {
-	if (value < 2)
-		return false;
-	for (uint64_t i = 2; i <= sqrt(value); i++) {
-		if (value % i == 0)
-			return false;
-	}
-	return true;
-}
-
-std::vector<uint64_t> primeDecomposition(const uint64_t value) {
-	if (isPrime(value))
-		return std::vector<uint64_t>(value);
-
-	std::vector<uint64_t> primes;
-	uint64_t current{ value };
-	uint64_t i{ 2 };
-	while (i <= sqrt(current)) {
-		if (current % i == 0) {
-			current /= i;
-			primes.push_back(i);
-			i = 2;
-		}
-		else
-			i++;
-	}
-	//Last number is a prime
-	primes.push_back(current);
-	return primes;
-}
-
-bool checkPalindrome(const uint64_t value) {
-	std::string str{ std::to_string(value) };
-	for (size_t i = 0; i < str.size() / 2; i++) {
-		char char1{ str.at(i) };
-		char char2{ str.at(str.size() - 1 - i) };
-		if (char1 != char2)
-			return false;
-	}
-	return true;
-}
-
-short charToDigit(const char value) {
-	return value - '0';
-}
+#include "Utils.h"
 
 uint64_t euler1(const uint64_t limit) {
 	uint64_t sum{ 0 };
@@ -141,9 +93,20 @@ uint64_t euler7(const uint64_t rank) {
 	return --current;
 }
 
-uint64_t euler8(std::string number, size_t consecutive) {
+uint64_t euler8(size_t consecutive) {
+	//Read number
+	std::string number{};
+	std::ifstream file;
+	file.open("TextFiles/euler8.txt");
+	if (!file.is_open()) {
+		std::cerr << "Cannot open Euler 8 file\n";
+		return 0;
+	}
+	std::getline(file, number);
+
 	uint64_t product{ 1 };
 	uint64_t max{ 0 };
+
 
 	for (size_t i = 0; i <= number.size() - consecutive; i++) {
 		for (size_t j = i; j < consecutive + i; j++) {
