@@ -35,7 +35,6 @@ uint64_t euler3(const uint64_t value) {
 	return max;
 }
 
-
 uint64_t euler4() {
 	uint64_t max{ 0 };
 	for (uint64_t i = 100; i <= 999; i++) {
@@ -103,6 +102,8 @@ uint64_t euler8(size_t consecutive) {
 		return 0;
 	}
 	std::getline(file, number);
+	file.close();
+
 
 	uint64_t product{ 1 };
 	uint64_t max{ 0 };

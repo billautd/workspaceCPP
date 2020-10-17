@@ -1,6 +1,7 @@
 #pragma once
 #include "Utils.h"
 #include <iostream>
+#include <sstream>
 
 uint64_t euler11() {
 	//Init grid container
@@ -20,6 +21,8 @@ uint64_t euler11() {
 		grid[count / 20][count % 20] = value;
 		count++;
 	}
+	file.close();
+
 
 	//Search for max product
 	uint64_t max{ 0 };
@@ -131,6 +134,8 @@ uint64_t euler13() {
 			}
 		}
 	}
+	file.close();
+
 
 	//Get 10 digits
 	uint64_t sum{ 0 };
@@ -161,6 +166,155 @@ uint64_t euler14(uint64_t limit) {
 	return maxNumber;
 }
 
+//Dynamic programming
 uint64_t euler15(uint64_t gridSize) {
-	return 0;
+	//Init grid of points
+	uint64_t** grid{ new uint64_t * [gridSize + 1]{0} };
+	for (uint64_t i = 0; i < gridSize + 1; i++)
+		grid[i] = new uint64_t[gridSize + 1]{ 0 };
+
+	//Init ways on the right and bottom sides
+	for (uint64_t i = 0; i < gridSize; i++) {
+		grid[i][gridSize] = 1;
+		grid[gridSize][i] = 1;
+	}
+
+	//Add number of possible ways from adjacent points
+	while (grid[0][0] == 0) {
+		for (uint64_t i = 0; i < gridSize; i++) {
+			for (uint64_t j = 0; j < gridSize; j++) {
+				if (grid[i][j] == 0 && grid[i + 1][j] != 0 && grid[i][j + 1] != 0)
+					grid[i][j] = grid[i + 1][j] + grid[i][j + 1];
+			}
+		}
+	}
+	//Print grid
+	for (uint64_t i = 0; i < gridSize + 1; i++) {
+		for (uint64_t j = 0; j < gridSize + 1; j++) {
+			std::cout << grid[i][j] << " ";
+		}
+		std::cout << '\n';
+	}
+	return grid[0][0];
+}
+
+uint64_t euler16(uint64_t power) {
+	if (power == 0)
+		return 0;
+	std::vector<short> digits;
+	digits.push_back(2);
+	for (uint64_t i = 1; i < power; i++) {
+		//Multiply all digits by 2
+		for (uint64_t j = 0; j < digits.size(); j++)
+			digits.at(j) *= 2;
+
+		//Carry
+		for (uint64_t j = 0; j < digits.size(); j++) {
+			if (digits.at(j) > 9) {
+				digits.at(j) -= 10;
+				if (j == digits.size() - 1)
+					digits.push_back(1);
+				else
+					digits.at(j + 1)++;
+			}
+		}
+	}
+
+	uint64_t sum{ 0 };
+	for (uint64_t i = 0; i < digits.size(); i++)
+		sum += digits.at(i);
+	return sum;
+}
+
+uint64_t euler17() {
+	std::vector < std::string> oneToNineteen{ "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+		"eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen" };
+	std::vector<std::string> dozens{ "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety" };
+	std::string hundred{ "hundred" };
+	std::string thousand{ "thousand" };
+	std::string andStr{ "and" };
+
+	uint64_t sum{ 0 };
+	for (uint64_t i = 1; i <= 1000; i++) {
+		if (i == 1000) {
+			sum += oneToNineteen.at(0).size() + thousand.size();
+			break;
+		}
+		//Hundred 
+		if (i >= 100) {
+			sum += oneToNineteen.at(i / 100 - 1).size();
+			sum += hundred.size();
+			if (i % 100 != 0)
+				sum += andStr.size();
+		}
+
+		//10 - 19
+		if (i % 100 >= 10 && i % 100 <= 19) {
+			sum += oneToNineteen.at(i % 100 - 1).size();
+		}
+		else {
+			//Dozens
+			if ((i % 100) / 10 != 0)
+				sum += dozens.at((i % 100) / 10 - 2).size();
+
+			//Unity
+			if (i % 10 != 0)
+				sum += oneToNineteen.at(i % 10 - 1).size();
+		}
+
+	}
+	return sum;
+}
+
+uint64_t euler18() {
+	//Init triangle
+	std::vector<std::vector<uint64_t>> triangle;
+	std::ifstream file;
+	file.open("TextFiles/euler18.txt");
+	if (!file.is_open()) {
+		std::cerr << "Error opening euler18.txt file";
+		return 0;
+	}
+	uint64_t value{ 0 };
+	std::string line{ "" };
+	while (std::getline(file, line)) {
+		std::stringstream lineSS{ line };
+		std::vector<uint64_t> currentLine;
+		while (lineSS >> value)
+			currentLine.push_back(value);
+		triangle.push_back(currentLine);
+	}
+	file.close();
+
+	//For each point in triangle, store highest weight of path from summit to this point
+	//Weights is a triangle like the one above
+	//We take triangle and clear values except first node
+	std::vector<std::vector<uint64_t>> weights{ triangle };
+	for (uint64_t i = 1; i < weights.size(); i++) {
+		for (uint64_t j = 0; j < weights.at(i).size(); j++)
+			weights.at(i).at(j) = 0;
+	}
+
+	for (uint64_t i = 1; i < weights.size(); i++) {
+		for (uint64_t j = 0; j < weights.at(i).size(); j++) {
+			//If point is on the sides, only one weight possible
+			if (j == 0)
+				weights.at(i).at(0) = weights.at(i - 1).at(0) + triangle.at(i).at(0);
+			else if (j == weights.at(i).size() - 1)
+				weights.at(i).at(j) = weights.at(i - 1).at(j - 1) + triangle.at(i).at(j);
+			else {
+				//Check two possible weights and keep max
+				uint64_t weight1{ weights.at(i - 1).at(j - 1) + triangle.at(i).at(j) };
+				uint64_t weight2{ weights.at(i - 1).at(j) + triangle.at(i).at(j) };
+				weights.at(i).at(j) = weight1 > weight2 ? weight1 : weight2;
+			}
+		}
+	}
+
+	uint64_t max{ 0 };
+	for (uint64_t i = 0; i < weights.at(weights.size() - 1).size(); i++) {
+		if (weights.at(weights.size() - 1).at(i) > max)
+			max = weights.at(weights.size() - 1).at(i);
+	}
+	return max;
 }
