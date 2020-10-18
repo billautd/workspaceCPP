@@ -108,7 +108,7 @@ uint64_t euler13() {
 		return 0;
 	}
 	std::string number{};
-	std::vector<short> sumDigits;
+	std::vector<uint16_t> sumDigits;
 	//Init digits
 	if (!std::getline(file, number)) {
 		std::cerr << "No number\n";
@@ -118,22 +118,9 @@ uint64_t euler13() {
 		sumDigits.insert(sumDigits.begin(), std::stoi(number.substr(i, 1)));
 
 	//Get digits of sum
-	while (std::getline(file, number)) {
-		for (size_t i = 0; i < number.size(); i++) {
-			sumDigits.at(i) += std::stoi(number.substr(number.size() - 1 - i, 1));
-			size_t j = i;
-			while (sumDigits.at(j) > 9) {
-				sumDigits.at(j) -= 10;
-				if (j + 1 > sumDigits.size() - 1) {
-					sumDigits.push_back(1);
-					break;
-				}
-				else
-					sumDigits.at(j + 1)++;
-				j++;
-			}
-		}
-	}
+	while (std::getline(file, number))
+		digitsAdd(&sumDigits, number);
+
 	file.close();
 
 
@@ -200,30 +187,13 @@ uint64_t euler15(uint64_t gridSize) {
 
 uint64_t euler16(uint64_t power) {
 	if (power == 0)
-		return 0;
-	std::vector<short> digits;
+		return 1;
+	std::vector<uint16_t> digits;
 	digits.push_back(2);
-	for (uint64_t i = 1; i < power; i++) {
-		//Multiply all digits by 2
-		for (uint64_t j = 0; j < digits.size(); j++)
-			digits.at(j) *= 2;
+	for (uint16_t i = 2; i <= power; i++)
+		digitsMultiply(&digits, 2);
 
-		//Carry
-		for (uint64_t j = 0; j < digits.size(); j++) {
-			if (digits.at(j) > 9) {
-				digits.at(j) -= 10;
-				if (j == digits.size() - 1)
-					digits.push_back(1);
-				else
-					digits.at(j + 1)++;
-			}
-		}
-	}
-
-	uint64_t sum{ 0 };
-	for (uint64_t i = 0; i < digits.size(); i++)
-		sum += digits.at(i);
-	return sum;
+	return vectorSum(digits);
 }
 
 uint64_t euler17() {
@@ -317,4 +287,49 @@ uint64_t euler18() {
 			max = weights.at(weights.size() - 1).at(i);
 	}
 	return max;
+}
+
+uint64_t euler19() {
+	//<Day index, day of the month>
+	//Day index is 1, 2, 3, 4, 5, 6, 7
+	std::pair<uint16_t, uint16_t> day{ 1, 1 };
+	//Month index is 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+	uint16_t month{ 1 };
+	uint16_t year{ 1900 };
+
+	std::vector<uint16_t> thirtyDaysMonths{ 4, 6, 9, 11 };
+
+	uint64_t sundays{ 0 };
+	while (year < 2000 || month < 12 || day.second < 31) {
+		//std::cout << day.first << " " << day.second << " " << month << " " << year << '\n';
+		if (year != 1900 && day.second == 1 && day.first == 7)
+			sundays++;
+
+		bool isLeapYear{ year % 4 == 0 && (year % 100 != 0 || year % 400 == 0) };
+		day.first++;
+		if (day.first > 7)
+			day.first = 1;
+		day.second++;
+		if (day.second > 31 || (day.second > 30 && contains(thirtyDaysMonths, month)) || (day.second > 29 && month == 2 && isLeapYear) || (day.second > 28 && month == 2 && !isLeapYear)) {
+			day.second = 1;
+			month++;
+		}
+		if (month > 12) {
+			month = 1;
+			year++;
+		}
+	}
+	return sundays;
+}
+
+//Based on euler16
+uint64_t euler20(uint64_t value) {
+	if (value == 0 || value == 1)
+		return 1;
+	std::vector<uint16_t> digits;
+	digits.push_back(1);
+	for (uint64_t i = 2; i < value; i++)
+		digitsMultiply(&digits, i);
+
+	return vectorSum(digits);
 }
