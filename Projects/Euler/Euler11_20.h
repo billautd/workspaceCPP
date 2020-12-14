@@ -1,7 +1,5 @@
 #pragma once
 #include "Utils.h"
-#include <iostream>
-#include <sstream>
 
 uint64_t euler11() {
 	//Init grid container

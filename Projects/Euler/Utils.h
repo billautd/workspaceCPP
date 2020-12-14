@@ -1,6 +1,10 @@
 #pragma once
 #include <vector>
 #include <fstream>
+#include <istream>
+#include <iostream>
+#include <sstream>
+#include <algorithm>
 #include <string>
 
 bool isPrime(const uint64_t value) {
@@ -49,14 +53,24 @@ short charToDigit(const char value) {
 	return value - '0';
 }
 
-std::vector<uint64_t> getDivisors(uint64_t value) {
+short charToAlphabeticalPosition(const char value) {
+	return std::tolower(value) - 'a' + static_cast<char>(1);
+}
+
+std::vector<uint64_t> getProperDivisors(uint64_t value) {
 	if (value == 0)
 		return std::vector<uint64_t>{};
 	std::vector<uint64_t> divisors{};
-	for (uint64_t i = 1; i <= value; i++) {
+	for (uint64_t i = 1; i < value; i++) {
 		if (value % i == 0)
 			divisors.push_back(i);
 	}
+	return divisors;
+}
+
+std::vector<uint64_t> getDivisors(uint64_t value) {
+	std::vector<uint64_t> divisors{ getProperDivisors(value) };
+	divisors.push_back(value);
 	return divisors;
 }
 
@@ -159,4 +173,14 @@ uint64_t vectorSum(const std::vector<T> vector) {
 	for (uint64_t i = 0; i < vector.size(); i++)
 		sum += vector.at(i);
 	return sum;
+}
+
+uint64_t fact(uint64_t value) {
+	if (value == 0)
+		return 1;
+	uint64_t fact{ 1 };
+	for (uint64_t i = 1; i <= value; i++)
+		fact *= i;
+	return fact;
+
 }

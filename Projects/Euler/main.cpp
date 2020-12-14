@@ -1,8 +1,5 @@
 #include <iostream>
 #include "Includes.h"
-#include "Utils.h"
-
-std::string euler8String{ "" };
 
 int main() {
 	//std::cout << "1 : " << euler1(1000) << '\n';
@@ -25,6 +22,10 @@ int main() {
 	//std::cout << "18 : " << euler18() << '\n';
 	//std::cout << "19 : " << euler19() << '\n';
 	//std::cout << "20 : " << euler20(100) << '\n';
+	//std::cout << "21 : " << euler21(10000) << '\n';
+	//std::cout << "22 : " << euler22() << '\n';
+	//std::cout << "23 : " << euler23() << '\n';
+	//std::cout << "24 : " << euler24() << '\n';
 	//1 : 233168
 	//2 : 4613732
 	//3 : 6857
@@ -45,5 +46,8 @@ int main() {
 	//18 : 1074
 	//19 : 171
 	//20 : 648
+	//21 : 31626
+	//22 : 871198282
+	//23 : 4179871
 	return 0;
 }

@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClInclude Include="Euler11_20.h" />
     <ClInclude Include="Euler1_10.h" />
+    <ClInclude Include="Euler21_30.h" />
     <ClInclude Include="Includes.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
