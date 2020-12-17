@@ -124,8 +124,12 @@ void Game::LoadEntities() {
 	//Player
 	auto& player{ EntityManager::AddEntity(new Player("Player", LayerEnum::PLAYER_LAYER)) };
 	//Enemy
-	auto& enemy{ EntityManager::AddEntity(new Enemy("Enemy", LayerEnum::ENEMY_LAYER)) };
-
+	GLuint enemyNumber{ 8 };
+	GLfloat gap{ GAME_SIZE.x - enemyNumber * ENEMY_SIZE.x };
+	for (GLuint i = 0; i < enemyNumber; i++) {
+		glm::vec2 position{ GAME_POSITION.x + gap / (enemyNumber + 1) + i * (ENEMY_SIZE.x + gap / (enemyNumber + 1)), GAME_POSITION.y + 20.0f };
+		auto& enemy{ EntityManager::AddEntity(new Enemy(position, 5, "Enemy", LayerEnum::ENEMY_LAYER)) };
+	}
 }
 
 

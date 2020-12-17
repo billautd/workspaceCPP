@@ -1,7 +1,9 @@
 #pragma once
-#include "Entity.h"
+#include "Enemy.h"
 #include "Component.h"
 #include "CollisionTypeEnum.h"
+#include "Enum.h"
+
 
 class EntityManager {
 private:

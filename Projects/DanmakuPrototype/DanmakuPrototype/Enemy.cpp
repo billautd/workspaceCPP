@@ -6,9 +6,9 @@ Enemy::Enemy() : Entity() {
 	SetEntityType(EntityTypeEnum::ENEMY);
 }
 
-Enemy::Enemy(std::string name, LayerEnum layer) : Entity(name, layer) {
+Enemy::Enemy(glm::vec2 position, GLuint health, std::string name, LayerEnum layer) : Entity(name, layer), health(health) {
 	SetEntityType(EntityTypeEnum::ENEMY);
-	transform = &AddComponent<TransformComponent>(glm::vec2(GAME_POSITION.x + GAME_SIZE.x / 2 - ENEMY_SIZE.x / 2, GAME_POSITION.y + 20.0f),
+	transform = &AddComponent<TransformComponent>(position,
 		glm::vec2(),
 		ENEMY_SIZE);
 	sprite = &AddComponent<SpriteComponent>(ResourceManager::GetShader("SpriteRendering"), ResourceManager::GetTexture("enemy"), false);

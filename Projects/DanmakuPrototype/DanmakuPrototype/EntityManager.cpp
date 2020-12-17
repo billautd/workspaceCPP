@@ -1,6 +1,5 @@
 #include <iostream>
 #include "EntityManager.h"
-#include "Enum.h"
 
 std::vector<Entity*> EntityManager::entities;
 
@@ -80,23 +79,35 @@ std::vector<Entity*> EntityManager::GetEntitiesByLayer(LayerEnum layer) {
 
 void EntityManager::CheckCollisions() {
 	for (int i = 0; i < entities.size() - 1; i++) {
-		Entity& entity = *entities[i];
+		Entity* entity = entities[i];
 		//If no collider, no collision
-		if (!entity.HasComponent<ColliderComponent>())
+		if (!entity->HasComponent<ColliderComponent>())
 			continue;
 		for (int j = i + 1; j < entities.size(); j++) {
-			Entity& other = *entities[j];
-			if (!other.HasComponent<ColliderComponent>())
+			Entity* other = entities[j];
+			if (!other->HasComponent<ColliderComponent>())
 				continue;
 			//Check collision between all pairs of entities, but only once
-			CollisionTypeEnum collision{ entity.CheckCollision(other) };
+			CollisionTypeEnum collision{ entity->CheckCollision(*other) };
 			if (collision == CollisionTypeEnum::NO_COLLISION)
 				continue;
+
+
+			Enemy* enemy{ nullptr };
 			switch (collision) {
 				case CollisionTypeEnum::PLAYER_PROJECTILE_COLLISION:
+					entity->Destroy();
+					other->Destroy();
+					break;
 				case CollisionTypeEnum::ENEMY_PROJECTILE_COLLISION:
-					entity.Destroy();
-					other.Destroy();
+					if (entity->GetEntityType() == EntityTypeEnum::ENEMY)
+						enemy = dynamic_cast<Enemy*>(entity);
+					else
+						enemy = dynamic_cast<Enemy*>(other);
+					enemy->DecrementHealth();
+					if (enemy->IsDead())
+						entity->Destroy();
+					other->Destroy();
 					break;
 				default:
 					std::cerr << "Error while reading Collision type\n";
@@ -104,6 +115,8 @@ void EntityManager::CheckCollisions() {
 		}
 	}
 }
+
+
 
 Entity& EntityManager::AddEntity(Entity* entity) {
 	entities.emplace_back(entity);
