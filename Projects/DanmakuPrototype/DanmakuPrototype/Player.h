@@ -4,7 +4,7 @@
 class Player : public Entity
 {
 public:
-	Player() : Entity() {}
+	Player();
 	Player(std::string name = "Player", LayerEnum layer = LayerEnum::PLAYER_LAYER);
 
 	void ProcessInput(SDL_Event& e, GLfloat dt) override;
@@ -15,6 +15,7 @@ private:
 	TransformComponent* transform{ nullptr };
 	SpriteComponent* sprite{ nullptr };
 	KeyboardControlComponent* kbd{ nullptr };
+	ColliderComponent* collider{ nullptr };
 
 };
 

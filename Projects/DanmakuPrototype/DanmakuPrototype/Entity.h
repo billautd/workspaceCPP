@@ -10,17 +10,22 @@
 #include "Component.h"
 #include "ComponentsInclude.h"
 #include "EventManager.h"
+#include <iostream>
+#include "CollisionTypeEnum.h"
+#include "ColliderComponent.h"
+#include "EntityTypeEnum.h"
 
 class Component;
 class Entity {
 public:
-	Entity() { isActive = true; };
-	Entity(std::string name, LayerEnum layer) : name(name), layer(layer) { isActive = true; };
+	Entity() = default;
+	Entity(std::string name, LayerEnum layer) : name(name), layer(layer) {};
 
 	//Run for each component
 	virtual void Update(GLfloat dt);
 	virtual void Render();
 	virtual void Destroy();
+	virtual CollisionTypeEnum CheckCollision(Entity& entity);
 
 	//Each entity has its own
 	virtual void ProcessInput(SDL_Event& e, GLfloat dt) {
@@ -31,6 +36,8 @@ public:
 	bool IsActive() { return isActive; }
 	LayerEnum GetLayer() { return layer; }
 	std::string GetName() { return name; }
+	EntityTypeEnum GetEntityType() { return entityType; }
+	void SetEntityType(EntityTypeEnum type) { entityType = type; }
 
 	//Component management
 	template <typename T, typename... TArgs>
@@ -57,9 +64,10 @@ public:
 
 private:
 
-	bool isActive{ false };
+	bool isActive{ true };
 	std::string name{ "" };
 	LayerEnum layer{ LayerEnum::BEGIN };
+	EntityTypeEnum entityType{ EntityTypeEnum::ENTITY };
 
 	//Components
 	std::vector<Component*> components{};

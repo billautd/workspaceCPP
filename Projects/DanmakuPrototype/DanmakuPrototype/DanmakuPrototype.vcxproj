@@ -156,6 +156,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\Libraries\GLAD\src\glad.c" />
+    <ClCompile Include="ColliderComponent.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="EventManager.cpp" />
@@ -175,12 +177,15 @@
     <ClCompile Include="TransformComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ColliderComponent.h" />
     <ClInclude Include="CollisionTypeEnum.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ComponentsInclude.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityManager.h" />
+    <ClInclude Include="EntityTypeEnum.h" />
     <ClInclude Include="Enum.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="Game.h" />

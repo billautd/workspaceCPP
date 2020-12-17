@@ -16,6 +16,7 @@ void EntityManager::Update(GLfloat dt) {
 		Entity* entity{ entities.at(i) };
 		entity->Update(dt);
 	}
+	CheckCollisions();
 	DestroyInactiveEntities();
 }
 
@@ -29,10 +30,11 @@ void EntityManager::ProcessInput(SDL_Event& e, GLfloat dt) {
 }
 
 void EntityManager::DestroyInactiveEntities() {
-	for (GLuint i = 0; i < entities.size(); i++) {
-		if (!entities[i]->IsActive()) {
-			entities.erase(entities.begin() + i);
-		}
+	for (auto it = entities.begin(); it != entities.end(); ) {
+		if (!(*it)->IsActive())
+			it = entities.erase(it);
+		else
+			it++;
 	}
 }
 
@@ -76,8 +78,31 @@ std::vector<Entity*> EntityManager::GetEntitiesByLayer(LayerEnum layer) {
 	return selectedEntities;
 }
 
-CollisionTypeEnum EntityManager::CheckCollisions() {
-	return CollisionTypeEnum::NO_COLLISION;
+void EntityManager::CheckCollisions() {
+	for (int i = 0; i < entities.size() - 1; i++) {
+		Entity& entity = *entities[i];
+		//If no collider, no collision
+		if (!entity.HasComponent<ColliderComponent>())
+			continue;
+		for (int j = i + 1; j < entities.size(); j++) {
+			Entity& other = *entities[j];
+			if (!other.HasComponent<ColliderComponent>())
+				continue;
+			//Check collision between all pairs of entities, but only once
+			CollisionTypeEnum collision{ entity.CheckCollision(other) };
+			if (collision == CollisionTypeEnum::NO_COLLISION)
+				continue;
+			switch (collision) {
+				case CollisionTypeEnum::PLAYER_PROJECTILE_COLLISION:
+				case CollisionTypeEnum::ENEMY_PROJECTILE_COLLISION:
+					entity.Destroy();
+					other.Destroy();
+					break;
+				default:
+					std::cerr << "Error while reading Collision type\n";
+			}
+		}
+	}
 }
 
 Entity& EntityManager::AddEntity(Entity* entity) {

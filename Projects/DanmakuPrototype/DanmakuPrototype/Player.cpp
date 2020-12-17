@@ -6,10 +6,16 @@
 #include <sstream>
 #include "ResourceManager.h"
 
+Player::Player() : Entity() {
+	SetEntityType(EntityTypeEnum::PLAYER);
+}
+
 Player::Player(std::string name, LayerEnum layer) : Entity(name, layer) {
+	SetEntityType(EntityTypeEnum::PLAYER);
 	transform = &AddComponent<TransformComponent>(glm::vec2(GAME_POSITION.x + GAME_SIZE.x / 2.0f - PLAYER_SIZE.x / 2, GAME_POSITION.y + GAME_SIZE.y - PLAYER_SIZE.y), glm::vec2(0.0f), PLAYER_SIZE);
 	sprite = &AddComponent<SpriteComponent>(ResourceManager::GetShader("SpriteRendering"), ResourceManager::GetTexture("player"), true);
 	kbd = &AddComponent<KeyboardControlComponent>();
+	collider = &AddComponent<ColliderComponent>();
 }
 
 GLfloat emitTimer{ 0.0f };
@@ -82,23 +88,13 @@ void Player::EmitProjectiles() {
 	GLfloat y{ transform->GetPosition().y };
 	GLfloat w{ transform->GetWidth() };
 
-	std::stringstream projectileName; projectileName << "projectile " << projectileCount++;
 	EntityManager::AddEntity(new Projectile(
-		glm::vec2(x + w / 2 - 8.0f, y - 20.0f),
+		glm::vec2(x + w / 2, y - 20.0f),
 		glm::vec2(0.0f, -PROJECTILE_SPEED),
 		PLAYER_PROJECTILE_SIZE,
 		0.0f,
 		ResourceManager::GetTexture("playerProjectile"),
 		glm::vec3(1.0f),
 		1.0f,
-		projectileName.str()));
-	EntityManager::AddEntity(new Projectile(
-		glm::vec2(x + w / 2 + 8.0f, y - 20.0f),
-		glm::vec2(0.0f, -PROJECTILE_SPEED),
-		PLAYER_PROJECTILE_SIZE,
-		0.0f,
-		ResourceManager::GetTexture("playerProjectile"),
-		glm::vec3(1.0f),
-		1.0f,
-		projectileName.str()));
+		"Projectile"));
 }

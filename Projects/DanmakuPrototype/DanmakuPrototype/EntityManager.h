@@ -17,7 +17,7 @@ public:
 	static std::vector<Entity*> GetEntitiesByLayer(LayerEnum layer);
 	static Entity* GetEntityByName(std::string entityName);
 	static Entity& AddEntity(Entity* entity);
-	static CollisionTypeEnum CheckCollisions();
+	static void CheckCollisions();
 	static void DestroyInactiveEntities();
 };
 

@@ -11,7 +11,6 @@ public:
 		: shader(shader), texture(texture), isFixed(isFixed), alpha(alpha), color(color) {
 		InitRenderData();
 	};
-	~SpriteComponent() = default;
 
 	void Init() override;
 	void Update(GLfloat dt) override;

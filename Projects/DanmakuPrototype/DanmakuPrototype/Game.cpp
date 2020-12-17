@@ -8,6 +8,7 @@
 #include <iomanip>
 #include "ComponentsInclude.h"
 #include "Player.h"
+#include "Enemy.h"
 
 int Game::BackEndInit() {
 	//SDL init
@@ -105,6 +106,7 @@ void Game::LoadAssets() {
 	ResourceManager::LoadTexture("./Textures/blank.png", false, "blank");
 	ResourceManager::LoadTexture("./Textures/player.png", true, "player");
 	ResourceManager::LoadTexture("./Textures/playerProjectile.png", false, "playerProjectile");
+	ResourceManager::LoadTexture("./Textures/enemy.png", false, "enemy");
 
 	//Fonts
 	ResourceManager::LoadFont("./Fonts/Logopixies-owwBB.ttf", "logopixies", 20);
@@ -121,7 +123,8 @@ void Game::LoadEntities() {
 	highScore.AddComponent<TextComponent>(ResourceManager::GetShader("TextRendering"), "HIGH SCORE", "logopixies");
 	//Player
 	auto& player{ EntityManager::AddEntity(new Player("Player", LayerEnum::PLAYER_LAYER)) };
-
+	//Enemy
+	auto& enemy{ EntityManager::AddEntity(new Enemy("Enemy", LayerEnum::ENEMY_LAYER)) };
 
 }
 
