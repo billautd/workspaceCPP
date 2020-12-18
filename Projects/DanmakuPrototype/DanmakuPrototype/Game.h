@@ -1,8 +1,17 @@
 #pragma once
-#include "GameStateEnum.h"
+#include "SDL.h"
+#include "SDL_mixer.h"
+
 #include "Constants.h"
 #include "EntityManager.h"
-#include "SDL.h"
+#include "ResourceManager.h"
+#include "SpriteComponent.h"
+#include "TextComponent.h"
+#include "ProjectileEmitterComponent.h"
+#include "Player.h"
+#include "Enemy.h"
+
+#include "GameStateEnum.h"
 
 class Game
 {

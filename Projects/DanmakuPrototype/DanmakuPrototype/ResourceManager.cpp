@@ -2,9 +2,6 @@
 #include "ft2build.h"
 #include FT_FREETYPE_H
 #include "ResourceManager.h"
-#include <fstream>
-#include <sstream>
-
 
 std::map<std::string, Texture2D> ResourceManager::textures;
 std::map<std::string, Shader> ResourceManager::shaders;

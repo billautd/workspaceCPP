@@ -1,5 +1,4 @@
 #include "MusicPlayer.h"
-#include "ResourceManager.h"
 
 void MusicPlayer::PlayMusic(std::string name, bool loop) {
 	Mix_PlayMusic(ResourceManager::GetMusic(name), loop ? -1 : 0);

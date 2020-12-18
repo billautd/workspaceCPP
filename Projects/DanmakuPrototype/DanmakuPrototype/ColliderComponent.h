@@ -1,5 +1,6 @@
 #pragma once
-#include "ComponentsInclude.h"
+#include "TransformComponent.h"
+#include "Entity.h"
 
 class ColliderComponent : public Component {
 public:

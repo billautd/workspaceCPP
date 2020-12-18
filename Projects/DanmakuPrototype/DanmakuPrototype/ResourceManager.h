@@ -3,6 +3,8 @@
 #include "Texture2D.h"
 #include "SDL_mixer.h"
 #include <string>
+#include <sstream>
+#include <fstream>
 #include "stb_image.h"
 #include <map>
 

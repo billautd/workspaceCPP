@@ -1,5 +1,8 @@
 #pragma once
-#include "Entity.h"
+#include "Entity.h" 
+#include "SpriteComponent.h"
+#include "Constants.h"
+#include "ResourceManager.h"
 
 class Enemy : public Entity {
 public:

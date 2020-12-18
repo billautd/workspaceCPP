@@ -1,7 +1,8 @@
 #pragma once
 #include "Shader.h"
+#include "Component.h"
 #include "Texture2D.h"
-#include "ComponentsInclude.h"
+#include "Constants.h"
 #include "Entity.h"
 
 class SpriteComponent : public Component

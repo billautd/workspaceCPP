@@ -1,5 +1,4 @@
 #include "Projectile.h"
-#include "Constants.h"
 
 Projectile::Projectile() : Entity() {
 	SetEntityType(EntityTypeEnum::PROJECTILE);

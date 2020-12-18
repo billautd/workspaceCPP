@@ -1,7 +1,7 @@
 #pragma once
-#include "Entity.h"
-#include "ComponentsInclude.h"
+#include "Constants.h"
 #include "ResourceManager.h"
+#include "SpriteComponent.h"
 
 class Projectile : public Entity
 {

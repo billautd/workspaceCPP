@@ -1,19 +1,20 @@
 #pragma once
 
-#include "LayerEnum.h"
 #include "SDL.h"
 #include "glad/glad.h"
+
 #include <vector>
 #include <string>
+#include <iostream>
 #include <map>
 #include <typeinfo>
-#include "Component.h"
-#include "ComponentsInclude.h"
+
 #include "EventManager.h"
-#include <iostream>
-#include "CollisionTypeEnum.h"
 #include "ColliderComponent.h"
+
+#include "CollisionTypeEnum.h"
 #include "EntityTypeEnum.h"
+#include "LayerEnum.h"
 
 class Component;
 class Entity {

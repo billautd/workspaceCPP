@@ -2,7 +2,9 @@
 #include "glad/glad.h"
 #include "glm/glm.hpp"
 #include "Shader.h"
-#include "ComponentsInclude.h"
+#include "TransformComponent.h"
+#include "ResourceManager.h"
+#include "Entity.h"
 
 class TextComponent : public Component {
 public:

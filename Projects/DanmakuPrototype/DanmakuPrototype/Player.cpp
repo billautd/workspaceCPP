@@ -1,10 +1,4 @@
 #include "Player.h"
-#include "Constants.h"
-#include "Game.h"
-#include "Projectile.h"
-#include <iostream>
-#include <sstream>
-#include "ResourceManager.h"
 
 Player::Player() : Entity() {
 	SetEntityType(EntityTypeEnum::PLAYER);
@@ -91,7 +85,7 @@ void Player::EmitProjectiles() {
 	EntityManager::AddEntity(new Projectile(
 		glm::vec2(x + w / 2, y - 20.0f),
 		glm::vec2(0.0f, -PROJECTILE_SPEED),
-		PLAYER_PROJECTILE_SIZE,
+		PROJECTILE_SIZE,
 		0.0f,
 		ResourceManager::GetTexture("playerProjectile"),
 		glm::vec3(1.0f),

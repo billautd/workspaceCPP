@@ -1,6 +1,4 @@
 #include "Enemy.h"
-#include "Constants.h"
-#include "ResourceManager.h"
 
 Enemy::Enemy() : Entity() {
 	SetEntityType(EntityTypeEnum::ENEMY);

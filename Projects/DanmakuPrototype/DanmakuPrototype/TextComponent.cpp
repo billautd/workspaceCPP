@@ -1,9 +1,4 @@
 #include "TextComponent.h"
-#include "ResourceManager.h"
-#include <iostream>
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp" 
-#include "Entity.h"
 
 void TextComponent::Init() {
 	transform = GetOwner()->GetComponent<TransformComponent>();

@@ -1,6 +1,11 @@
 #pragma once
-#include "Entity.h"
-#include "ComponentsInclude.h"
+#include "KeyboardControlComponent.h"
+#include "Constants.h"
+#include "SpriteComponent.h"
+#include "EntityManager.h"
+#include "ResourceManager.h"
+#include "Projectile.h"
+
 class Player : public Entity
 {
 public:

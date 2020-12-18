@@ -1,6 +1,7 @@
 #pragma once
-#include "ComponentsInclude.h"
 #include "SDL.h"
+#include "Component.h"
+
 class KeyboardControlComponent : public Component
 {
 public:

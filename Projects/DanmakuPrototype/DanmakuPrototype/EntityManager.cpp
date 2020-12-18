@@ -1,4 +1,3 @@
-#include <iostream>
 #include "EntityManager.h"
 
 std::vector<Entity*> EntityManager::entities;
@@ -91,8 +90,6 @@ void EntityManager::CheckCollisions() {
 			CollisionTypeEnum collision{ entity->CheckCollision(*other) };
 			if (collision == CollisionTypeEnum::NO_COLLISION)
 				continue;
-
-
 			Enemy* enemy{ nullptr };
 			switch (collision) {
 				case CollisionTypeEnum::PLAYER_PROJECTILE_COLLISION:

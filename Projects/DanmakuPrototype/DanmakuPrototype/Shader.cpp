@@ -1,5 +1,4 @@
 #include "Shader.h"
-#include "glad/glad.h"
 
 Shader& Shader::Use() {
 	glUseProgram(this->id);

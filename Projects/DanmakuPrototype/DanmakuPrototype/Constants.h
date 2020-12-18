@@ -16,7 +16,7 @@ const glm::vec2 GAME_SIZE(2 * SCREEN_WIDTH / 3 - 20.0f, SCREEN_HEIGHT - 20.0f);
 const glm::vec2 PLAYER_SIZE{ glm::vec2(64.0f, 64.0f) };
 const GLfloat PLAYER_VELOCITY{ 300.0f };
 
-const glm::vec2 PLAYER_PROJECTILE_SIZE{ glm::vec2(4.0f, 4.0f) };
+const glm::vec2 PROJECTILE_SIZE{ glm::vec2(4.0f, 4.0f) };
 
 const glm::vec2 ENEMY_SIZE{ glm::vec2(32.0f, 32.0f) };
 

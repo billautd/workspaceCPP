@@ -1,6 +1,4 @@
 #include "GLUtils.h"
-#include "glad/glad.h"
-#include <iostream>
 
 void GLUtils::GetGLError() {
 	switch (glGetError()) {

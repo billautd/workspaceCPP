@@ -1,7 +1,4 @@
 #include "SpriteComponent.h"
-#include "Entity.h"
-#include "Constants.h"
-#include "GLUtils.h"
 
 void SpriteComponent::Init() {
 	transform = GetOwner()->GetComponent<TransformComponent>();

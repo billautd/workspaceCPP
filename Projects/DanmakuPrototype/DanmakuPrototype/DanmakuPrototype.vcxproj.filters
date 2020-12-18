@@ -96,6 +96,9 @@
     <ClCompile Include="ColliderComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
+    <ClCompile Include="ProjectileEmitterComponent.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -149,9 +152,6 @@
     <ClInclude Include="GLUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentsInclude.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="KeyboardControlComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
@@ -178,6 +178,9 @@
     </ClInclude>
     <ClInclude Include="Enum.h">
       <Filter>Header Files\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectileEmitterComponent.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
