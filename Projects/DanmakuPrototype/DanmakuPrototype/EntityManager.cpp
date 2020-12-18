@@ -88,7 +88,8 @@ void EntityManager::CheckCollisions() {
 				continue;
 			//Check collision between all pairs of entities, but only once
 			CollisionTypeEnum collision{ entity->CheckCollision(*other) };
-			if (collision == CollisionTypeEnum::NO_COLLISION)
+			if (collision == CollisionTypeEnum::NO_COLLISION ||
+				collision == CollisionTypeEnum::ENEMY_PROJECTILE_ENEMY_COLLISION)
 				continue;
 			Enemy* enemy{ nullptr };
 			switch (collision) {
@@ -115,7 +116,7 @@ void EntityManager::CheckCollisions() {
 
 
 
-Entity& EntityManager::AddEntity(Entity* entity) {
+Entity* EntityManager::AddEntity(Entity* entity) {
 	entities.emplace_back(entity);
-	return *entity;
+	return entity;
 }

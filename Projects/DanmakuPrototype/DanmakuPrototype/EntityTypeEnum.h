@@ -4,6 +4,7 @@ enum class EntityTypeEnum {
 	ENTITY = BEGIN,
 	PLAYER,
 	PROJECTILE,
+	ENEMY_PROJECTILE,
 	ENEMY,
 	END = ENEMY
 };

@@ -18,16 +18,16 @@ void Entity::Destroy() {
 
 CollisionTypeEnum Entity::CheckCollision(Entity& other) {
 	//Check for Collider Component existence is done in EntityManager to avoid useless calculation
-	ColliderComponent thisCollider = *GetComponent<ColliderComponent>();
-	ColliderComponent otherCollider = *other.GetComponent<ColliderComponent>();
 
-	if (thisCollider.GetX() < otherCollider.GetX() + otherCollider.GetWidth() &&
-		thisCollider.GetX() + thisCollider.GetWidth() > otherCollider.GetX() &&
-		thisCollider.GetY() < otherCollider.GetY() + otherCollider.GetHeight() &&
-		thisCollider.GetHeight() + thisCollider.GetY() > otherCollider.GetY()) {
+	if (CollisionUtils::CheckRectangleCollision(*this, other)) {
 		if ((this->GetEntityType() == EntityTypeEnum::PROJECTILE && other.GetEntityType() == EntityTypeEnum::ENEMY) ||
-			(this->GetEntityType() == EntityTypeEnum::ENEMY && other.GetEntityType() == EntityTypeEnum::PROJECTILE))
+			(this->GetEntityType() == EntityTypeEnum::ENEMY && other.GetEntityType() == EntityTypeEnum::PROJECTILE)) {
 			return CollisionTypeEnum::ENEMY_PROJECTILE_COLLISION;
+		}
+		if ((this->GetEntityType() == EntityTypeEnum::ENEMY_PROJECTILE && other.GetEntityType() == EntityTypeEnum::ENEMY) ||
+			(this->GetEntityType() == EntityTypeEnum::ENEMY && other.GetEntityType() == EntityTypeEnum::ENEMY_PROJECTILE)) {
+			return CollisionTypeEnum::ENEMY_PROJECTILE_ENEMY_COLLISION;
+		}
 		if ((this->GetEntityType() == EntityTypeEnum::PROJECTILE && other.GetEntityType() == EntityTypeEnum::PLAYER) ||
 			(this->GetEntityType() == EntityTypeEnum::PLAYER && other.GetEntityType() == EntityTypeEnum::PROJECTILE))
 			return CollisionTypeEnum::PLAYER_PROJECTILE_COLLISION;

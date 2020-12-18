@@ -105,22 +105,23 @@ void Game::LoadAssets() {
 
 void Game::LoadEntities() {
 	//BG
-	auto& bg{ EntityManager::AddEntity(new Entity("GameBG", LayerEnum::BG_LAYER)) };
-	bg.AddComponent<TransformComponent>(glm::vec2(10.0f), glm::vec2(0.0f), GAME_SIZE);
-	bg.AddComponent<SpriteComponent>(ResourceManager::GetShader("SpriteRendering"), ResourceManager::GetTexture("blank"), false, glm::vec3(0.0f));
+	Entity* bg{ EntityManager::AddEntity(new Entity("GameBG", LayerEnum::BG_LAYER)) };
+	bg->AddComponent<TransformComponent>(glm::vec2(10.0f), glm::vec2(0.0f), GAME_SIZE);
+	bg->AddComponent<SpriteComponent>(ResourceManager::GetShader("SpriteRendering"), ResourceManager::GetTexture("blank"), false, glm::vec3(0.0f));
 	//UI
-	auto& highScore{ EntityManager::AddEntity(new Entity("HighScoreLabel", LayerEnum::UI_LAYER)) };
-	highScore.AddComponent<TransformComponent>(glm::vec2(GAME_POSITION.x + GAME_SIZE.x + 20.0f, 30.0f), glm::vec2(0.0f), glm::vec2(30.0f));
-	highScore.AddComponent<TextComponent>(ResourceManager::GetShader("TextRendering"), "HIGH SCORE", "logopixies");
+	Entity* highScore{ EntityManager::AddEntity(new Entity("HighScoreLabel", LayerEnum::UI_LAYER)) };
+	highScore->AddComponent<TransformComponent>(glm::vec2(GAME_POSITION.x + GAME_SIZE.x + 20.0f, 30.0f), glm::vec2(0.0f), glm::vec2(30.0f));
+	highScore->AddComponent<TextComponent>(ResourceManager::GetShader("TextRendering"), "HIGH SCORE", "logopixies");
 	//Player
-	auto& player{ EntityManager::AddEntity(new Player("Player", LayerEnum::PLAYER_LAYER)) };
+	Player* player{ dynamic_cast<Player*>(EntityManager::AddEntity(new Player("Player", LayerEnum::PLAYER_LAYER))) };
 	//Enemy
-	GLuint enemyNumber{ 3 };
+	GLuint enemyNumber{ 2 };
 	GLfloat gap{ GAME_SIZE.x - enemyNumber * ENEMY_SIZE.x };
 	for (GLuint i = 0; i < enemyNumber; i++) {
 		glm::vec2 position{ GAME_POSITION.x + gap / (enemyNumber + 1) + i * (ENEMY_SIZE.x + gap / (enemyNumber + 1)), GAME_POSITION.y + 20.0f };
-		auto& enemy{ EntityManager::AddEntity(new Enemy(position, 5, "Enemy", LayerEnum::ENEMY_LAYER)) };
-		enemy.AddComponent<ProjectileEmitterComponent>(ResourceManager::GetTexture("enemyProjectile"), 50.0f, 4.71225f, glm::vec2(), 1.0f);
+		Enemy* enemy{ dynamic_cast<Enemy*>(EntityManager::AddEntity(new Enemy(position, 5, "Enemy", LayerEnum::ENEMY_LAYER))) };
+		enemy->AddComponent<ProjectileEmitterComponent>(ResourceManager::GetTexture("enemyProjectile"), 50.0f, 4.71225f, glm::vec2(), 1.0f);
+		enemy->Translate(GAME_POSITION + GAME_SIZE, 5.0f);
 	}
 }
 

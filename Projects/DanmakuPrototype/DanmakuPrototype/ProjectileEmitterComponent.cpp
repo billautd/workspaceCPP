@@ -19,5 +19,5 @@ void ProjectileEmitterComponent::Update(GLfloat dt) {
 
 void ProjectileEmitterComponent::EmitProjectile() {
 	glm::vec2 speedVector{ cos(angle) * speed, -sin(angle) * speed };
-	EntityManager::AddEntity(new Projectile(source, speedVector, PROJECTILE_SIZE, 0.0f, projectile, glm::vec3(1.0f), 1.0f, "Projectile"));
+	EntityManager::AddEntity(new Projectile(source, speedVector, PROJECTILE_SIZE, 0.0f, projectile, glm::vec3(1.0f), 1.0f, false));
 }

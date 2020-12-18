@@ -14,6 +14,7 @@
 
 #include "CollisionTypeEnum.h"
 #include "EntityTypeEnum.h"
+#include "CollisionUtils.h"
 #include "LayerEnum.h"
 
 class Component;
@@ -33,7 +34,6 @@ public:
 		EventManager::keys = SDL_GetKeyboardState(&EventManager::keysNbr);
 	};
 
-	void SetActive(bool active) { this->isActive = active; }
 	bool IsActive() { return isActive; }
 	LayerEnum GetLayer() { return layer; }
 	std::string GetName() { return name; }
