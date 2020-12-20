@@ -2,6 +2,8 @@
 #include "Constants.h"
 #include "ResourceManager.h"
 #include "SpriteComponent.h"
+#include "ColliderComponent.h"
+#include "TransformComponent.h"
 
 class Projectile : public Entity
 {

@@ -115,13 +115,12 @@ void Game::LoadEntities() {
 	//Player
 	Player* player{ dynamic_cast<Player*>(EntityManager::AddEntity(new Player("Player", LayerEnum::PLAYER_LAYER))) };
 	//Enemy
-	GLuint enemyNumber{ 2 };
+	GLuint enemyNumber{ 1 };
 	GLfloat gap{ GAME_SIZE.x - enemyNumber * ENEMY_SIZE.x };
 	for (GLuint i = 0; i < enemyNumber; i++) {
 		glm::vec2 position{ GAME_POSITION.x + gap / (enemyNumber + 1) + i * (ENEMY_SIZE.x + gap / (enemyNumber + 1)), GAME_POSITION.y + 20.0f };
 		Enemy* enemy{ dynamic_cast<Enemy*>(EntityManager::AddEntity(new Enemy(position, 5, "Enemy", LayerEnum::ENEMY_LAYER))) };
-		enemy->AddComponent<ProjectileEmitterComponent>(ResourceManager::GetTexture("enemyProjectile"), 50.0f, 4.71225f, glm::vec2(), 1.0f);
-		enemy->Translate(GAME_POSITION + GAME_SIZE, 5.0f);
+		enemy->AddComponent<FirePatternComponent>(&Patterns::MoveToCenterThenShootDown);
 	}
 }
 

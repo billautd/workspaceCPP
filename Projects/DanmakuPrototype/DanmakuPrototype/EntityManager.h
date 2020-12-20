@@ -8,6 +8,7 @@ class EntityManager {
 private:
 	EntityManager();
 	static std::vector<Entity*> entities;
+	static CollisionTypeEnum CheckCollision(Entity& thisEntity, Entity& otherEntity);
 public:
 	static void ClearData();
 	static void Update(GLfloat dt);
@@ -20,5 +21,6 @@ public:
 	static Entity* AddEntity(Entity* entity);
 	static void CheckCollisions();
 	static void DestroyInactiveEntities();
+
 };
 

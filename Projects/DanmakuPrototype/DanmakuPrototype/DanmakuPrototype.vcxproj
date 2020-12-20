@@ -162,6 +162,7 @@
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="EventManager.cpp" />
+    <ClCompile Include="FirePatternComponent.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameData.cpp" />
     <ClCompile Include="GLUtils.cpp" />
@@ -170,8 +171,8 @@
     <ClCompile Include="MusicPlayer.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Projectile.cpp" />
-    <ClCompile Include="ProjectileEmitterComponent.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="Patterns.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
     <ClCompile Include="TextComponent.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="EntityTypeEnum.h" />
     <ClInclude Include="Enum.h" />
     <ClInclude Include="EventManager.h" />
+    <ClInclude Include="FirePatternComponent.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameData.h" />
     <ClInclude Include="GameStateEnum.h" />
@@ -197,9 +199,9 @@
     <ClInclude Include="KeyboardControlComponent.h" />
     <ClInclude Include="LayerEnum.h" />
     <ClInclude Include="MusicPlayer.h" />
+    <ClInclude Include="Patterns.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />
-    <ClInclude Include="ProjectileEmitterComponent.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SpriteComponent.h" />

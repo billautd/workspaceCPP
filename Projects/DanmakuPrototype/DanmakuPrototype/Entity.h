@@ -10,12 +10,11 @@
 #include <typeinfo>
 
 #include "EventManager.h"
-#include "ColliderComponent.h"
 
 #include "CollisionTypeEnum.h"
 #include "EntityTypeEnum.h"
-#include "CollisionUtils.h"
 #include "LayerEnum.h"
+#include "Component.h"
 
 class Component;
 class Entity {
@@ -27,7 +26,6 @@ public:
 	virtual void Update(GLfloat dt);
 	virtual void Render();
 	virtual void Destroy();
-	virtual CollisionTypeEnum CheckCollision(Entity& entity);
 
 	//Each entity has its own
 	virtual void ProcessInput(SDL_Event& e, GLfloat dt) {
@@ -39,16 +37,18 @@ public:
 	std::string GetName() { return name; }
 	EntityTypeEnum GetEntityType() { return entityType; }
 	void SetEntityType(EntityTypeEnum type) { entityType = type; }
+	void SetHasCollision(bool hasCollision) { this->hasCollision = hasCollision; }
+	bool HasCollision() { return hasCollision; }
 
 	//Component management
 	template <typename T, typename... TArgs>
-	T& AddComponent(TArgs&&... args) {
+	T* AddComponent(TArgs&&... args) {
 		T* newComponent(new T(std::forward<TArgs>(args)...));
 		newComponent->SetOwner(this);
 		components.emplace_back(newComponent);
 		componentTypeMap[&typeid(*newComponent)] = newComponent;
 		newComponent->Init();
-		return *newComponent;
+		return newComponent;
 	}
 
 	template <typename T>
@@ -73,5 +73,7 @@ private:
 	//Components
 	std::vector<Component*> components{};
 	std::map<const std::type_info*, Component*> componentTypeMap{};
+
+	bool hasCollision{ false };
 };
 

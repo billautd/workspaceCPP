@@ -9,9 +9,9 @@ Projectile::Projectile(std::string name, LayerEnum layer) : Entity(name, layer) 
 Projectile::Projectile(glm::vec2 position, glm::vec2 velocity, glm::vec2 size, GLfloat rotation,
 	Texture2D& texture, glm::vec3 color, GLfloat alpha, bool isFromPlayer, std::string name, LayerEnum layer) : Entity(name, layer) {
 	SetEntityType(isFromPlayer ? EntityTypeEnum::PROJECTILE : EntityTypeEnum::ENEMY_PROJECTILE);
-	transform = &AddComponent<TransformComponent>(position, velocity, size, rotation);
-	sprite = &AddComponent<SpriteComponent>(ResourceManager::GetShader("SpriteRendering"), texture, false, color, alpha);
-	collider = &AddComponent<ColliderComponent>();
+	transform = AddComponent<TransformComponent>(position, velocity, size, rotation);
+	sprite = AddComponent<SpriteComponent>(ResourceManager::GetShader("SpriteRendering"), texture, false, color, alpha);
+	collider = AddComponent<ColliderComponent>();
 };
 
 void Projectile::Update(GLfloat dt) {

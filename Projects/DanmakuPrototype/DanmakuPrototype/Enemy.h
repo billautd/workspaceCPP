@@ -4,6 +4,7 @@
 #include "Constants.h"
 #include "ResourceManager.h"
 #include "CollisionUtils.h"
+#include <functional>
 
 class Enemy : public Entity {
 public:
@@ -17,7 +18,7 @@ public:
 	void DecrementHealth() { health--; }
 	bool IsDead() { return health <= 0; }
 	void Translate(glm::vec2 dest, GLfloat time); //Time in seconds
-
+	bool IsTranslating() { return isTranslating; }
 private:
 	TransformComponent* transform{ nullptr };
 	SpriteComponent* sprite{ nullptr };

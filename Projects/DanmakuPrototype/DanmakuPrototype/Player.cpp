@@ -6,10 +6,10 @@ Player::Player() : Entity() {
 
 Player::Player(std::string name, LayerEnum layer) : Entity(name, layer) {
 	SetEntityType(EntityTypeEnum::PLAYER);
-	transform = &AddComponent<TransformComponent>(glm::vec2(GAME_POSITION.x + GAME_SIZE.x / 2.0f - PLAYER_SIZE.x / 2, GAME_POSITION.y + GAME_SIZE.y - PLAYER_SIZE.y), glm::vec2(0.0f), PLAYER_SIZE);
-	sprite = &AddComponent<SpriteComponent>(ResourceManager::GetShader("SpriteRendering"), ResourceManager::GetTexture("player"), true);
-	kbd = &AddComponent<KeyboardControlComponent>();
-	collider = &AddComponent<ColliderComponent>();
+	transform = AddComponent<TransformComponent>(glm::vec2(GAME_POSITION.x + GAME_SIZE.x / 2.0f - PLAYER_SIZE.x / 2, GAME_POSITION.y + GAME_SIZE.y - PLAYER_SIZE.y), glm::vec2(0.0f), PLAYER_SIZE);
+	sprite = AddComponent<SpriteComponent>(ResourceManager::GetShader("SpriteRendering"), ResourceManager::GetTexture("player"), true);
+	kbd = AddComponent<KeyboardControlComponent>();
+	collider = AddComponent<ColliderComponent>();
 }
 
 GLfloat emitTimer{ 0.0f };

@@ -2,6 +2,7 @@
 
 void ColliderComponent::Init() {
 	this->transform = GetOwner()->GetComponent<TransformComponent>();
+	GetOwner()->SetHasCollision(true);
 }
 
 void ColliderComponent::Update(GLfloat dt) {

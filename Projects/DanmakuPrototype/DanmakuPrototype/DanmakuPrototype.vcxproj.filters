@@ -40,6 +40,18 @@
     <Filter Include="Source Files\Utils">
       <UniqueIdentifier>{4a10b450-60c9-4f1f-b891-3cd391a4f2bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Patterns">
+      <UniqueIdentifier>{9776804b-3f6c-448c-813f-93ed45ccbad8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Patterns">
+      <UniqueIdentifier>{66d12105-c785-40ca-924f-b008fa1dce2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Managers">
+      <UniqueIdentifier>{9a3c8240-b2c7-43b8-97a7-e6880d79fa57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Constants">
+      <UniqueIdentifier>{ce8fcfd9-a009-445e-92ea-efcdf2de2530}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -99,28 +111,25 @@
     <ClCompile Include="ColliderComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="ProjectileEmitterComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
     <ClCompile Include="GLUtils.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="CollisionUtils.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Patterns.cpp">
+      <Filter>Source Files\Patterns</Filter>
+    </ClCompile>
+    <ClCompile Include="FirePatternComponent.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GameStateEnum.h">
       <Filter>Header Files\Enums</Filter>
-    </ClInclude>
-    <ClInclude Include="Constants.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
       <Filter>Header Files</Filter>
@@ -131,20 +140,11 @@
     <ClInclude Include="stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MusicPlayer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SpriteComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="LayerEnum.h">
       <Filter>Header Files\Enums</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityManager.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CollisionTypeEnum.h">
       <Filter>Header Files\Enums</Filter>
@@ -167,9 +167,6 @@
     <ClInclude Include="Player.h">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="EventManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Projectile.h">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
@@ -185,13 +182,34 @@
     <ClInclude Include="Enum.h">
       <Filter>Header Files\Enums</Filter>
     </ClInclude>
-    <ClInclude Include="ProjectileEmitterComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="CollisionUtils.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="GLUtils.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Patterns.h">
+      <Filter>Header Files\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="FirePatternComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="EventManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Header Files\Constants</Filter>
+    </ClInclude>
+    <ClInclude Include="GameData.h">
+      <Filter>Header Files\Constants</Filter>
+    </ClInclude>
+    <ClInclude Include="MusicPlayer.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>

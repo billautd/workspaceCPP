@@ -3,6 +3,7 @@
 #include "Component.h"
 #include "Texture2D.h"
 #include "Constants.h"
+#include "TransformComponent.h"
 #include "Entity.h"
 
 class SpriteComponent : public Component

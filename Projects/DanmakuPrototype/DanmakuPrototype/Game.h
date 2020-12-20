@@ -7,11 +7,12 @@
 #include "ResourceManager.h"
 #include "SpriteComponent.h"
 #include "TextComponent.h"
-#include "ProjectileEmitterComponent.h"
 #include "Player.h"
 #include "Enemy.h"
 
 #include "GameStateEnum.h"
+#include "FirePatternComponent.h"
+#include "Patterns.h"
 
 class Game
 {

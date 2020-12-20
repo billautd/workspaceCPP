@@ -1,11 +1,6 @@
 #include "CollisionUtils.h"
 
-bool CollisionUtils::CheckRectangleCollision(Entity& thisEntity, Entity& otherEntity) {
-	if (!thisEntity.HasComponent<ColliderComponent>() || !otherEntity.HasComponent<ColliderComponent>())
-		return false;
-	ColliderComponent& thisCollider{ *thisEntity.GetComponent<ColliderComponent>() };
-	ColliderComponent& otherCollider{ *otherEntity.GetComponent<ColliderComponent>() };
-
+bool CollisionUtils::CheckRectangleCollision(ColliderComponent& thisCollider, ColliderComponent& otherCollider) {
 	return thisCollider.GetX() < otherCollider.GetX() + otherCollider.GetWidth() &&
 		thisCollider.GetX() + thisCollider.GetWidth() > otherCollider.GetX() &&
 		thisCollider.GetY() < otherCollider.GetY() + otherCollider.GetHeight() &&
@@ -13,8 +8,7 @@ bool CollisionUtils::CheckRectangleCollision(Entity& thisEntity, Entity& otherEn
 }
 
 bool CollisionUtils::IsOutsideGame(Entity& entity) {
-	if (!entity.HasComponent<TransformComponent>())
-		return false;
+
 	TransformComponent& transform{ *entity.GetComponent<TransformComponent>() };
 
 	GLfloat x{ transform.GetPosition().x };
