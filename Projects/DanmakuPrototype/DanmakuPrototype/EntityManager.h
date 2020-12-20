@@ -9,6 +9,7 @@ private:
 	EntityManager();
 	static std::vector<Entity*> entities;
 	static CollisionTypeEnum CheckCollision(Entity& thisEntity, Entity& otherEntity);
+	static bool CheckCollisionType(Entity& thisEntity, Entity& otherEntity, EntityTypeEnum thisType, EntityTypeEnum otherType);
 public:
 	static void ClearData();
 	static void Update(GLfloat dt);

@@ -164,7 +164,6 @@
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="FirePatternComponent.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameData.cpp" />
     <ClCompile Include="GLUtils.cpp" />
     <ClCompile Include="KeyboardControlComponent.cpp" />
     <ClCompile Include="Main.cpp" />

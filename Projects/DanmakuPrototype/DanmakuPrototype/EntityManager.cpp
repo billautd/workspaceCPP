@@ -115,26 +115,27 @@ void EntityManager::CheckCollisions() {
 
 
 CollisionTypeEnum EntityManager::CheckCollision(Entity& thisEntity, Entity& otherEntity) {
-	//Two projectiles should not have collision between them
-	if ((thisEntity.GetEntityType() == EntityTypeEnum::PROJECTILE || thisEntity.GetEntityType() == EntityTypeEnum::ENEMY_PROJECTILE) &&
-		(otherEntity.GetEntityType() == EntityTypeEnum::PROJECTILE || otherEntity.GetEntityType() == EntityTypeEnum::ENEMY_PROJECTILE))
+	//Two projectiles should not collide
+	if ((thisEntity.GetEntityType() == EntityTypeEnum::PLAYER_PROJECTILE || thisEntity.GetEntityType() == EntityTypeEnum::ENEMY_PROJECTILE) &&
+		(otherEntity.GetEntityType() == EntityTypeEnum::PLAYER_PROJECTILE || otherEntity.GetEntityType() == EntityTypeEnum::ENEMY_PROJECTILE))
+		return CollisionTypeEnum::NO_COLLISION;
+
+	//Enemy projectiles and enemies should not collide
+	if (CheckCollisionType(thisEntity, otherEntity, EntityTypeEnum::ENEMY, EntityTypeEnum::ENEMY_PROJECTILE))
 		return CollisionTypeEnum::NO_COLLISION;
 
 	if (CollisionUtils::CheckRectangleCollision(*thisEntity.GetComponent<ColliderComponent>(), *otherEntity.GetComponent<ColliderComponent>())) {
-		if ((thisEntity.GetEntityType() == EntityTypeEnum::PROJECTILE && otherEntity.GetEntityType() == EntityTypeEnum::ENEMY) ||
-			(thisEntity.GetEntityType() == EntityTypeEnum::ENEMY && otherEntity.GetEntityType() == EntityTypeEnum::PROJECTILE)) {
+		if (CheckCollisionType(thisEntity, otherEntity, EntityTypeEnum::ENEMY, EntityTypeEnum::PLAYER_PROJECTILE))
 			return CollisionTypeEnum::ENEMY_PROJECTILE_COLLISION;
-		}
-		if ((thisEntity.GetEntityType() == EntityTypeEnum::ENEMY_PROJECTILE && otherEntity.GetEntityType() == EntityTypeEnum::ENEMY) ||
-			(thisEntity.GetEntityType() == EntityTypeEnum::ENEMY && otherEntity.GetEntityType() == EntityTypeEnum::ENEMY_PROJECTILE)) {
-			return CollisionTypeEnum::NO_COLLISION;
-		}
-		if ((thisEntity.GetEntityType() == EntityTypeEnum::PROJECTILE && otherEntity.GetEntityType() == EntityTypeEnum::PLAYER) ||
-			(thisEntity.GetEntityType() == EntityTypeEnum::PLAYER && otherEntity.GetEntityType() == EntityTypeEnum::PROJECTILE))
+		if (CheckCollisionType(thisEntity, otherEntity, EntityTypeEnum::ENEMY_PROJECTILE, EntityTypeEnum::PLAYER))
 			return CollisionTypeEnum::PLAYER_PROJECTILE_COLLISION;
 	}
-
 	return CollisionTypeEnum::NO_COLLISION;
+}
+
+bool EntityManager::CheckCollisionType(Entity& thisEntity, Entity& otherEntity, EntityTypeEnum thisType, EntityTypeEnum otherType) {
+	return (thisEntity.GetEntityType() == thisType && otherEntity.GetEntityType() == otherType) ||
+		(thisEntity.GetEntityType() == otherType && otherEntity.GetEntityType() == thisType);
 }
 
 
