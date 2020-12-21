@@ -7,5 +7,5 @@
 class CollisionUtils {
 public:
 	static bool CheckRectangleCollision(ColliderComponent& thisCollider, ColliderComponent& otherCollider);
-	static bool IsOutsideGame(Entity& entity);
+	static bool WillBeOutsideGame(TransformComponent& transform, glm::vec2 futureVelocity);
 };

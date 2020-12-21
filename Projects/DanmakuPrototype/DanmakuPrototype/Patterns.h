@@ -8,4 +8,5 @@
 class Patterns {
 public:
 	static void MoveToCenterThenShootDown(FirePatternComponent* comp, GLfloat dt);
+	static void MoveToCenterThenSpiral(FirePatternComponent* comp, GLfloat dt);
 };

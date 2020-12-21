@@ -5,9 +5,8 @@ void ColliderComponent::Init() {
 	GetOwner()->SetHasCollision(true);
 }
 
+
 void ColliderComponent::Update(GLfloat dt) {
-	x = transform->GetPosition().x;
-	y = transform->GetPosition().y;
-	width = transform->GetWidth();
-	height = transform->GetHeight();
+	x += transform->GetVelocity().x * dt * 2.0f;
+	y += transform->GetVelocity().y * dt * 2.0f;
 }

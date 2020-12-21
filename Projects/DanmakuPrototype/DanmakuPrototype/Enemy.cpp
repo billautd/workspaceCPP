@@ -10,7 +10,7 @@ Enemy::Enemy(glm::vec2 position, GLuint health, std::string name, LayerEnum laye
 		glm::vec2(),
 		ENEMY_SIZE);
 	sprite = AddComponent<SpriteComponent>(ResourceManager::GetShader("SpriteRendering"), ResourceManager::GetTexture("enemy"), false);
-	collider = AddComponent<ColliderComponent>();
+	collider = AddComponent<ColliderComponent>(position.x, position.y, ENEMY_SIZE.x, ENEMY_SIZE.y);
 }
 
 GLfloat translationTimer{};
@@ -19,7 +19,7 @@ glm::vec2* source{ nullptr };
 void Enemy::Update(GLfloat dt) {
 	Entity::Update(dt);
 	if (isTranslating) {
-		if (translationTimer <= 0 || CollisionUtils::IsOutsideGame(*this)) {
+		if (translationTimer <= 0 || CollisionUtils::WillBeOutsideGame(*transform, transform->GetVelocity())) {
 			//Stop translation
 			isTranslating = false;
 			delete source;

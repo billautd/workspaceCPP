@@ -29,7 +29,7 @@ int Game::BackEndInit() {
 		SDL_WINDOWPOS_UNDEFINED,
 		width,
 		height,
-		SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL
+		SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL
 	);
 
 	if (!this->mainWindow) {
@@ -98,6 +98,7 @@ void Game::LoadAssets() {
 	ResourceManager::LoadTexture("./Textures/playerProjectile.png", false, "playerProjectile");
 	ResourceManager::LoadTexture("./Textures/enemy.png", false, "enemy");
 	ResourceManager::LoadTexture("./Textures/enemyProjectile.png", false, "enemyProjectile");
+	ResourceManager::LoadTexture("./Textures/hitbox.png", true, "hitbox");
 
 	//Fonts
 	ResourceManager::LoadFont("./Fonts/Logopixies-owwBB.ttf", "logopixies", 20);
@@ -112,15 +113,16 @@ void Game::LoadEntities() {
 	Entity* highScore{ EntityManager::AddEntity(new Entity("HighScoreLabel", LayerEnum::UI_LAYER)) };
 	highScore->AddComponent<TransformComponent>(glm::vec2(GAME_POSITION.x + GAME_SIZE.x + 20.0f, 30.0f), glm::vec2(0.0f), glm::vec2(30.0f));
 	highScore->AddComponent<TextComponent>(ResourceManager::GetShader("TextRendering"), "HIGH SCORE", "logopixies");
-	//Player
+	//Player + hitbox
 	Player* player{ dynamic_cast<Player*>(EntityManager::AddEntity(new Player("Player", LayerEnum::PLAYER_LAYER))) };
+
 	//Enemy
 	GLuint enemyNumber{ 1 };
 	GLfloat gap{ GAME_SIZE.x - enemyNumber * ENEMY_SIZE.x };
 	for (GLuint i = 0; i < enemyNumber; i++) {
 		glm::vec2 position{ GAME_POSITION.x + gap / (enemyNumber + 1) + i * (ENEMY_SIZE.x + gap / (enemyNumber + 1)), GAME_POSITION.y + 20.0f };
-		Enemy* enemy{ dynamic_cast<Enemy*>(EntityManager::AddEntity(new Enemy(position, 5, "Enemy", LayerEnum::ENEMY_LAYER))) };
-		enemy->AddComponent<FirePatternComponent>(&Patterns::MoveToCenterThenShootDown);
+		Enemy* enemy{ dynamic_cast<Enemy*>(EntityManager::AddEntity(new Enemy(position, 25, "Enemy", LayerEnum::ENEMY_LAYER))) };
+		enemy->AddComponent<FirePatternComponent>(&Patterns::MoveToCenterThenSpiral);
 	}
 }
 

@@ -9,7 +9,7 @@ Projectile::Projectile(glm::vec2 position, glm::vec2 velocity, glm::vec2 size, G
 	SetEntityType(isFromPlayer ? EntityTypeEnum::PLAYER_PROJECTILE : EntityTypeEnum::ENEMY_PROJECTILE);
 	transform = AddComponent<TransformComponent>(position, velocity, size, rotation);
 	sprite = AddComponent<SpriteComponent>(ResourceManager::GetShader("SpriteRendering"), texture, false, color, alpha);
-	collider = AddComponent<ColliderComponent>();
+	collider = AddComponent<ColliderComponent>(position.x, position.y, size.x, size.y);
 };
 
 void Projectile::Update(GLfloat dt) {

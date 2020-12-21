@@ -90,10 +90,17 @@ void EntityManager::CheckCollisions() {
 			CollisionTypeEnum collision{ CheckCollision(*entity, *other) };
 			if (collision == CollisionTypeEnum::NO_COLLISION)
 				continue;
+			Player* player{ nullptr };
 			Enemy* enemy{ nullptr };
 			switch (collision) {
 				case CollisionTypeEnum::PLAYER_PROJECTILE_COLLISION:
-					entity->Destroy();
+				case CollisionTypeEnum::PLAYER_ENEMY_COLLISION:
+					if (entity->GetEntityType() == EntityTypeEnum::PLAYER)
+						player = dynamic_cast<Player*>(entity);
+					else
+						player = dynamic_cast<Player*>(other);
+					player->GetHitbox()->Destroy();
+					player->Destroy();
 					other->Destroy();
 					break;
 				case CollisionTypeEnum::ENEMY_PROJECTILE_COLLISION:
@@ -115,6 +122,9 @@ void EntityManager::CheckCollisions() {
 
 
 CollisionTypeEnum EntityManager::CheckCollision(Entity& thisEntity, Entity& otherEntity) {
+	//Same type should no collide
+	if (thisEntity.GetEntityType() == otherEntity.GetEntityType())
+		return CollisionTypeEnum::NO_COLLISION;
 	//Two projectiles should not collide
 	if ((thisEntity.GetEntityType() == EntityTypeEnum::PLAYER_PROJECTILE || thisEntity.GetEntityType() == EntityTypeEnum::ENEMY_PROJECTILE) &&
 		(otherEntity.GetEntityType() == EntityTypeEnum::PLAYER_PROJECTILE || otherEntity.GetEntityType() == EntityTypeEnum::ENEMY_PROJECTILE))
@@ -129,8 +139,10 @@ CollisionTypeEnum EntityManager::CheckCollision(Entity& thisEntity, Entity& othe
 			return CollisionTypeEnum::ENEMY_PROJECTILE_COLLISION;
 		if (CheckCollisionType(thisEntity, otherEntity, EntityTypeEnum::ENEMY_PROJECTILE, EntityTypeEnum::PLAYER))
 			return CollisionTypeEnum::PLAYER_PROJECTILE_COLLISION;
+		if (CheckCollisionType(thisEntity, otherEntity, EntityTypeEnum::PLAYER, EntityTypeEnum::ENEMY))
+			return CollisionTypeEnum::PLAYER_ENEMY_COLLISION;
+		return CollisionTypeEnum::NO_COLLISION;
 	}
-	return CollisionTypeEnum::NO_COLLISION;
 }
 
 bool EntityManager::CheckCollisionType(Entity& thisEntity, Entity& otherEntity, EntityTypeEnum thisType, EntityTypeEnum otherType) {

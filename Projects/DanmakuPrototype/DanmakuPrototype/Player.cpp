@@ -5,11 +5,18 @@ Player::Player() : Entity() {
 }
 
 Player::Player(std::string name, LayerEnum layer) : Entity(name, layer) {
+	//Player init
 	SetEntityType(EntityTypeEnum::PLAYER);
-	transform = AddComponent<TransformComponent>(glm::vec2(GAME_POSITION.x + GAME_SIZE.x / 2.0f - PLAYER_SIZE.x / 2, GAME_POSITION.y + GAME_SIZE.y - PLAYER_SIZE.y), glm::vec2(0.0f), PLAYER_SIZE);
+	transform = AddComponent<TransformComponent>(PLAYER_INIT_POSITION, glm::vec2(0.0f), PLAYER_SIZE);
 	sprite = AddComponent<SpriteComponent>(ResourceManager::GetShader("SpriteRendering"), ResourceManager::GetTexture("player"), true);
 	kbd = AddComponent<KeyboardControlComponent>();
-	collider = AddComponent<ColliderComponent>();
+	collider = AddComponent<ColliderComponent>(HITBOX_POSITION.x, HITBOX_POSITION.y, HITBOX_SIZE.x, HITBOX_SIZE.y);
+
+	//Hitbox init
+	hitbox = EntityManager::AddEntity(new Entity("Hitbox", LayerEnum::PROJECTILE_LAYER));
+	hitbox->SetEntityType(EntityTypeEnum::PLAYER);
+	hitboxTransform = hitbox->AddComponent<TransformComponent>(HITBOX_POSITION, glm::vec2(), HITBOX_SIZE);
+	hitbox->AddComponent<SpriteComponent>(ResourceManager::GetShader("SpriteRendering"), ResourceManager::GetTexture("hitbox"), false);
 }
 
 GLfloat emitTimer{ 0.0f };
@@ -20,39 +27,84 @@ void Player::ProcessInput(SDL_Event& e, GLfloat dt) {
 
 	const Uint8* keys{ EventManager::keys };
 
-	GLfloat velocity{ PLAYER_VELOCITY * dt };
 
 	//UP
 	SDL_Scancode up{ kbd->GetUpKey() };
 	if (keys[up]) {
-		transform->SetPositionY(transform->GetPosition().y - velocity);
-		if (CollisionUtils::IsOutsideGame(*this))
+		if (CollisionUtils::WillBeOutsideGame(*transform, glm::vec2(0, -PLAYER_VELOCITY * dt))) {
+			transform->SetVelocityY(0);
+			hitboxTransform->SetVelocityY(0);
 			transform->SetPositionY(GAME_POSITION.y);
+			hitboxTransform->SetPositionY(GAME_POSITION.y + PLAYER_SIZE.y / 2.0f - HITBOX_SIZE.y / 2.0f);
+		}
+		else {
+			transform->SetVelocityY(-PLAYER_VELOCITY);
+			hitboxTransform->SetVelocityY(-PLAYER_VELOCITY);
+		}
+
 	}
+	else {
+		transform->SetVelocityY(0);
+		hitboxTransform->SetVelocityY(0);
+	}
+
 
 	//DOWN
 	SDL_Scancode down{ kbd->GetDownKey() };
 	if (keys[down]) {
-		transform->SetPositionY(transform->GetPosition().y + velocity);
-		if (CollisionUtils::IsOutsideGame(*this))
+		if (CollisionUtils::WillBeOutsideGame(*transform, glm::vec2(0, PLAYER_VELOCITY * dt))) {
+			transform->SetVelocityY(0);
+			hitboxTransform->SetVelocityY(0);
 			transform->SetPositionY(GAME_POSITION.y + GAME_SIZE.y - PLAYER_SIZE.y);
+			hitboxTransform->SetPositionY(GAME_POSITION.y + GAME_SIZE.y - PLAYER_SIZE.y + PLAYER_SIZE.y / 2.0f - HITBOX_SIZE.y / 2.0f);
+		}
+		else {
+			transform->SetVelocityY(PLAYER_VELOCITY);
+			hitboxTransform->SetVelocityY(PLAYER_VELOCITY);
+		}
+	}
+	else if (!keys[up]) {
+		transform->SetVelocityY(0);
+		hitboxTransform->SetVelocityY(0);
 	}
 
 	//LEFT
 	SDL_Scancode left{ kbd->GetLeftKey() };
 	if (keys[left]) {
-		transform->SetPositionX(transform->GetPosition().x - velocity);
-		if (CollisionUtils::IsOutsideGame(*this))
+		if (CollisionUtils::WillBeOutsideGame(*transform, glm::vec2(-PLAYER_VELOCITY * dt, 0))) {
+			transform->SetVelocityX(0);
+			hitboxTransform->SetVelocityX(0);
 			transform->SetPositionX(GAME_POSITION.x);
+			hitboxTransform->SetPositionX(GAME_POSITION.x + PLAYER_SIZE.x / 2.0f - HITBOX_SIZE.x / 2.0f);
+		}
+		else {
+			transform->SetVelocityX(-PLAYER_VELOCITY);
+			hitboxTransform->SetVelocityX(-PLAYER_VELOCITY);
+		}
 	}
 
+	else {
+		transform->SetVelocityX(0);
+		hitboxTransform->SetVelocityX(0);
+	}
 
 	//RIGHT
 	SDL_Scancode right{ kbd->GetRightKey() };
 	if (keys[right]) {
-		transform->SetPositionX(transform->GetPosition().x + velocity);
-		if (CollisionUtils::IsOutsideGame(*this))
+		if (CollisionUtils::WillBeOutsideGame(*transform, glm::vec2(PLAYER_VELOCITY * dt, 0))) {
+			transform->SetVelocityX(0);
+			hitboxTransform->SetVelocityX(0);
 			transform->SetPositionX(GAME_POSITION.x + GAME_SIZE.x - PLAYER_SIZE.x);
+			hitboxTransform->SetPositionX(GAME_POSITION.x + GAME_SIZE.x - PLAYER_SIZE.x + PLAYER_SIZE.x / 2.0f - HITBOX_SIZE.x / 2.0f);
+		}
+		else {
+			transform->SetVelocityX(PLAYER_VELOCITY);
+			hitboxTransform->SetVelocityX(PLAYER_VELOCITY);
+		}
+	}
+	else if (!keys[left]) {
+		transform->SetVelocityX(0);
+		hitboxTransform->SetVelocityX(0);
 	}
 
 	SDL_Scancode shoot{ kbd->GetShootKey() };

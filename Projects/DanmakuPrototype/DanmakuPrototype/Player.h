@@ -15,11 +15,15 @@ public:
 
 	void ProcessInput(SDL_Event& e, GLfloat dt) override;
 	void EmitProjectiles();
+	Entity* GetHitbox() { return hitbox; }
 private:
 	TransformComponent* transform{ nullptr };
 	SpriteComponent* sprite{ nullptr };
 	KeyboardControlComponent* kbd{ nullptr };
 	ColliderComponent* collider{ nullptr };
+
+	Entity* hitbox{ nullptr };
+	TransformComponent* hitboxTransform{ nullptr };
 
 };
 

@@ -3,6 +3,7 @@
 #include "CollisionTypeEnum.h"
 #include "Enum.h"
 #include "Enemy.h"
+#include "Player.h"
 
 class EntityManager {
 private:

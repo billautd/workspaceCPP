@@ -4,7 +4,7 @@
 
 class ColliderComponent : public Component {
 public:
-	ColliderComponent() = default;
+	ColliderComponent(GLfloat x, GLfloat y, GLfloat width, GLfloat height) : x(x), y(y), width(width), height(height) {};
 
 	void Init() override;
 	void Update(GLfloat dt) override;

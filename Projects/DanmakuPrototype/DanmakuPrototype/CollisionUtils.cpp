@@ -7,12 +7,10 @@ bool CollisionUtils::CheckRectangleCollision(ColliderComponent& thisCollider, Co
 		thisCollider.GetHeight() + thisCollider.GetY() > otherCollider.GetY();
 }
 
-bool CollisionUtils::IsOutsideGame(Entity& entity) {
+bool CollisionUtils::WillBeOutsideGame(TransformComponent& transform, glm::vec2 futureVelocity) {
 
-	TransformComponent& transform{ *entity.GetComponent<TransformComponent>() };
-
-	GLfloat x{ transform.GetPosition().x };
-	GLfloat y{ transform.GetPosition().y };
+	GLfloat x{ transform.GetPosition().x + futureVelocity.x };
+	GLfloat y{ transform.GetPosition().y + futureVelocity.y };
 	return x < GAME_POSITION.x || x + PLAYER_SIZE.x > GAME_POSITION.x + GAME_SIZE.x
 		|| y < GAME_POSITION.y || y + PLAYER_SIZE.y > GAME_POSITION.y + GAME_SIZE.y;
 }
