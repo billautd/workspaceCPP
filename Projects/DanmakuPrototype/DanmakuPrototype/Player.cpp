@@ -21,25 +21,25 @@ Player::Player(std::string name, LayerEnum layer) : Entity(name, layer) {
 
 GLfloat emitTimer{ 0.0f };
 void Player::ProcessInput(SDL_Event& e, GLfloat dt) {
-	//Super
 	Entity::ProcessInput(e, dt);
-
 
 	const Uint8* keys{ EventManager::keys };
 
+	SDL_Scancode focus{ kbd->GetFocusKey() };
+	GLfloat velocity{ keys[focus] ? PLAYER_VELOCITY / 3.0f : PLAYER_VELOCITY };
 
 	//UP
 	SDL_Scancode up{ kbd->GetUpKey() };
 	if (keys[up]) {
-		if (CollisionUtils::WillBeOutsideGame(*transform, glm::vec2(0, -PLAYER_VELOCITY * dt))) {
+		if (CollisionUtils::WillBeOutsideGame(*transform, glm::vec2(0, -velocity * dt))) {
 			transform->SetVelocityY(0);
 			hitboxTransform->SetVelocityY(0);
 			transform->SetPositionY(GAME_POSITION.y);
 			hitboxTransform->SetPositionY(GAME_POSITION.y + PLAYER_SIZE.y / 2.0f - HITBOX_SIZE.y / 2.0f);
 		}
 		else {
-			transform->SetVelocityY(-PLAYER_VELOCITY);
-			hitboxTransform->SetVelocityY(-PLAYER_VELOCITY);
+			transform->SetVelocityY(-velocity);
+			hitboxTransform->SetVelocityY(-velocity);
 		}
 
 	}
@@ -52,15 +52,15 @@ void Player::ProcessInput(SDL_Event& e, GLfloat dt) {
 	//DOWN
 	SDL_Scancode down{ kbd->GetDownKey() };
 	if (keys[down]) {
-		if (CollisionUtils::WillBeOutsideGame(*transform, glm::vec2(0, PLAYER_VELOCITY * dt))) {
+		if (CollisionUtils::WillBeOutsideGame(*transform, glm::vec2(0, velocity * dt))) {
 			transform->SetVelocityY(0);
 			hitboxTransform->SetVelocityY(0);
 			transform->SetPositionY(GAME_POSITION.y + GAME_SIZE.y - PLAYER_SIZE.y);
 			hitboxTransform->SetPositionY(GAME_POSITION.y + GAME_SIZE.y - PLAYER_SIZE.y + PLAYER_SIZE.y / 2.0f - HITBOX_SIZE.y / 2.0f);
 		}
 		else {
-			transform->SetVelocityY(PLAYER_VELOCITY);
-			hitboxTransform->SetVelocityY(PLAYER_VELOCITY);
+			transform->SetVelocityY(velocity);
+			hitboxTransform->SetVelocityY(velocity);
 		}
 	}
 	else if (!keys[up]) {
@@ -71,15 +71,15 @@ void Player::ProcessInput(SDL_Event& e, GLfloat dt) {
 	//LEFT
 	SDL_Scancode left{ kbd->GetLeftKey() };
 	if (keys[left]) {
-		if (CollisionUtils::WillBeOutsideGame(*transform, glm::vec2(-PLAYER_VELOCITY * dt, 0))) {
+		if (CollisionUtils::WillBeOutsideGame(*transform, glm::vec2(-velocity * dt, 0))) {
 			transform->SetVelocityX(0);
 			hitboxTransform->SetVelocityX(0);
 			transform->SetPositionX(GAME_POSITION.x);
 			hitboxTransform->SetPositionX(GAME_POSITION.x + PLAYER_SIZE.x / 2.0f - HITBOX_SIZE.x / 2.0f);
 		}
 		else {
-			transform->SetVelocityX(-PLAYER_VELOCITY);
-			hitboxTransform->SetVelocityX(-PLAYER_VELOCITY);
+			transform->SetVelocityX(-velocity);
+			hitboxTransform->SetVelocityX(-velocity);
 		}
 	}
 
@@ -91,15 +91,15 @@ void Player::ProcessInput(SDL_Event& e, GLfloat dt) {
 	//RIGHT
 	SDL_Scancode right{ kbd->GetRightKey() };
 	if (keys[right]) {
-		if (CollisionUtils::WillBeOutsideGame(*transform, glm::vec2(PLAYER_VELOCITY * dt, 0))) {
+		if (CollisionUtils::WillBeOutsideGame(*transform, glm::vec2(velocity * dt, 0))) {
 			transform->SetVelocityX(0);
 			hitboxTransform->SetVelocityX(0);
 			transform->SetPositionX(GAME_POSITION.x + GAME_SIZE.x - PLAYER_SIZE.x);
 			hitboxTransform->SetPositionX(GAME_POSITION.x + GAME_SIZE.x - PLAYER_SIZE.x + PLAYER_SIZE.x / 2.0f - HITBOX_SIZE.x / 2.0f);
 		}
 		else {
-			transform->SetVelocityX(PLAYER_VELOCITY);
-			hitboxTransform->SetVelocityX(PLAYER_VELOCITY);
+			transform->SetVelocityX(velocity);
+			hitboxTransform->SetVelocityX(velocity);
 		}
 	}
 	else if (!keys[left]) {

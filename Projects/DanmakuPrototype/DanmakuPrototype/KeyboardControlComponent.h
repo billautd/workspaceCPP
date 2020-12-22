@@ -21,7 +21,7 @@ private:
 	SDL_Scancode downKey{ SDL_SCANCODE_DOWN };
 	SDL_Scancode leftKey{ SDL_SCANCODE_LEFT };
 	SDL_Scancode rightKey{ SDL_SCANCODE_RIGHT };
-	SDL_Scancode shootKey{ SDL_SCANCODE_KP_0 };
+	SDL_Scancode shootKey{ SDL_SCANCODE_Z };
 	SDL_Scancode focusKey{ SDL_SCANCODE_LSHIFT };
 	SDL_Scancode bombKey{ SDL_SCANCODE_X };
 };
