@@ -164,8 +164,10 @@
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="FirePatternComponent.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameData.cpp" />
     <ClCompile Include="GLUtils.cpp" />
     <ClCompile Include="KeyboardControlComponent.cpp" />
+    <ClCompile Include="Label.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MusicPlayer.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -196,6 +198,7 @@
     <ClInclude Include="GameStateEnum.h" />
     <ClInclude Include="GLUtils.h" />
     <ClInclude Include="KeyboardControlComponent.h" />
+    <ClInclude Include="Label.h" />
     <ClInclude Include="LayerEnum.h" />
     <ClInclude Include="MusicPlayer.h" />
     <ClInclude Include="Patterns.h" />
@@ -208,15 +211,6 @@
     <ClInclude Include="TextComponent.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="TransformComponent.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Shaders\SpriteRendering.frag" />
-    <None Include="Shaders\SpriteRendering.vert" />
-    <None Include="Shaders\TextRendering.frag" />
-    <None Include="Shaders\TextRendering.vert" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Textures\blank.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

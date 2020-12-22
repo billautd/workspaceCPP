@@ -14,7 +14,7 @@ public:
 	void Init() override;
 	void Render() override;
 
-	glm::vec2 GetStringSize(std::string text, GLfloat scale = 1.0f);
+	void SetText(std::string text) { this->text = text; }
 private:
 	Shader& shader;
 	GLuint VAO{ 0 };

@@ -68,16 +68,3 @@ void TextComponent::Render() {
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
-
-glm::vec2 TextComponent::GetStringSize(std::string text, GLfloat scale) {
-	glm::vec2 size{};
-	std::string::const_iterator c;
-	Font f{ ResourceManager::GetFont(font) };
-	for (c = text.begin(); c != text.end(); c++) {
-		Character ch{ f.at(*c) };
-		size.x += (ch.advance >> 6) * scale;
-		if (ch.size.y * scale > size.y)
-			size.y = ch.size.y * scale;
-	}
-	return size;
-}

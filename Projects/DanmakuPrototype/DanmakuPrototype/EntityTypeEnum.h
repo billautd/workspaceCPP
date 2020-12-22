@@ -3,6 +3,7 @@ enum class EntityTypeEnum {
 	BEGIN,
 	ENTITY = BEGIN,
 	PLAYER,
+	LABEL,
 	PLAYER_PROJECTILE,
 	ENEMY_PROJECTILE,
 	ENEMY,

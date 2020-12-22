@@ -16,12 +16,6 @@
     <Filter Include="Header Files\Enums">
       <UniqueIdentifier>{64bff9ce-3656-4004-bcf9-669995cbdc9c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Shaders">
-      <UniqueIdentifier>{85c0fa33-c67c-4a1a-8087-7cc873d6cc9f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Textures">
-      <UniqueIdentifier>{015b29f1-e1fe-430f-a220-9dd03286827c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Components">
       <UniqueIdentifier>{701dc6ee-4f08-4b3c-b961-247134b9b96d}</UniqueIdentifier>
     </Filter>
@@ -54,6 +48,9 @@
     </Filter>
     <Filter Include="Source Files\Managers">
       <UniqueIdentifier>{3c7bef14-b866-4f13-910b-829b2ee3190e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Constants">
+      <UniqueIdentifier>{d53b5103-570d-4d40-a6f1-82448dfb5bba}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -122,6 +119,12 @@
     </ClCompile>
     <ClCompile Include="MusicPlayer.cpp">
       <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="GameData.cpp">
+      <Filter>Source Files\Constants</Filter>
+    </ClCompile>
+    <ClCompile Include="Label.cpp">
+      <Filter>Source Files\Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -212,24 +215,8 @@
     <ClInclude Include="MusicPlayer.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Shaders\SpriteRendering.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\SpriteRendering.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\TextRendering.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\TextRendering.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Textures\blank.png">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
+    <ClInclude Include="Label.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

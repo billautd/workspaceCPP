@@ -9,6 +9,7 @@
 #include "TextComponent.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Label.h"
 
 #include "GameStateEnum.h"
 #include "FirePatternComponent.h"
@@ -44,7 +45,5 @@ private:
 	GLuint width{ SCREEN_WIDTH };
 	GLuint height{ SCREEN_HEIGHT };
 	SDL_Window* mainWindow{ nullptr };
-
-	//Input
 };
 

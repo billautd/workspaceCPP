@@ -1,9 +1,17 @@
 #pragma once
 #include "glad/glad.h"
+#include "EntityManager.h"
+#include "TextComponent.h"
 
-const GLuint score{ 1234 };
-const GLuint hi_score{ 5678 };
-const GLshort power{ 50 };
-const GLuint graze{ 165 };
-const GLshort lives{ 3 };
-const GLshort bombs{ 3 };
+class GameData {
+public:
+	static void IncrementScore(GLuint value);
+	static GLuint GetScore() { return score; };
+	static GLuint GetHighScore() { return highScore; }
+	static const GLuint ENEMY_HIT_SCORE{ 100 };
+	static const GLuint ENEMY_KILL_SCORE{ 10000 };
+private:
+	static GLuint score;
+	static GLuint highScore;
+};
+

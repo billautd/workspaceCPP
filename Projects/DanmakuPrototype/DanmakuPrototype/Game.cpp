@@ -29,7 +29,7 @@ int Game::BackEndInit() {
 		SDL_WINDOWPOS_UNDEFINED,
 		width,
 		height,
-		SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL
+		SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL
 	);
 
 	if (!this->mainWindow) {
@@ -109,10 +109,18 @@ void Game::LoadEntities() {
 	Entity* bg{ EntityManager::AddEntity(new Entity("GameBG", LayerEnum::BG_LAYER)) };
 	bg->AddComponent<TransformComponent>(glm::vec2(10.0f), glm::vec2(0.0f), GAME_SIZE);
 	bg->AddComponent<SpriteComponent>(ResourceManager::GetShader("SpriteRendering"), ResourceManager::GetTexture("blank"), false, glm::vec3(0.0f));
+
 	//UI
-	Entity* highScore{ EntityManager::AddEntity(new Entity("HighScoreLabel", LayerEnum::UI_LAYER)) };
-	highScore->AddComponent<TransformComponent>(glm::vec2(GAME_POSITION.x + GAME_SIZE.x + 20.0f, 30.0f), glm::vec2(0.0f), glm::vec2(30.0f));
-	highScore->AddComponent<TextComponent>(ResourceManager::GetShader("TextRendering"), "HIGH SCORE", "logopixies");
+	Label* highScoreLabel{ dynamic_cast<Label*>(EntityManager::AddEntity(
+		new Label(UI_POSITION + glm::vec2(20.0f, 10.0f), "HIGH SCORE", "HighScoreLabel", LayerEnum::UI_LAYER))) };
+	Label* scoreLabel{ dynamic_cast<Label*>(EntityManager::AddEntity(
+		new Label(UI_POSITION + glm::vec2(20.0f, 50.0f), "SCORE", "ScoreLabel", LayerEnum::UI_LAYER))) };
+
+	Label* highScore{ dynamic_cast<Label*>(EntityManager::AddEntity(
+		new Label(UI_POSITION_2 + glm::vec2(20.0f, 10.0f),  std::to_string(GameData::GetHighScore()), "HighScore", LayerEnum::UI_LAYER))) };
+	Label* score{ dynamic_cast<Label*>(EntityManager::AddEntity(
+		new Label(UI_POSITION_2 + glm::vec2(20.0f, 50.0f),std::to_string(GameData::GetScore()), "Score",  LayerEnum::UI_LAYER))) };
+
 	//Player + hitbox
 	Player* player{ dynamic_cast<Player*>(EntityManager::AddEntity(new Player("Player", LayerEnum::PLAYER_LAYER))) };
 

@@ -109,8 +109,13 @@ void EntityManager::CheckCollisions() {
 					else
 						enemy = dynamic_cast<Enemy*>(other);
 					enemy->DecrementHealth();
-					if (enemy->IsDead())
+					if (enemy->IsDead()) {
+						GameData::IncrementScore(GameData::ENEMY_KILL_SCORE);
 						entity->Destroy();
+					}
+					else {
+						GameData::IncrementScore(GameData::ENEMY_HIT_SCORE);
+					}
 					other->Destroy();
 					break;
 				default:
@@ -141,8 +146,8 @@ CollisionTypeEnum EntityManager::CheckCollision(Entity& thisEntity, Entity& othe
 			return CollisionTypeEnum::PLAYER_PROJECTILE_COLLISION;
 		if (CheckCollisionType(thisEntity, otherEntity, EntityTypeEnum::PLAYER, EntityTypeEnum::ENEMY))
 			return CollisionTypeEnum::PLAYER_ENEMY_COLLISION;
-		return CollisionTypeEnum::NO_COLLISION;
 	}
+	return CollisionTypeEnum::NO_COLLISION;
 }
 
 bool EntityManager::CheckCollisionType(Entity& thisEntity, Entity& otherEntity, EntityTypeEnum thisType, EntityTypeEnum otherType) {

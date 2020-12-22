@@ -2,6 +2,7 @@
 #include "Component.h"
 #include "CollisionTypeEnum.h"
 #include "Enum.h"
+#include "GameData.h"
 #include "Enemy.h"
 #include "Player.h"
 
