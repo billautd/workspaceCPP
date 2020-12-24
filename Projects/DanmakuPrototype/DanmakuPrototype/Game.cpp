@@ -119,7 +119,13 @@ void Game::LoadEntities() {
 	Label* highScore{ dynamic_cast<Label*>(EntityManager::AddEntity(
 		new Label(UI_POSITION_2 + glm::vec2(20.0f, 10.0f),  std::to_string(GameData::GetHighScore()), "HighScore", LayerEnum::UI_LAYER))) };
 	Label* score{ dynamic_cast<Label*>(EntityManager::AddEntity(
-		new Label(UI_POSITION_2 + glm::vec2(20.0f, 50.0f),std::to_string(GameData::GetScore()), "Score",  LayerEnum::UI_LAYER))) };
+		new Label(UI_POSITION_2 + glm::vec2(20.0f, 50.0f), std::to_string(GameData::GetScore()), "Score",  LayerEnum::UI_LAYER))) };
+
+	Label* livesLabel{ dynamic_cast<Label*>(EntityManager::AddEntity(
+		new Label(UI_POSITION + glm::vec2(20.0f, 120.0f), "LIVES", "LivesLabel", LayerEnum::UI_LAYER))) };
+
+	Label* lives{ dynamic_cast<Label*>(EntityManager::AddEntity(
+	new Label(UI_POSITION_2 + glm::vec2(20.0f, 120.0f),std::to_string(GameData::GetLives()), "Lives",  LayerEnum::UI_LAYER))) };
 
 	//Player + hitbox
 	Player* player{ dynamic_cast<Player*>(EntityManager::AddEntity(new Player("Player", LayerEnum::PLAYER_LAYER))) };
@@ -129,7 +135,7 @@ void Game::LoadEntities() {
 	GLfloat gap{ GAME_SIZE.x - enemyNumber * ENEMY_SIZE.x };
 	for (GLuint i = 0; i < enemyNumber; i++) {
 		glm::vec2 position{ GAME_POSITION.x + gap / (enemyNumber + 1) + i * (ENEMY_SIZE.x + gap / (enemyNumber + 1)), GAME_POSITION.y + 20.0f };
-		Enemy* enemy{ dynamic_cast<Enemy*>(EntityManager::AddEntity(new Enemy(position, 25, "Enemy", LayerEnum::ENEMY_LAYER))) };
+		Enemy* enemy{ dynamic_cast<Enemy*>(EntityManager::AddEntity(new Enemy(position, 150, "Enemy", LayerEnum::ENEMY_LAYER))) };
 		enemy->AddComponent<FirePatternComponent>(&Patterns::MoveToCenterThenSpiral);
 	}
 }
@@ -145,8 +151,7 @@ void Game::ProcessInput(SDL_Event& e, GLfloat dt) {
 	}
 
 	if (e.type == SDL_QUIT) {
-		this->state = GameStateEnum::GAME_INACTIVE;
-		SDL_Quit();
+		Quit();
 		return;
 	}
 
@@ -154,10 +159,14 @@ void Game::ProcessInput(SDL_Event& e, GLfloat dt) {
 }
 
 void Game::Update(GLfloat dt) {
+	if (state == GameStateEnum::GAME_INACTIVE)
+		return;
 	EntityManager::Update(dt);
 }
 
 void Game::Render() {
+	if (state == GameStateEnum::GAME_INACTIVE)
+		return;
 	//Clear
 	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -165,6 +174,7 @@ void Game::Render() {
 }
 
 void Game::Quit() {
+	this->state = GameStateEnum::GAME_INACTIVE;
 	EntityManager::ClearData();
 	ResourceManager::ClearData();
 	SDL_Quit();

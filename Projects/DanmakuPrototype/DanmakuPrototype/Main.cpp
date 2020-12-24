@@ -30,6 +30,5 @@ int main(int argc, char** argv) {
 
 		SDL_GL_SwapWindow(game.GetMainWindow());
 	}
-	game.Quit();
 	return 0;
 }

@@ -4,14 +4,18 @@
 #include "Enum.h"
 #include "GameData.h"
 #include "Enemy.h"
+#include "Projectile.h"
 #include "Player.h"
 
+class Player;
 class EntityManager {
 private:
 	EntityManager();
 	static std::vector<Entity*> entities;
 	static CollisionTypeEnum CheckCollision(Entity& thisEntity, Entity& otherEntity);
 	static bool CheckCollisionType(Entity& thisEntity, Entity& otherEntity, EntityTypeEnum thisType, EntityTypeEnum otherType);
+	static void ProcessPlayerEnemyAndProjectileCollision(Player& player, Entity* other);
+	static void ProcessEnemyProjectileCollision(Enemy& enemy, Projectile& projectile);
 public:
 	static void ClearData();
 	static void Update(GLfloat dt);

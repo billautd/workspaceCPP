@@ -96,33 +96,43 @@ void EntityManager::CheckCollisions() {
 				case CollisionTypeEnum::PLAYER_PROJECTILE_COLLISION:
 				case CollisionTypeEnum::PLAYER_ENEMY_COLLISION:
 					if (entity->GetEntityType() == EntityTypeEnum::PLAYER)
-						player = dynamic_cast<Player*>(entity);
+						ProcessPlayerEnemyAndProjectileCollision(*dynamic_cast<Player*>(entity), other);
 					else
-						player = dynamic_cast<Player*>(other);
-					player->GetHitbox()->Destroy();
-					player->Destroy();
-					other->Destroy();
+						ProcessPlayerEnemyAndProjectileCollision(*dynamic_cast<Player*>(other), entity);
 					break;
 				case CollisionTypeEnum::ENEMY_PROJECTILE_COLLISION:
 					if (entity->GetEntityType() == EntityTypeEnum::ENEMY)
-						enemy = dynamic_cast<Enemy*>(entity);
+						ProcessEnemyProjectileCollision(*dynamic_cast<Enemy*>(entity), *dynamic_cast<Projectile*>(other));
 					else
-						enemy = dynamic_cast<Enemy*>(other);
-					enemy->DecrementHealth();
-					if (enemy->IsDead()) {
-						GameData::IncrementScore(GameData::ENEMY_KILL_SCORE);
-						entity->Destroy();
-					}
-					else {
-						GameData::IncrementScore(GameData::ENEMY_HIT_SCORE);
-					}
-					other->Destroy();
+						ProcessEnemyProjectileCollision(*dynamic_cast<Enemy*>(other), *dynamic_cast<Projectile*>(entity));
 					break;
 				default:
 					std::cerr << "Error while reading Collision type\n";
 			}
 		}
 	}
+}
+
+void EntityManager::ProcessPlayerEnemyAndProjectileCollision(Player& player, Entity* other) {
+	GameData::DecrementLives();
+	LabelUtils::SetText("Lives", std::to_string(GameData::GetLives()));
+	if (GameData::GetLives() <= 0) {
+		player.GetHitbox()->Destroy();
+		player.Destroy();
+	}
+	other->Destroy();
+}
+
+void EntityManager::ProcessEnemyProjectileCollision(Enemy& enemy, Projectile& projectile) {
+	enemy.DecrementHealth();
+	if (enemy.IsDead()) {
+		GameData::IncrementScore(GameData::ENEMY_KILL_SCORE);
+		enemy.Destroy();
+	}
+	else {
+		GameData::IncrementScore(GameData::ENEMY_HIT_SCORE);
+	}
+	projectile.Destroy();
 }
 
 

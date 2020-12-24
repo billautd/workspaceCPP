@@ -38,5 +38,5 @@ const GLfloat QUAD_TEXTURE_VERTICES[] = {
 };
 
 //GAME
-const GLfloat PROJECTILE_EMIT_SPEED{ 0.08f };
-const GLfloat PROJECTILE_SPEED{ 200.0f };
+const GLfloat PROJECTILE_EMIT_SPEED{ 0.02f };
+const GLfloat PROJECTILE_SPEED{ 500.0f };

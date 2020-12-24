@@ -10,7 +10,7 @@
 class Label : public Entity {
 public:
 	Label(glm::vec2 position, std::string text, std::string name = "Label", LayerEnum layer = LayerEnum::UI_LAYER);
-
+	void SetText(std::string text);
 private:
 	TransformComponent* transform{ nullptr };
 	TextComponent* text{ nullptr };

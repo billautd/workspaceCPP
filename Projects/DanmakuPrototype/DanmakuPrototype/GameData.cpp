@@ -2,6 +2,8 @@
 
 GLuint GameData::score{ 0 };
 GLuint GameData::highScore{ 0 };
+GLuint GameData::lives{ 3 };
+
 
 void GameData::IncrementScore(GLuint value) {
 	score += value;
@@ -10,10 +12,8 @@ void GameData::IncrementScore(GLuint value) {
 		highScore = score;
 		newHighScore = true;
 	}
-	for (auto& entity : EntityManager::GetEntities()) {
-		if (entity->GetEntityType() == EntityTypeEnum::LABEL && entity->GetName() == "Score")
-			entity->GetComponent<TextComponent>()->SetText(std::to_string(score));
-		else if (entity->GetEntityType() == EntityTypeEnum::LABEL && entity->GetName() == "HighScore" && newHighScore)
-			entity->GetComponent<TextComponent>()->SetText(std::to_string(highScore));
-	}
+
+	LabelUtils::SetText("Score", std::to_string(score));
+	if (newHighScore)
+		LabelUtils::SetText("HighScore", std::to_string(highScore));
 }
