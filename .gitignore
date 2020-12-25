@@ -33,7 +33,9 @@
 
 *.vs
 Debug
-!Projects/DanmakuPrototype/x64/Debug
+*.kra
+*.kra~
+*.png~
 
 Projects/KKToutMouIndeed/
 Projects/RomainLeRetour/
