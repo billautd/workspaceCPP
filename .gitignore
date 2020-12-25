@@ -33,6 +33,7 @@
 
 *.vs
 Debug
+!Projects/DanmakuPrototype/x64/Debug
 
 Projects/KKToutMouIndeed/
 Projects/RomainLeRetour/

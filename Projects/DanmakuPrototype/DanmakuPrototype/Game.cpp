@@ -135,7 +135,7 @@ void Game::LoadEntities() {
 	GLfloat gap{ GAME_SIZE.x - enemyNumber * ENEMY_SIZE.x };
 	for (GLuint i = 0; i < enemyNumber; i++) {
 		glm::vec2 position{ GAME_POSITION.x + gap / (enemyNumber + 1) + i * (ENEMY_SIZE.x + gap / (enemyNumber + 1)), GAME_POSITION.y + 20.0f };
-		Enemy* enemy{ dynamic_cast<Enemy*>(EntityManager::AddEntity(new Enemy(position, 150, "Enemy", LayerEnum::ENEMY_LAYER))) };
+		Enemy* enemy{ dynamic_cast<Enemy*>(EntityManager::AddEntity(new Enemy(position, 500, "Enemy", LayerEnum::ENEMY_LAYER))) };
 		enemy->AddComponent<FirePatternComponent>(&Patterns::MoveToCenterThenSpiral);
 	}
 }
