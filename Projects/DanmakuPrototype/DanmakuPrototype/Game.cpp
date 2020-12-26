@@ -99,6 +99,7 @@ void Game::LoadAssets() {
 	ResourceManager::LoadTexture("./Textures/enemy.png", false, "enemy");
 	ResourceManager::LoadTexture("./Textures/enemyProjectile.png", false, "enemyProjectile");
 	ResourceManager::LoadTexture("./Textures/hitbox.png", true, "hitbox");
+	ResourceManager::LoadTexture("./Textures/lifeBar.png", false, "lifeBar");
 
 	//Fonts
 	ResourceManager::LoadFont("./Fonts/Logopixies-owwBB.ttf", "logopixies", 20);
@@ -108,7 +109,7 @@ void Game::LoadEntities() {
 	//BG
 	Entity* bg{ EntityManager::AddEntity(new Entity("GameBG", LayerEnum::BG_LAYER)) };
 	bg->AddComponent<TransformComponent>(glm::vec2(10.0f), glm::vec2(0.0f), GAME_SIZE);
-	bg->AddComponent<SpriteComponent>(ResourceManager::GetShader("SpriteRendering"), ResourceManager::GetTexture("blank"), false, glm::vec3(0.0f));
+	bg->AddComponent<SpriteComponent>("SpriteRendering", "blank", false, glm::vec3(0.0f));
 
 	//UI
 	Label* highScoreLabel{ dynamic_cast<Label*>(EntityManager::AddEntity(
@@ -131,13 +132,9 @@ void Game::LoadEntities() {
 	Player* player{ dynamic_cast<Player*>(EntityManager::AddEntity(new Player("Player", LayerEnum::PLAYER_LAYER))) };
 
 	//Enemy
-	GLuint enemyNumber{ 1 };
-	GLfloat gap{ GAME_SIZE.x - enemyNumber * ENEMY_SIZE.x };
-	for (GLuint i = 0; i < enemyNumber; i++) {
-		glm::vec2 position{ GAME_POSITION.x + gap / (enemyNumber + 1) + i * (ENEMY_SIZE.x + gap / (enemyNumber + 1)), GAME_POSITION.y + 20.0f };
-		Enemy* enemy{ dynamic_cast<Enemy*>(EntityManager::AddEntity(new Enemy(position, 500, "Enemy", LayerEnum::ENEMY_LAYER))) };
-		enemy->AddComponent<FirePatternComponent>(&Patterns::MoveToCenterThenSpiral);
-	}
+	glm::vec2 position{ GAME_POSITION.x + GAME_SIZE.x / 2.0f - ENEMY_SIZE.x / 2.0f, GAME_POSITION.y + 20.0f };
+	Boss* boss{ dynamic_cast<Boss*>(EntityManager::AddEntity(new Boss(position, 300, "Boss", LayerEnum::ENEMY_LAYER))) };
+	boss->AddComponent<FirePatternComponent>(&Patterns::MoveToCenterThenSpiral);
 }
 
 

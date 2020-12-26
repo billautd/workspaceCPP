@@ -8,7 +8,7 @@
 #include "SpriteComponent.h"
 #include "TextComponent.h"
 #include "Player.h"
-#include "Enemy.h"
+#include "Boss.h"
 #include "Label.h"
 
 #include "GameStateEnum.h"

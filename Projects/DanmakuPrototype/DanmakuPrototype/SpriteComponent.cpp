@@ -1,6 +1,7 @@
 #include "SpriteComponent.h"
 
 void SpriteComponent::Init() {
+	InitRenderData();
 	transform = GetOwner()->GetComponent<TransformComponent>();
 }
 

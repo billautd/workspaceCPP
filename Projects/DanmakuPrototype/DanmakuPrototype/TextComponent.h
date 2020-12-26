@@ -8,8 +8,8 @@
 
 class TextComponent : public Component {
 public:
-	TextComponent(Shader& shader, std::string text, std::string font, GLfloat scale = 1.0f, glm::vec3 color = glm::vec3(1.0f))
-		: shader(shader), text(text), font(font), scale(scale), color(color) {}
+	TextComponent(std::string shader, std::string text, std::string font, GLfloat scale = 1.0f, glm::vec3 color = glm::vec3(1.0f))
+		: shader(ResourceManager::GetShader(shader)), text(text), font(font), scale(scale), color(color) {}
 
 	void Init() override;
 	void Render() override;

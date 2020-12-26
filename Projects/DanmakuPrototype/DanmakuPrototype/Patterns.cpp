@@ -19,7 +19,7 @@ void Patterns::MoveToCenterThenShootDown(FirePatternComponent* comp, GLfloat dt)
 			glm::vec2{ 0, 100.0f },
 			PROJECTILE_SIZE,
 			0.0f,
-			ResourceManager::GetTexture("enemyProjectile"),
+			"enemyProjectile",
 			glm::vec3(1.0f),
 			1.0f,
 			false
@@ -52,7 +52,7 @@ void Patterns::MoveToCenterThenSpiral(FirePatternComponent* comp, GLfloat dt) {
 				glm::vec2{ 80.0f * cos(angle), 80.0f * sin(angle) },
 				PROJECTILE_SIZE,
 				0.0f,
-				ResourceManager::GetTexture("enemyProjectile"),
+				"enemyProjectile",
 				glm::vec3(1.0f),
 				1.0f,
 				false

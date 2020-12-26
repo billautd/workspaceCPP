@@ -1,5 +1,10 @@
 #include "Entity.h" 
 
+void Entity::Init() {
+	for (auto& component : components)
+		component->Init();
+}
+
 void Entity::Update(GLfloat dt) {
 	for (auto& component : components)
 		component->Update(dt);

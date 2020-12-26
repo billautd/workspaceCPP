@@ -10,7 +10,6 @@
 class Player : public Entity
 {
 public:
-	Player();
 	Player(std::string name = "Player", LayerEnum layer = LayerEnum::PLAYER_LAYER);
 
 	void ProcessInput(SDL_Event& e, GLfloat dt) override;

@@ -19,15 +19,13 @@
 class Component;
 class Entity {
 public:
-	Entity() = default;
 	Entity(std::string name, LayerEnum layer) : name(name), layer(layer) {};
 
 	//Run for each component
+	virtual void Init();
 	virtual void Update(GLfloat dt);
 	virtual void Render();
 	virtual void Destroy();
-
-	//Each entity has its own
 	virtual void ProcessInput(SDL_Event& e, GLfloat dt) {
 		EventManager::keys = SDL_GetKeyboardState(&EventManager::keysNbr);
 	};

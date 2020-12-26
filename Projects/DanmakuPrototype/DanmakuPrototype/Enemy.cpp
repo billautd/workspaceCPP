@@ -1,21 +1,17 @@
 #include "Enemy.h"
 
-Enemy::Enemy() : Entity() {
-	SetEntityType(EntityTypeEnum::ENEMY);
-}
-
-Enemy::Enemy(glm::vec2 position, GLuint health, std::string name, LayerEnum layer) : Entity(name, layer), health(health) {
+Enemy::Enemy(glm::vec2 position, GLuint totalHealth, std::string name, LayerEnum layer) : Entity(name, layer), totalHealth(totalHealth), health(totalHealth) {
 	SetEntityType(EntityTypeEnum::ENEMY);
 	transform = AddComponent<TransformComponent>(position,
 		glm::vec2(),
 		ENEMY_SIZE);
-	sprite = AddComponent<SpriteComponent>(ResourceManager::GetShader("SpriteRendering"), ResourceManager::GetTexture("enemy"), false);
+	sprite = AddComponent<SpriteComponent>("SpriteRendering", "enemy", false);
 	collider = AddComponent<ColliderComponent>(position.x, position.y, ENEMY_SIZE.x, ENEMY_SIZE.y);
 }
 
 GLfloat translationTimer{};
-
 glm::vec2* source{ nullptr };
+
 void Enemy::Update(GLfloat dt) {
 	Entity::Update(dt);
 	if (isTranslating) {

@@ -8,11 +8,11 @@
 
 class Enemy : public Entity {
 public:
-	Enemy();
-	Enemy(glm::vec2 position, GLuint health = 1, std::string name = "Enemy", LayerEnum layer = LayerEnum::ENEMY_LAYER);
+	Enemy(glm::vec2 position, GLuint totalHealth = 1, std::string name = "Enemy", LayerEnum layer = LayerEnum::ENEMY_LAYER);
 
 	void Update(GLfloat dt) override;
 
+	GLuint GetTotalHealth() { return totalHealth; }
 	GLuint GetHealth() { return health; }
 	void SetHealth(GLuint health) { this->health = health; }
 	void DecrementHealth() { health--; }
@@ -24,6 +24,7 @@ private:
 	SpriteComponent* sprite{ nullptr };
 	ColliderComponent* collider{ nullptr };
 
+	const GLuint totalHealth{ 1 };
 	GLuint health{ 1 };
 	bool isTranslating{ false };
 };

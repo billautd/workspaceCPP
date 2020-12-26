@@ -1,14 +1,10 @@
 #include "Player.h"
 
-Player::Player() : Entity() {
-	SetEntityType(EntityTypeEnum::PLAYER);
-}
-
 Player::Player(std::string name, LayerEnum layer) : Entity(name, layer) {
 	//Player init
 	SetEntityType(EntityTypeEnum::PLAYER);
 	transform = AddComponent<TransformComponent>(PLAYER_INIT_POSITION, glm::vec2(0.0f), PLAYER_SIZE);
-	sprite = AddComponent<SpriteComponent>(ResourceManager::GetShader("SpriteRendering"), ResourceManager::GetTexture("player"), true);
+	sprite = AddComponent<SpriteComponent>("SpriteRendering", "player", true);
 	kbd = AddComponent<KeyboardControlComponent>();
 	collider = AddComponent<ColliderComponent>(HITBOX_POSITION.x, HITBOX_POSITION.y, HITBOX_SIZE.x, HITBOX_SIZE.y);
 
@@ -16,7 +12,7 @@ Player::Player(std::string name, LayerEnum layer) : Entity(name, layer) {
 	hitbox = EntityManager::AddEntity(new Entity("Hitbox", LayerEnum::PROJECTILE_LAYER));
 	hitbox->SetEntityType(EntityTypeEnum::PLAYER);
 	hitboxTransform = hitbox->AddComponent<TransformComponent>(HITBOX_POSITION, glm::vec2(), HITBOX_SIZE);
-	hitbox->AddComponent<SpriteComponent>(ResourceManager::GetShader("SpriteRendering"), ResourceManager::GetTexture("hitbox"), false);
+	hitbox->AddComponent<SpriteComponent>("SpriteRendering", "hitbox", false);
 }
 
 GLfloat emitTimer{ 0.0f };
@@ -130,7 +126,7 @@ void Player::EmitProjectiles() {
 		glm::vec2(0.0f, -PROJECTILE_SPEED),
 		PROJECTILE_SIZE,
 		0.0f,
-		ResourceManager::GetTexture("playerProjectile"),
+		"playerProjectile",
 		glm::vec3(1.0f),
 		1.0f,
 		"Projectile"));

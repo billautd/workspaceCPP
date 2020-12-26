@@ -5,14 +5,14 @@
 #include "Constants.h"
 #include "TransformComponent.h"
 #include "Entity.h"
+#include "ResourceManager.h"
+#include <string>
 
 class SpriteComponent : public Component
 {
 public:
-	SpriteComponent(Shader& shader, Texture2D& texture, bool isFixed, glm::vec3 color = glm::vec3(1.0f), GLfloat alpha = 1.0f)
-		: shader(shader), texture(texture), isFixed(isFixed), alpha(alpha), color(color) {
-		InitRenderData();
-	};
+	SpriteComponent(std::string shader, std::string texture, bool isFixed, glm::vec3 color = glm::vec3(1.0f), GLfloat alpha = 1.0f)
+		: shader(ResourceManager::GetShader(shader)), texture(ResourceManager::GetTexture(texture)), isFixed(isFixed), alpha(alpha), color(color) {};
 
 	void Init() override;
 	void Update(GLfloat dt) override;
@@ -24,7 +24,7 @@ public:
 	glm::vec3 GetColor() { return color; }
 	GLfloat GetAlpha() { return alpha; }
 private:
-	Shader shader{};
+	Shader& shader;
 	GLuint quadVAO{ 0 };
 
 	TransformComponent* transform{ nullptr };
