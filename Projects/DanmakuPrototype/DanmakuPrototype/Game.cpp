@@ -133,7 +133,7 @@ void Game::LoadEntities() {
 
 	//Enemy
 	glm::vec2 position{ GAME_POSITION.x + GAME_SIZE.x / 2.0f - ENEMY_SIZE.x / 2.0f, GAME_POSITION.y + 20.0f };
-	Boss* boss{ dynamic_cast<Boss*>(EntityManager::AddEntity(new Boss(position, 300, "Boss", LayerEnum::ENEMY_LAYER))) };
+	Boss* boss{ dynamic_cast<Boss*>(EntityManager::AddEntity(new Boss(position, 100, "Boss", LayerEnum::ENEMY_LAYER))) };
 	boss->AddComponent<FirePatternComponent>(&Patterns::MoveToCenterThenSpiral);
 }
 

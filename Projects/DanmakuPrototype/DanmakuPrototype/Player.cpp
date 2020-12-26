@@ -122,7 +122,17 @@ void Player::EmitProjectiles() {
 	GLfloat w{ transform->GetWidth() };
 
 	EntityManager::AddEntity(new Projectile(
-		glm::vec2(x + w / 2, y - 20.0f),
+		glm::vec2(x + w / 4, y - 20.0f),
+		glm::vec2(0.0f, -PROJECTILE_SPEED),
+		PROJECTILE_SIZE,
+		0.0f,
+		"playerProjectile",
+		glm::vec3(1.0f),
+		1.0f,
+		"Projectile"));
+
+	EntityManager::AddEntity(new Projectile(
+		glm::vec2(x + 3 * w / 4, y - 20.0f),
 		glm::vec2(0.0f, -PROJECTILE_SPEED),
 		PROJECTILE_SIZE,
 		0.0f,

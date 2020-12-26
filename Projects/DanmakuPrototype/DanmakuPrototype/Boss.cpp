@@ -8,6 +8,12 @@ Boss::Boss(glm::vec2 position, GLuint health, std::string name, LayerEnum layer)
 
 void Boss::Update(GLfloat dt) {
 	Enemy::Update(dt);
-	lifeBarTransform->SetWidth(static_cast<GLfloat>(GetHealth()) / static_cast<GLfloat>(GetTotalHealth()) * GAME_SIZE.x);
+	if (!IsDead())
+		lifeBarTransform->SetWidth(static_cast<GLfloat>(GetHealth()) / static_cast<GLfloat>(GetTotalHealth()) * GAME_SIZE.x);
+}
+
+void Boss::Destroy() {
+	Entity::Destroy();
+	lifeBar->Destroy();
 }
 
