@@ -27,7 +27,7 @@ void Player::ProcessInput(SDL_Event& e, GLfloat dt) {
 	//UP
 	SDL_Scancode up{ kbd->GetUpKey() };
 	if (keys[up]) {
-		if (CollisionUtils::WillBeOutsideGame(*hitboxTransform, glm::vec2(0, -velocity * dt))) {
+		if (CollisionUtils::WillBeOutsideGame(*transform, glm::vec2(0, -velocity * dt))) {
 			transform->SetVelocityY(0);
 			hitboxTransform->SetVelocityY(0);
 			transform->SetPositionY(GAME_POSITION.y);
@@ -48,7 +48,7 @@ void Player::ProcessInput(SDL_Event& e, GLfloat dt) {
 	//DOWN
 	SDL_Scancode down{ kbd->GetDownKey() };
 	if (keys[down]) {
-		if (CollisionUtils::WillBeOutsideGame(*hitboxTransform, glm::vec2(0, velocity * dt))) {
+		if (CollisionUtils::WillBeOutsideGame(*transform, glm::vec2(0, velocity * dt))) {
 			transform->SetVelocityY(0);
 			hitboxTransform->SetVelocityY(0);
 			transform->SetPositionY(GAME_POSITION.y + GAME_SIZE.y - PLAYER_SIZE.y);
@@ -67,7 +67,7 @@ void Player::ProcessInput(SDL_Event& e, GLfloat dt) {
 	//LEFT
 	SDL_Scancode left{ kbd->GetLeftKey() };
 	if (keys[left]) {
-		if (CollisionUtils::WillBeOutsideGame(*hitboxTransform, glm::vec2(-velocity * dt, 0))) {
+		if (CollisionUtils::WillBeOutsideGame(*transform, glm::vec2(-velocity * dt, 0))) {
 			transform->SetVelocityX(0);
 			hitboxTransform->SetVelocityX(0);
 			transform->SetPositionX(GAME_POSITION.x);
@@ -87,7 +87,7 @@ void Player::ProcessInput(SDL_Event& e, GLfloat dt) {
 	//RIGHT
 	SDL_Scancode right{ kbd->GetRightKey() };
 	if (keys[right]) {
-		if (CollisionUtils::WillBeOutsideGame(*hitboxTransform, glm::vec2(velocity * dt, 0))) {
+		if (CollisionUtils::WillBeOutsideGame(*transform, glm::vec2(velocity * dt, 0))) {
 			transform->SetVelocityX(0);
 			hitboxTransform->SetVelocityX(0);
 			transform->SetPositionX(GAME_POSITION.x + GAME_SIZE.x - PLAYER_SIZE.x);
