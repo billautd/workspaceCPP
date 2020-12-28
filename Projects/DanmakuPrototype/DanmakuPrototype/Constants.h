@@ -15,7 +15,7 @@ const glm::vec2 GAME_SIZE(2 * SCREEN_WIDTH / 3 - 20.0f, SCREEN_HEIGHT - 20.0f);
 const glm::vec2 UI_POSITION{ GAME_POSITION + glm::vec2(GAME_SIZE.x, 0) };
 const glm::vec2 UI_POSITION_2{ UI_POSITION + glm::vec2(300.0f, 0) };
 
-const glm::vec2 PLAYER_SIZE{ glm::vec2(64.0f, 64.0f) };
+const glm::vec2 PLAYER_SIZE{ glm::vec2(1.5 * 64.8f, 1.5 * 72.1f) };
 const GLfloat PLAYER_VELOCITY{ 200.0f };
 const glm::vec2 PLAYER_INIT_POSITION{ glm::vec2(GAME_POSITION.x + GAME_SIZE.x / 2.0f - PLAYER_SIZE.x / 2, GAME_POSITION.y + GAME_SIZE.y - PLAYER_SIZE.y) };
 const glm::vec2 HITBOX_SIZE{ glm::vec2(8.0f, 8.0f) };

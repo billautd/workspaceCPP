@@ -92,9 +92,19 @@ void Game::LoadShaders() {
 }
 
 void Game::LoadAssets() {
-	//Texture
+	//Player textures
 	ResourceManager::LoadTexture("./Textures/blank.png", false, "blank");
-	ResourceManager::LoadTexture("./Textures/player.png", true, "player");
+	ResourceManager::LoadTexture("./Textures/playerCenter.png", true, "playerCenter");
+	ResourceManager::LoadTexture("./Textures/playerLeft1.png", true, "playerLeft1");
+	ResourceManager::LoadTexture("./Textures/playerLeft2.png", true, "playerLeft2");
+	ResourceManager::LoadTexture("./Textures/playerLeft3.png", true, "playerLeft3");
+	ResourceManager::LoadTexture("./Textures/playerLeft4.png", true, "playerLeft4");
+	ResourceManager::LoadTexture("./Textures/playerRight1.png", true, "playerRight1");
+	ResourceManager::LoadTexture("./Textures/playerRight2.png", true, "playerRight2");
+	ResourceManager::LoadTexture("./Textures/playerRight3.png", true, "playerRight3");
+	ResourceManager::LoadTexture("./Textures/playerRight4.png", true, "playerRight4");
+
+	//Textures
 	ResourceManager::LoadTexture("./Textures/playerProjectile.png", false, "playerProjectile");
 	ResourceManager::LoadTexture("./Textures/enemy.png", false, "enemy");
 	ResourceManager::LoadTexture("./Textures/enemyProjectile.png", false, "enemyProjectile");

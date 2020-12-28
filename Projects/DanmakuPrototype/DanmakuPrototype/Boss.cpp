@@ -2,7 +2,7 @@
 
 Boss::Boss(glm::vec2 position, GLuint health, std::string name, LayerEnum layer) : Enemy(position, health, name, layer) {
 	lifeBar = EntityManager::AddEntity(new Entity("LifeBar", LayerEnum::UI_LAYER));
-	lifeBarTransform = lifeBar->AddComponent<TransformComponent>(GAME_POSITION, glm::vec2(), glm::vec2(GAME_SIZE.x, 20.0f));
+	lifeBarTransform = lifeBar->AddComponent<TransformComponent>(GAME_POSITION, glm::vec2(), glm::vec2(GAME_SIZE.x, 10.0f));
 	lifeBar->AddComponent<SpriteComponent>("SpriteRendering", "lifeBar", true);
 }
 
