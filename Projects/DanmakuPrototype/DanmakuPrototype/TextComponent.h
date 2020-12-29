@@ -16,7 +16,7 @@ public:
 
 	void SetText(std::string text) { this->text = text; }
 private:
-	Shader& shader;
+	Shader* shader;
 	GLuint VAO{ 0 };
 	GLuint VBO{ 0 };
 

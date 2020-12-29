@@ -85,10 +85,10 @@ void Game::LoadShaders() {
 	ResourceManager::LoadShader("./Shaders/TextRendering.vert", "./Shaders/TextRendering.frag", nullptr, "TextRendering");
 	//Set up shaders
 	glm::mat4 projection{ glm::ortho(0.0f, static_cast<GLfloat>(this->width), static_cast<GLfloat>(this->height), 0.0f, -10.0f, 1.0f) };
-	ResourceManager::GetShader("SpriteRendering").Use().SetInteger("sprite", 0);
-	ResourceManager::GetShader("SpriteRendering").Use().SetMatrix4("projection", projection);
-	ResourceManager::GetShader("TextRendering").Use().SetInteger("text", 0);
-	ResourceManager::GetShader("TextRendering").Use().SetMatrix4("projection", projection);
+	ResourceManager::GetShader("SpriteRendering")->Use().SetInteger("sprite", 0);
+	ResourceManager::GetShader("SpriteRendering")->Use().SetMatrix4("projection", projection);
+	ResourceManager::GetShader("TextRendering")->Use().SetInteger("text", 0);
+	ResourceManager::GetShader("TextRendering")->Use().SetMatrix4("projection", projection);
 }
 
 void Game::LoadAssets() {
@@ -119,7 +119,7 @@ void Game::LoadEntities() {
 	//BG
 	Entity* bg{ EntityManager::AddEntity(new Entity("GameBG", LayerEnum::BG_LAYER)) };
 	bg->AddComponent<TransformComponent>(glm::vec2(10.0f), glm::vec2(0.0f), GAME_SIZE);
-	bg->AddComponent<SpriteComponent>("SpriteRendering", "blank", false, glm::vec3(0.0f));
+	bg->AddComponent<SpriteComponent>("SpriteRendering", "blank", glm::vec3(0.0f));
 
 	//UI
 	Label* highScoreLabel{ dynamic_cast<Label*>(EntityManager::AddEntity(

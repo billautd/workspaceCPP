@@ -4,7 +4,7 @@ void TextComponent::Init() {
 	transform = GetOwner()->GetComponent<TransformComponent>();
 
 	//Configure VAO/VBO
-	shader.Use();
+	shader->Use();
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glBindVertexArray(VAO); {
@@ -21,9 +21,9 @@ void TextComponent::Init() {
 }
 
 void TextComponent::Render() {
-	this->shader.Use();
-	this->shader.SetVector3f("textColor", color);
-	Font currentFont{ ResourceManager::GetFont(font) };
+	this->shader->Use();
+	this->shader->SetVector3f("textColor", color);
+	Font* currentFont{ ResourceManager::GetFont(font) };
 	glm::vec2 position{ transform->GetPosition() };
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(VAO); {
@@ -31,10 +31,10 @@ void TextComponent::Render() {
 		std::string::const_iterator c;
 		for (c = text.begin(); c != text.end(); c++) {
 
-			Character ch{ currentFont.at(*c) };
+			Character ch{ currentFont->at(*c) };
 
 			GLfloat xpos{ position.x + ch.bearing.x * scale };
-			GLfloat ypos{ position.y + (currentFont.at('H').bearing.y - ch.bearing.y) * scale };
+			GLfloat ypos{ position.y + (currentFont->at('H').bearing.y - ch.bearing.y) * scale };
 
 			GLfloat w{ ch.size.x * scale };
 			GLfloat h{ ch.size.y * scale };

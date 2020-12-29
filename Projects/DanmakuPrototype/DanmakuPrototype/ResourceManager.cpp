@@ -3,37 +3,37 @@
 #include FT_FREETYPE_H
 #include "ResourceManager.h"
 
-std::map<std::string, Texture2D> ResourceManager::textures;
-std::map<std::string, Shader> ResourceManager::shaders;
+std::map<std::string, Texture2D*> ResourceManager::textures;
+std::map<std::string, Shader*> ResourceManager::shaders;
 std::map<std::string, Mix_Music*> ResourceManager::musics;
 std::map<std::string, Mix_Chunk*> ResourceManager::chunks;
-std::map<std::string, Font> ResourceManager::fonts;
+std::map<std::string, Font*> ResourceManager::fonts;
 
-Shader ResourceManager::LoadShader(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile, std::string name) {
+Shader* ResourceManager::LoadShader(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile, std::string name) {
 	//First = iterator to value inserted
 	//first->second = shader
 	return (shaders.emplace(name, LoadShaderFromFile(vShaderFile, fShaderFile, gShaderFile))).first->second;
 }
 
-Shader& ResourceManager::GetShader(std::string name) {
+Shader* ResourceManager::GetShader(std::string name) {
 	return shaders.at(name);
 }
 
-Texture2D ResourceManager::LoadTexture(const char* file, bool alpha, std::string name) {
+Texture2D* ResourceManager::LoadTexture(const char* file, bool alpha, std::string name) {
 	//First = iterator to value inserted
 	//first->second = texture
 	return (textures.emplace(name, LoadTextureFromFile(file, alpha))).first->second;
 }
 
-Texture2D& ResourceManager::GetTexture(std::string name) {
+Texture2D* ResourceManager::GetTexture(std::string name) {
 	return textures.at(name);
 }
 
 void ResourceManager::ClearData() {
 	for (auto iter : shaders)
-		iter.second.Delete();
+		iter.second->Delete();
 	for (auto iter : textures)
-		iter.second.Delete();
+		iter.second->Delete();
 }
 
 Mix_Music* ResourceManager::LoadMusic(const char* file, std::string name) {
@@ -64,17 +64,17 @@ Mix_Chunk* ResourceManager::GetChunk(std::string name) {
 	return chunks.at(name);
 }
 
-Font ResourceManager::LoadFont(const char* file, std::string name, GLuint fontSize) {
+Font* ResourceManager::LoadFont(const char* file, std::string name, GLuint fontSize) {
 	//First = iterator to value inserted
 	//first->second = texture
 	return (fonts.emplace(name, LoadFontFromFile(file, fontSize))).first->second;
 }
 
-Font ResourceManager::GetFont(std::string name) {
+Font* ResourceManager::GetFont(std::string name) {
 	return fonts.at(name);
 }
 
-Shader ResourceManager::LoadShaderFromFile(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile) {
+Shader* ResourceManager::LoadShaderFromFile(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile) {
 	//Retrieve source code from file
 	std::string vertexCode{};
 	std::string fragmentCode{};
@@ -112,15 +112,15 @@ Shader ResourceManager::LoadShaderFromFile(const char* vShaderFile, const char* 
 	if (gShaderFile != nullptr)
 		gShaderCode = geometryCode.c_str();
 	//Create shader from source
-	Shader shader;
-	shader.Compile(vShaderCode, fShaderCode, gShaderCode);
+	Shader* shader{ new Shader() };
+	shader->Compile(vShaderCode, fShaderCode, gShaderCode);
 
 	return shader;
 }
 
-Texture2D ResourceManager::LoadTextureFromFile(const char* file, bool alpha) {
+Texture2D* ResourceManager::LoadTextureFromFile(const char* file, bool alpha) {
 	//Create texture
-	Texture2D texture;
+	Texture2D* texture{ new Texture2D() };
 
 	//Load image
 	int width, height, nbrChannels;
@@ -128,11 +128,11 @@ Texture2D ResourceManager::LoadTextureFromFile(const char* file, bool alpha) {
 	if (data) {
 		//Set alpha
 		if (alpha) {
-			texture.SetInternalFormat(GL_RGBA);
-			texture.SetImageFormat(GL_RGBA);
+			texture->SetInternalFormat(GL_RGBA);
+			texture->SetImageFormat(GL_RGBA);
 		}
 		//Generate
-		texture.Generate(width, height, data);
+		texture->Generate(width, height, data);
 	}
 	else
 		std::cout << "Texture failed to load at path: " << file << std::endl;
@@ -142,8 +142,8 @@ Texture2D ResourceManager::LoadTextureFromFile(const char* file, bool alpha) {
 	return texture;
 }
 
-Font ResourceManager::LoadFontFromFile(const char* file, GLuint fontSize) {
-	Font font;
+Font* ResourceManager::LoadFontFromFile(const char* file, GLuint fontSize) {
+	Font* font{ new Font() };
 
 	//Init freetype
 	FT_Library ft;
@@ -185,7 +185,7 @@ Font ResourceManager::LoadFontFromFile(const char* file, GLuint fontSize) {
 		Character character{ texture, glm::vec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
 			glm::vec2(face->glyph->bitmap_left, face->glyph->bitmap_top), static_cast<GLuint>(face->glyph->advance.x) };
 
-		font.emplace(c, character);
+		font->emplace(c, character);
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);
 

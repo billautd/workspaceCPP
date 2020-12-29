@@ -4,7 +4,7 @@ Player::Player(std::string name, LayerEnum layer) : Entity(name, layer) {
 	//Player init
 	SetEntityType(EntityTypeEnum::PLAYER);
 	transform = AddComponent<TransformComponent>(PLAYER_INIT_POSITION, glm::vec2(0.0f), PLAYER_SIZE);
-	sprite = AddComponent<SpriteComponent>("SpriteRendering", "playerCenter", true);
+	sprite = AddComponent<SpriteComponent>("SpriteRendering", "playerCenter");
 	kbd = AddComponent<KeyboardControlComponent>();
 	collider = AddComponent<ColliderComponent>(HITBOX_POSITION.x, HITBOX_POSITION.y, HITBOX_SIZE.x, HITBOX_SIZE.y);
 
@@ -12,10 +12,19 @@ Player::Player(std::string name, LayerEnum layer) : Entity(name, layer) {
 	hitbox = EntityManager::AddEntity(new Entity("Hitbox", LayerEnum::PROJECTILE_LAYER));
 	hitbox->SetEntityType(EntityTypeEnum::PLAYER);
 	hitboxTransform = hitbox->AddComponent<TransformComponent>(HITBOX_POSITION, glm::vec2(), HITBOX_SIZE);
-	hitbox->AddComponent<SpriteComponent>("SpriteRendering", "hitbox", false);
+	hitbox->AddComponent<SpriteComponent>("SpriteRendering", "hitbox");
+
+	//Init textures
+	for (GLuint i = 1; i <= PLAYER_SPRITE_NUMBER; i++) {
+		playerLeftTextures.push_back(ResourceManager::GetTexture("playerLeft" + std::to_string(i)));
+		playerRightTextures.push_back(ResourceManager::GetTexture("playerRight" + std::to_string(i)));
+	}
 }
 
 GLfloat emitTimer{ 0.0f };
+GLfloat spriteSwitchTimer{ 0.0f };
+GLuint animationLeftCount{ 0 };
+GLuint animationRightCount{ 0 };
 void Player::ProcessInput(SDL_Event& e, GLfloat dt) {
 	Entity::ProcessInput(e, dt);
 
@@ -77,6 +86,15 @@ void Player::ProcessInput(SDL_Event& e, GLfloat dt) {
 			transform->SetVelocityX(-velocity);
 			hitboxTransform->SetVelocityX(-velocity);
 		}
+
+		//Change player sprite
+		spriteSwitchTimer += dt;
+		if (spriteSwitchTimer >= PLAYER_SPRITE_SWITCH_TIME && animationLeftCount < PLAYER_SPRITE_NUMBER) {
+			animationRightCount = 0;
+			spriteSwitchTimer = 0;
+			sprite->SetTexture(playerLeftTextures.at(animationLeftCount));
+			animationLeftCount++;
+		}
 	}
 
 	else {
@@ -97,10 +115,23 @@ void Player::ProcessInput(SDL_Event& e, GLfloat dt) {
 			transform->SetVelocityX(velocity);
 			hitboxTransform->SetVelocityX(velocity);
 		}
+
+		//Change player sprite
+		spriteSwitchTimer += dt;
+		if (spriteSwitchTimer >= PLAYER_SPRITE_SWITCH_TIME && animationRightCount < PLAYER_SPRITE_NUMBER) {
+			animationLeftCount = 0;
+			spriteSwitchTimer = 0;
+			sprite->SetTexture(playerRightTextures.at(animationRightCount));
+			animationRightCount++;
+		}
 	}
 	else if (!keys[left]) {
 		transform->SetVelocityX(0);
 		hitboxTransform->SetVelocityX(0);
+		spriteSwitchTimer = 0;
+		animationLeftCount = 0;
+		animationRightCount = 0;
+		sprite->SetTexture(playerCenterTexture);
 	}
 
 	SDL_Scancode shoot{ kbd->GetShootKey() };

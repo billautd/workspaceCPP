@@ -10,7 +10,7 @@ void SpriteComponent::Update(GLfloat dt) {
 }
 
 void SpriteComponent::Render() {
-	this->shader.Use();
+	this->shader->Use();
 	//Model
 	glm::mat4 model{ glm::mat4(1.0f) };
 
@@ -27,12 +27,12 @@ void SpriteComponent::Render() {
 	//Scale
 	model = glm::scale(model, glm::vec3(transform->GetSize(), 1.0f));
 
-	this->shader.SetMatrix4("model", model);
-	this->shader.SetVector3f("spriteColor", color);
-	this->shader.SetFloat("alpha", alpha);
+	this->shader->SetMatrix4("model", model);
+	this->shader->SetVector3f("spriteColor", color);
+	this->shader->SetFloat("alpha", alpha);
 
 	glActiveTexture(GL_TEXTURE0);
-	texture.Bind();
+	texture->Bind();
 
 	glBindVertexArray(this->quadVAO);
 	{

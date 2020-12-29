@@ -5,7 +5,7 @@ Enemy::Enemy(glm::vec2 position, GLuint totalHealth, std::string name, LayerEnum
 	transform = AddComponent<TransformComponent>(position,
 		glm::vec2(),
 		ENEMY_SIZE);
-	sprite = AddComponent<SpriteComponent>("SpriteRendering", "enemy", false);
+	sprite = AddComponent<SpriteComponent>("SpriteRendering", "enemy");
 	collider = AddComponent<ColliderComponent>(position.x, position.y, ENEMY_SIZE.x, ENEMY_SIZE.y);
 }
 

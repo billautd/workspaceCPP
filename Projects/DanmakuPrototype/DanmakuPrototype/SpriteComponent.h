@@ -11,28 +11,26 @@
 class SpriteComponent : public Component
 {
 public:
-	SpriteComponent(std::string shader, std::string texture, bool isFixed, glm::vec3 color = glm::vec3(1.0f), GLfloat alpha = 1.0f)
-		: shader(ResourceManager::GetShader(shader)), texture(ResourceManager::GetTexture(texture)), isFixed(isFixed), alpha(alpha), color(color) {};
+	SpriteComponent(std::string shader, std::string texture, glm::vec3 color = glm::vec3(1.0f), GLfloat alpha = 1.0f)
+		: shader(ResourceManager::GetShader(shader)), texture(ResourceManager::GetTexture(texture)), alpha(alpha), color(color) {};
 
 	void Init() override;
 	void Update(GLfloat dt) override;
 	void Render() override;
 
-	Shader& GetShader() { return shader; }
-	Texture2D& GetTexture() { return texture; }
-	bool IsFixed() { return isFixed; }
+	Shader* GetShader() { return shader; }
+	Texture2D* GetTexture() { return texture; }
+	void SetTexture(Texture2D* texture) { this->texture = texture; }
 	glm::vec3 GetColor() { return color; }
 	GLfloat GetAlpha() { return alpha; }
 private:
-	Shader& shader;
+	Shader* shader;
 	GLuint quadVAO{ 0 };
 
 	TransformComponent* transform{ nullptr };
-	Texture2D& texture;
+	Texture2D* texture;
 	GLfloat alpha{ 1.0f };
 	glm::vec3 color{ glm::vec3(1.0f) };
-
-	bool isFixed{ false };
 
 	void InitRenderData();
 };

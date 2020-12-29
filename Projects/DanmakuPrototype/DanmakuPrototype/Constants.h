@@ -18,6 +18,8 @@ const glm::vec2 UI_POSITION_2{ UI_POSITION + glm::vec2(300.0f, 0) };
 const glm::vec2 PLAYER_SIZE{ glm::vec2(1.5 * 64.8f, 1.5 * 72.1f) };
 const GLfloat PLAYER_VELOCITY{ 200.0f };
 const glm::vec2 PLAYER_INIT_POSITION{ glm::vec2(GAME_POSITION.x + GAME_SIZE.x / 2.0f - PLAYER_SIZE.x / 2, GAME_POSITION.y + GAME_SIZE.y - PLAYER_SIZE.y) };
+const GLfloat PLAYER_SPRITE_SWITCH_TIME{ 0.01f };
+const GLuint PLAYER_SPRITE_NUMBER{ 4 };
 const glm::vec2 HITBOX_SIZE{ glm::vec2(8.0f, 8.0f) };
 const glm::vec2 HITBOX_POSITION{ PLAYER_INIT_POSITION + PLAYER_SIZE / 2.0f - HITBOX_SIZE / 2.0f };
 

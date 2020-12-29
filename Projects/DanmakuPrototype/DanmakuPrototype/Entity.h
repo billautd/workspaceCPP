@@ -22,7 +22,6 @@ public:
 	Entity(std::string name, LayerEnum layer) : name(name), layer(layer) {};
 
 	//Run for each component
-	virtual void Init();
 	virtual void Update(GLfloat dt);
 	virtual void Render();
 	virtual void Destroy();
