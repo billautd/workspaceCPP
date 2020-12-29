@@ -11,8 +11,8 @@
 class SpriteComponent : public Component
 {
 public:
-	SpriteComponent(std::string shader, std::string texture, glm::vec3 color = glm::vec3(1.0f), GLfloat alpha = 1.0f)
-		: shader(ResourceManager::GetShader(shader)), texture(ResourceManager::GetTexture(texture)), alpha(alpha), color(color) {};
+	SpriteComponent(std::string shader, std::string texture, bool isVisible = true, glm::vec3 color = glm::vec3(1.0f), GLfloat alpha = 1.0f)
+		: shader(ResourceManager::GetShader(shader)), isVisible(isVisible), texture(ResourceManager::GetTexture(texture)), alpha(alpha), color(color) {};
 
 	void Init() override;
 	void Update(GLfloat dt) override;
@@ -23,6 +23,8 @@ public:
 	void SetTexture(Texture2D* texture) { this->texture = texture; }
 	glm::vec3 GetColor() { return color; }
 	GLfloat GetAlpha() { return alpha; }
+	bool IsVisible() { return isVisible; }
+	void SetIsVisible(bool isVisible) { this->isVisible = isVisible; }
 private:
 	Shader* shader;
 	GLuint quadVAO{ 0 };
@@ -31,6 +33,7 @@ private:
 	Texture2D* texture;
 	GLfloat alpha{ 1.0f };
 	glm::vec3 color{ glm::vec3(1.0f) };
+	bool isVisible{ true };
 
 	void InitRenderData();
 };

@@ -12,7 +12,7 @@ Player::Player(std::string name, LayerEnum layer) : Entity(name, layer) {
 	hitbox = EntityManager::AddEntity(new Entity("Hitbox", LayerEnum::PROJECTILE_LAYER));
 	hitbox->SetEntityType(EntityTypeEnum::PLAYER);
 	hitboxTransform = hitbox->AddComponent<TransformComponent>(HITBOX_POSITION, glm::vec2(), HITBOX_SIZE);
-	hitbox->AddComponent<SpriteComponent>("SpriteRendering", "hitbox");
+	hitboxSprite = hitbox->AddComponent<SpriteComponent>("SpriteRendering", "hitbox", false);
 
 	//Init textures
 	for (GLuint i = 1; i <= PLAYER_SPRITE_NUMBER; i++) {
@@ -32,6 +32,7 @@ void Player::ProcessInput(SDL_Event& e, GLfloat dt) {
 
 	SDL_Scancode focus{ kbd->GetFocusKey() };
 	GLfloat velocity{ keys[focus] ? PLAYER_VELOCITY / 3.0f : PLAYER_VELOCITY };
+	hitboxSprite->SetIsVisible(keys[focus]);
 
 	//UP
 	SDL_Scancode up{ kbd->GetUpKey() };
@@ -151,24 +152,12 @@ void Player::EmitProjectiles() {
 	GLfloat x{ transform->GetPosition().x };
 	GLfloat y{ transform->GetPosition().y };
 	GLfloat w{ transform->GetWidth() };
-
-	EntityManager::AddEntity(new Projectile(
-		glm::vec2(x + w / 4, y - 20.0f),
-		glm::vec2(0.0f, -PROJECTILE_SPEED),
-		PROJECTILE_SIZE,
-		0.0f,
-		"playerProjectile",
-		glm::vec3(1.0f),
-		1.0f,
-		"Projectile"));
-
-	EntityManager::AddEntity(new Projectile(
-		glm::vec2(x + 3 * w / 4, y - 20.0f),
-		glm::vec2(0.0f, -PROJECTILE_SPEED),
-		PROJECTILE_SIZE,
-		0.0f,
-		"playerProjectile",
-		glm::vec3(1.0f),
-		1.0f,
-		"Projectile"));
+	for (GLuint i = 0; i < 4; i++) {
+		EntityManager::AddEntity(new Projectile(
+			glm::vec2(x + i * w / 4, y),
+			glm::vec2(0.0f, -PROJECTILE_SPEED),
+			PROJECTILE_SIZE,
+			0.0f,
+			"playerProjectile"));
+	}
 }

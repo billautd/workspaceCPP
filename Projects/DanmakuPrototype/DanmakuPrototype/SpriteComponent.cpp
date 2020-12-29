@@ -10,6 +10,8 @@ void SpriteComponent::Update(GLfloat dt) {
 }
 
 void SpriteComponent::Render() {
+	if (!isVisible)
+		return;
 	this->shader->Use();
 	//Model
 	glm::mat4 model{ glm::mat4(1.0f) };

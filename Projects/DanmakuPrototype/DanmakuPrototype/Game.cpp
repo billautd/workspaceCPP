@@ -119,7 +119,7 @@ void Game::LoadEntities() {
 	//BG
 	Entity* bg{ EntityManager::AddEntity(new Entity("GameBG", LayerEnum::BG_LAYER)) };
 	bg->AddComponent<TransformComponent>(glm::vec2(10.0f), glm::vec2(0.0f), GAME_SIZE);
-	bg->AddComponent<SpriteComponent>("SpriteRendering", "blank", glm::vec3(0.0f));
+	bg->AddComponent<SpriteComponent>("SpriteRendering", "blank", true, glm::vec3(0.0f));
 
 	//UI
 	Label* highScoreLabel{ dynamic_cast<Label*>(EntityManager::AddEntity(

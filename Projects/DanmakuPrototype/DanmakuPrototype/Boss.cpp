@@ -12,3 +12,7 @@ void Boss::Update(GLfloat dt) {
 		lifeBarTransform->SetWidth(static_cast<GLfloat>(GetHealth()) / static_cast<GLfloat>(GetTotalHealth()) * GAME_SIZE.x);
 }
 
+void Boss::Destroy() {
+	lifeBar->Destroy();
+	Entity::Destroy();
+}

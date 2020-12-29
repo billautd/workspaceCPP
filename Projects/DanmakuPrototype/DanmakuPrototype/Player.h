@@ -23,6 +23,7 @@ private:
 
 	Entity* hitbox{ nullptr };
 	TransformComponent* hitboxTransform{ nullptr };
+	SpriteComponent* hitboxSprite{ nullptr };
 
 	Texture2D* playerCenterTexture{ ResourceManager::GetTexture("playerCenter") };
 	std::vector<Texture2D*> playerLeftTextures{};
