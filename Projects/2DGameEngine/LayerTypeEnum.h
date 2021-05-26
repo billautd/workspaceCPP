@@ -1,0 +1,14 @@
+#pragma once
+#include "Enum.h"
+
+enum class LayerTypeEnum {
+	BEGIN,
+	TILEMAP_LAYER = BEGIN,
+	VEGEATION_LAYER,
+	ENEMY_LAYER,
+	OBSTACLE_LAYER,
+	PLAYER_LAYER,
+	PROJECTILE_LAYER,
+	UI_LAYER,
+	END = UI_LAYER
+};

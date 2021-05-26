@@ -1,186 +1,99 @@
 #pragma once
 #include <vector>
-#include <fstream>
-#include <istream>
-#include <iostream>
-#include <sstream>
-#include <algorithm>
+#include <cstdint>
 #include <string>
+#include <fstream>
+typedef uint64_t u64;
 
-bool isPrime(const uint64_t value) {
-	if (value < 2)
-		return false;
-	for (uint64_t i = 2; i <= sqrt(value); i++) {
-		if (value % i == 0)
-			return false;
-	}
-	return true;
-}
+const bool isPrime(const u64 number);
+const std::vector<u64> primeDecomposition(const u64 prime);
+const u64 vectorMax(const std::vector<u64> numbers);
+const bool isPalindrome(const u64 number);
+const bool isDivisible(const u64 number, const std::vector<u64> numbers);
+const std::vector<u64> primesBelow(const u64 max);
 
-std::vector<uint64_t> primeDecomposition(const uint64_t value) {
-	if (isPrime(value))
-		return std::vector<uint64_t>(value);
+template <class T>
+const u64 productVector(std::vector<T> numbers) {
+	u64 product{ 1 };
+	for (const T i : numbers)
+		product *= i;
 
-	std::vector<uint64_t> primes;
-	uint64_t current{ value };
-	uint64_t i{ 2 };
-	while (i <= sqrt(current)) {
-		if (current % i == 0) {
-			current /= i;
-			primes.push_back(i);
-			i = 2;
-		}
-		else
-			i++;
-	}
-	//Last number is a prime
-	primes.push_back(current);
-	return primes;
-}
-
-bool checkPalindrome(const uint64_t value) {
-	std::string str{ std::to_string(value) };
-	for (size_t i = 0; i < str.size() / 2; i++) {
-		char char1{ str.at(i) };
-		char char2{ str.at(str.size() - 1 - i) };
-		if (char1 != char2)
-			return false;
-	}
-	return true;
-}
-
-short charToDigit(const char value) {
-	return value - '0';
-}
-
-short charToAlphabeticalPosition(const char value) {
-	return std::tolower(value) - 'a' + static_cast<char>(1);
-}
-
-std::vector<uint64_t> getProperDivisors(uint64_t value) {
-	if (value == 0)
-		return std::vector<uint64_t>{};
-	std::vector<uint64_t> divisors{};
-	for (uint64_t i = 1; i < value; i++) {
-		if (value % i == 0)
-			divisors.push_back(i);
-	}
-	return divisors;
-}
-
-std::vector<uint64_t> getDivisors(uint64_t value) {
-	std::vector<uint64_t> divisors{ getProperDivisors(value) };
-	divisors.push_back(value);
-	return divisors;
+	return product;
 }
 
 template <class T>
-bool contains(const std::vector<T> vector, T value) {
-	for (size_t i = 0; i < vector.size(); i++) {
-		if (vector.at(i) == value)
-			return true;
+const u64 sumVector(std::vector<T> numbers) {
+	u64 product{ 0 };
+	for (const T i : numbers)
+		product += i;
+
+	return product;
+}
+
+const bool isPrime(const u64 number) {
+	if (number == 0 || number == 1)
+		return false;
+	for (u64 i{ 2 }; i <= floor(sqrt(static_cast<double>(number))); i++) {
+		if (number % i == 0)
+			return false;
 	}
-	return false;
+	return true;
 }
 
-void digitsAdd(std::vector<uint16_t>* digits, std::string number) {
-	for (size_t i = 0; i < number.size(); i++) {
-		if (i >= digits->size())
-			digits->push_back(std::stoi(number.substr(number.size() - 1 - i, 1)));
-		else
-			digits->at(i) += std::stoi(number.substr(number.size() - 1 - i, 1));
-		size_t j = i;
-		while (digits->at(j) > 9) {
-			digits->at(j) -= 10;
-			if (j + 1 > digits->size() - 1) {
-				digits->push_back(1);
-				break;
-			}
-			else
-				digits->at(j + 1)++;
-			j++;
-		}
+const std::vector<u64> primeDecomposition(const u64 number) {
+	if (number == 0 || number == 1)
+		return std::vector<u64>{};
+	if (number == 2)
+		return std::vector<u64>{2};
+	if (number == 3)
+		return std::vector<u64>{3};
+
+
+	std::vector<u64> primes{};
+	for (u64 i{ 2 }; i <= floor(sqrt(static_cast<double>(number))); i++) {
+		if (isPrime(i) && number % i == 0)
+			primes.push_back(i);
 	}
+	return primes;
 }
 
-void digitsAdd(std::vector<uint16_t>* digits, uint64_t value) {
-	std::string str{ std::to_string(value) };
-	digitsAdd(digits, str);
-}
-
-void digitsAdd(std::vector<uint16_t>* digits1, std::vector<uint16_t> digits2) {
-	std::string str{ "" };
-	for (uint16_t i = 0; i < digits2.size(); i++)
-		str.insert(str.begin(), std::to_string(digits2.at(i)).at(0));
-	digitsAdd(digits1, str);
-}
-
-
-//Multiplies digit by digit
-//Ex : 225x347 = 225*7 + 225*4*10 + 225*3*100
-void digitsMultiply(std::vector<uint16_t>* digits, std::string value) {
-	std::vector<uint16_t> originalValue{ *digits };
-	std::vector<uint16_t> originalValueCopy{ *digits };
-	for (uint64_t i = 0; i < value.size(); i++) {
-		//Get digit
-		int digit{ std::stoi(value.substr(value.size() - 1 - i, 1)) };
-		//Multiply all digits by current digit
-		for (uint16_t j = 0; j < originalValueCopy.size(); j++)
-			originalValueCopy.at(j) *= digit;
-
-		//Carry
-		for (uint64_t j = 0; j < originalValueCopy.size(); j++) {
-			if (originalValueCopy.at(j) > 9) {
-				if (j == originalValueCopy.size() - 1)
-					originalValueCopy.push_back(originalValueCopy.at(j) / 10);
-				else
-					originalValueCopy.at(j + 1) += originalValueCopy.at(j) / 10;
-				originalValueCopy.at(j) %= 10;
-
-			}
-		}
-
-		//Add to original digits
-		if (i == 0)
-			*digits = originalValueCopy;
-		else {
-			//Multiply by rank (10^i)
-			for (uint16_t k = 0; k < i; k++)
-				originalValueCopy.insert(originalValueCopy.begin(), 0);
-			//New vector size is always >= to previous one
-			digitsAdd(digits, originalValueCopy);
-		}
-		//Restore original value
-		originalValueCopy = originalValue;
+const u64 vectorMax(const std::vector<u64> numbers) {
+	if (numbers.empty())
+		return 0;
+	u64 max{ numbers.at(0) };
+	for (size_t i{ 1 }; i < numbers.size(); i++) {
+		if (numbers.at(i) > max)
+			max = numbers.at(i);
 	}
+
+	return max;
 }
 
-void digitsMultiply(std::vector<uint16_t>* digits, uint64_t value) {
-	std::string str{ std::to_string(value) };
-	digitsMultiply(digits, str);
+const bool isPalindrome(const u64 number) {
+	std::string numberStr{ std::to_string(number) };
+	size_t numberStrSize{ numberStr.size() };
+	for (size_t i{ 0 }; i < numberStrSize; i++) {
+		if (numberStr.at(i) != numberStr.at(numberStrSize - i - 1))
+			return false;
+	}
+	return true;
 }
 
-void digitsMultiply(std::vector<uint16_t>* digits1, std::vector<uint16_t> digits2) {
-	std::string str{ "" };
-	for (uint16_t i = 0; i < digits2.size(); i++)
-		str.insert(str.begin(), std::to_string(digits2.at(i)).at(0));
-	digitsMultiply(digits1, str);
+const bool isDivisible(const u64 number, const std::vector<u64> numbers) {
+	if (number == 0)
+		return false;
+	for (const u64 i : numbers) {
+		if (number % i != 0)
+			return false;
+	}
+	return true;
 }
 
-template<class T>
-uint64_t vectorSum(const std::vector<T> vector) {
-	uint64_t sum{ 0 };
-	for (uint64_t i = 0; i < vector.size(); i++)
-		sum += vector.at(i);
-	return sum;
-}
-
-uint64_t fact(uint64_t value) {
-	if (value == 0)
-		return 1;
-	uint64_t fact{ 1 };
-	for (uint64_t i = 1; i <= value; i++)
-		fact *= i;
-	return fact;
-
+const std::vector<u64> primesBelow(const u64 max) {
+	std::vector<u64> primes{};
+	for (u64 i{ 0 }; i < max; i++) {
+		if (isPrime(i))
+			primes.push_back(i);
+	}
+	return primes;
 }
