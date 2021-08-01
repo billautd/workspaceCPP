@@ -75,7 +75,6 @@ void Game::CheckCollisions() {
 
 	if (collisionType == CollisionTypeEnum::PLAYER_LEVEL_COMPLETE_COLLISION)
 		ProcessNextLevel(1);
-
 }
 
 

@@ -72,23 +72,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\David\workspaceC++\Libraries\glm\glm;C:\Users\David\workspaceC++\Libraries\SDL2_ttf\include;C:\Users\David\workspaceC++\Libraries\SDL2_mixer\include;C:\Users\David\workspaceC++\Libraries\SDL2_image\include;C:\Users\David\workspaceC++\Libraries\SDL2\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\David\workspaceC++\Libraries\SDL2_ttf\lib\x86;C:\Users\David\workspaceC++\Libraries\SDL2_mixer\lib\x86;C:\Users\David\workspaceC++\Libraries\SDL2_image\lib\x86;C:\Users\David\workspaceC++\Libraries\SDL2\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\David\workspaceC++\Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\David\workspaceC++\Libraries\SDL2_ttf\x86;C:\Users\David\workspaceC++\Libraries\SDL2_mixer\x86;C:\Users\David\workspaceC++\Libraries\SDL2_image\x86;C:\Users\David\workspaceC++\Libraries\SDL2\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\David\workspaceC++\Libraries\glm\glm;C:\Users\David\workspaceC++\Libraries\SDL2_ttf\include;C:\Users\David\workspaceC++\Libraries\SDL2_mixer\include;C:\Users\David\workspaceC++\Libraries\SDL2_image\include;C:\Users\David\workspaceC++\Libraries\SDL2\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\David\workspaceC++\Libraries\SDL2_ttf\lib\x86;C:\Users\David\workspaceC++\Libraries\SDL2_mixer\lib\x86;C:\Users\David\workspaceC++\Libraries\SDL2_image\lib\x86;C:\Users\David\workspaceC++\Libraries\SDL2\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\David\workspaceC++\Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\David\workspaceC++\Libraries\SDL2_ttf\x86;C:\Users\David\workspaceC++\Libraries\SDL2_mixer\x86;C:\Users\David\workspaceC++\Libraries\SDL2_image\x86;C:\Users\David\workspaceC++\Libraries\SDL2\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\David\workspaceC++\Libraries\glm\glm;C:\Users\David\workspaceC++\Libraries\SDL2_ttf\include;C:\Users\David\workspaceC++\Libraries\SDL2_mixer\include;C:\Users\David\workspaceC++\Libraries\SDL2_image\include;C:\Users\David\workspaceC++\Libraries\SDL2\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\David\workspaceC++\Libraries\SDL2_mixer\lib\x64;C:\Users\David\workspaceC++\Libraries\SDL2_ttf\lib\x64;C:\Users\David\workspaceC++\Libraries\SDL2_image\lib\x64;C:\Users\David\workspaceC++\Libraries\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\David\workspaceC++\Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\David\workspaceC++\Libraries\SDL2_mixer\x64;C:\Users\David\workspaceC++\Libraries\SDL2_ttf\x64;C:\Users\David\workspaceC++\Libraries\SDL2_image\x64;C:\Users\David\workspaceC++\Libraries\SDL2\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\David\workspaceC++\Libraries\glm\glm;C:\Users\David\workspaceC++\Libraries\SDL2_ttf\include;C:\Users\David\workspaceC++\Libraries\SDL2_mixer\include;C:\Users\David\workspaceC++\Libraries\SDL2_image\include;C:\Users\David\workspaceC++\Libraries\SDL2\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\David\workspaceC++\Libraries\SDL2_mixer\lib\x64;C:\Users\David\workspaceC++\Libraries\SDL2_ttf\lib\x64;C:\Users\David\workspaceC++\Libraries\SDL2_image\lib\x64;C:\Users\David\workspaceC++\Libraries\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\David\workspaceC++\Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\David\workspaceC++\Libraries\SDL2_mixer\x64;C:\Users\David\workspaceC++\Libraries\SDL2_ttf\x64;C:\Users\David\workspaceC++\Libraries\SDL2_image\x64;C:\Users\David\workspaceC++\Libraries\SDL2\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
