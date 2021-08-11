@@ -17,7 +17,7 @@ private:
 	const std::vector<Texture> LoadMaterialTextures(const aiMaterial* material, const aiTextureType type, const std::string typeName);
 
 public:
-	Model(const char* path) { LoadModel(std::string(path)); }
+	Model(const std::string path) { LoadModel(path); }
 
 	void Draw(const Shader& shader) const;
 };

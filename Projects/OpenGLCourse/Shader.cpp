@@ -33,7 +33,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
 		fShaderString = fShaderStream.str();
 	}
 	catch (std::ifstream::failure e) {
-		std::cerr << "Error trying to create shader\n";
+		std::cerr << "Error trying to create shader at " << vertexPath << " & " << fragmentPath << '\n';
 	}
 
 	CompileAndLinkShaders(vShaderString.c_str(), fShaderString.c_str());

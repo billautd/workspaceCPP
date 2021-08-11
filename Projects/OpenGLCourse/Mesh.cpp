@@ -5,7 +5,8 @@ void Mesh::Draw(const Shader& shader) const {
 	GLuint specularNbr{ 1 };
 	for (size_t i{ 0 }; i < textures.size(); i++) {
 		//Bind to proper texture
-		glActiveTexture(GL_TEXTURE0 + static_cast<GLenum>(i));
+		//Start from 10 for now
+		glActiveTexture(GL_TEXTURE10 + static_cast<GLenum>(i));
 
 		//Retrieve texture number
 		std::string number;
@@ -18,7 +19,7 @@ void Mesh::Draw(const Shader& shader) const {
 		shader.SetInt("material." + type + number, static_cast<int>(i));
 		glBindTexture(GL_TEXTURE_2D, textures.at(i).id);
 	}
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE10);
 
 	//Draw mesh
 	glBindVertexArray(vao);

@@ -10,8 +10,8 @@
 #include "Constants.h"
 #include "AssetManager.h"
 
-GLuint vao, vbo, vaoFloor, vboFloor, vaoSquareVertical, vboSquareVertical, vaoSquare, vboSquare;
-GLuint fbo, rbo;
+GLuint vaoCube, vboCube, vaoFloor, vboFloor, vaoSquareVertical, vboSquareVertical, vaoSquare, vboSquare, vaoSkybox, vboSkybox;
+GLuint fbo, rbo, textureColorBuffer;
 Shader* mainShader{ nullptr };
 Shader* singleColorShader{ nullptr };
 Shader* modelShader{ nullptr };
@@ -19,6 +19,7 @@ Shader* outlineShader{ nullptr };
 Shader* textureShader{ nullptr };
 Shader* grassShader{ nullptr };
 Shader* fboShader{ nullptr };
+Shader* skyboxShader{ nullptr };
 
 std::vector<Shader*> shaders;
 std::vector<GLuint> vaos;
@@ -81,30 +82,44 @@ void LoadAssets() {
 	assetManager->AddTexture("marble", AssetManager::GenerateTexture("marble.jpg", "./Assets"));
 	assetManager->AddTexture("grass", AssetManager::GenerateTexture("grass.png", "./Assets", GL_CLAMP_TO_EDGE));
 
+	const std::vector<std::string> faces {
+		"right.jpg",
+		"left.jpg",
+		"top.jpg",
+		"bottom.jpg",
+		"front.jpg",
+		"back.jpg"
+	};
+	stbi_set_flip_vertically_on_load(false);
+	assetManager->AddCubeMap("skybox", AssetManager::GenerateCubeMap(faces, "./Assets/skybox", GL_CLAMP_TO_EDGE));
+	stbi_set_flip_vertically_on_load(true);
+
+
 	//Load models
-	assetManager->AddModel("backpack", AssetManager::GenerateModel("./Assets/backpack/backpack.obj"));
+	assetManager->AddModel("backpack", AssetManager::GenerateModel("backpack.obj", "./Assets/backpack"));
 }
 
-void ConfigureShaders() {
+void CreateShaders() {
 	//Configure shader
 	mainShader = new Shader(std::string("./Shaders/vertex3D.shader").c_str(), std::string("./Shaders/fragment3D.shader").c_str());
 	singleColorShader = new Shader(std::string("./Shaders/vertex3D.shader").c_str(), std::string("./Shaders/fragmentSingleColor.shader").c_str());
 	modelShader = new Shader(std::string("./Shaders/vertex3D.shader").c_str(), std::string("./Shaders/fragmentModel.shader").c_str());
 	outlineShader = new Shader(std::string("./Shaders/vertex3D.shader").c_str(), std::string("./Shaders/fragmentOutline.shader").c_str());
-	textureShader = new Shader(std::string("./Shaders/vertex2D.shader").c_str(), std::string("./Shaders/fragmentTexture.shader").c_str());
+	textureShader = new Shader(std::string("./Shaders/vertex2D.shader").c_str(), std::string("./Shaders/fragment2D.shader").c_str());
 	grassShader = new Shader(std::string("./Shaders/vertex2D.shader").c_str(), std::string("./Shaders/fragmentGrass.shader").c_str());
 	fboShader = new Shader(std::string("./Shaders/vertexFBO.shader").c_str(), std::string("./Shaders/fragmentFBO.shader").c_str());
+	skyboxShader = new Shader(std::string("./Shaders/vertexSkybox.shader").c_str(), std::string("./Shaders/fragmentSkybox.shader").c_str());
 
-	shaders = { mainShader, singleColorShader, modelShader, outlineShader, textureShader, grassShader, fboShader };
+	shaders = { mainShader, singleColorShader, modelShader, outlineShader, textureShader, grassShader, fboShader, skyboxShader };
 }
 
 void ConfigureVAOVBO() {
-	glGenVertexArrays(1, &vao);
-	glGenBuffers(1, &vbo);
+	glGenVertexArrays(1, &vaoCube);
+	glGenBuffers(1, &vboCube);
 
-	glBindVertexArray(vao);
+	glBindVertexArray(vaoCube);
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, vboCube);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)0);
@@ -156,21 +171,20 @@ void ConfigureVAOVBO() {
 	}
 	glBindVertexArray(0);
 
-	vaos = { vao, vaoFloor, vaoSquareVertical, vaoSquare };
-	vbos = { vbo, vboFloor, vboSquareVertical, vboSquare };
-}
+	glGenVertexArrays(1, &vaoSkybox);
+	glGenBuffers(1, &vboSkybox);
+	glBindVertexArray(vaoSkybox);
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, vboSkybox);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
 
-void SetTextures() {
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, assetManager->GetTexture("steelContainerDiffuse"));
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, assetManager->GetTexture("steelContainerSpecular"));
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, assetManager->GetTexture("marble"));
-	glActiveTexture(GL_TEXTURE3);
-	glBindTexture(GL_TEXTURE_2D, assetManager->GetTexture("grass"));
-	glActiveTexture(GL_TEXTURE4);
-	glBindTexture(GL_TEXTURE_2D, assetManager->GetTexture("transparentWindow"));
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
+		glEnableVertexAttribArray(0);
+	}
+	glBindVertexArray(0);
+
+	vaos = { vaoCube, vaoFloor, vaoSquareVertical, vaoSquare, vaoSkybox };
+	vbos = { vboCube, vboFloor, vboSquareVertical, vboSquare, vboSkybox };
 }
 
 void Clear() {
@@ -184,14 +198,45 @@ void Clear() {
 	glfwTerminate();
 }
 
+void DisplaySkybox() {
+	glDepthMask(GL_FALSE);
+
+	skyboxShader->Use();
+
+	//Textures
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, assetManager->GetCubeMap("skybox"));
+
+	//Uniforms
+	skyboxShader->SetInt("skybox", 0);
+
+	//MVP
+	glm::mat4 view = glm::mat4(glm::mat3(camera.GetCameraView()));
+
+	skyboxShader->SetMat4("view", view);
+	skyboxShader->SetMat4("projection", camera.GetCameraProjection());
+
+	glBindVertexArray(vaoSkybox);
+	{
+		glDrawArrays(GL_TRIANGLES, 0, sizeof(skyboxVertices) / sizeof(GLfloat));
+	}
+	glBindVertexArray(0);
+
+	glDepthMask(GL_TRUE);
+}
+
 void DisplayGrass() {
 	//Face culling
 	glDisable(GL_CULL_FACE);
 
 	grassShader->Use();
-	//Uniforms
 
-	grassShader->SetInt("textureSampler", 3);
+	//Textures
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, assetManager->GetTexture("grass"));
+
+	//Uniforms
+	grassShader->SetInt("textureSampler", 0);
 
 	//MVP
 	grassShader->SetMat4("view", camera.GetCameraView());
@@ -219,9 +264,13 @@ void DisplayWindows() {
 	glDisable(GL_CULL_FACE);
 
 	textureShader->Use();
-	//Uniforms
 
-	textureShader->SetInt("textureSampler", 4);
+	//Texture
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, assetManager->GetTexture("transparentWindow"));
+
+	//Uniforms
+	textureShader->SetInt("textureSampler", 0);
 
 	//MVP
 	textureShader->SetMat4("view", camera.GetCameraView());
@@ -257,9 +306,12 @@ void DisplayFloor() {
 	glEnable(GL_CULL_FACE);
 
 	textureShader->Use();
-	//Uniforms
+	//Textures
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, assetManager->GetTexture("marble"));
 
-	textureShader->SetInt("textureSampler", 2);
+	//Uniforms
+	textureShader->SetInt("textureSampler", 0);
 
 	//MVP
 	textureShader->SetMat4("view", camera.GetCameraView());
@@ -281,6 +333,13 @@ void DisplayNormalCubes() {
 	glEnable(GL_CULL_FACE);
 
 	mainShader->Use();
+
+	//Textures
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, assetManager->GetTexture("steelContainerDiffuse"));
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, assetManager->GetTexture("steelContainerSpecular"));
+
 	//Uniforms
 	mainShader->SetInt("material.diffuse", 0);
 	mainShader->SetInt("material.specular", 1);
@@ -297,12 +356,12 @@ void DisplayNormalCubes() {
 	mainShader->SetMat4("projection", camera.GetCameraProjection());
 
 	glm::mat4 model{ glm::mat4(1.0f) };
-	glBindVertexArray(vao);
+	glBindVertexArray(vaoCube);
 	{
 		for (const glm::vec3 position : cubePositions) {
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, position);
-			//model = glm::rotate(model, static_cast<GLfloat>(glfwGetTime()) * glm::radians(40.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+			model = glm::rotate(model, static_cast<GLfloat>(glfwGetTime()) * glm::radians(40.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 
 			mainShader->SetMat4("model", model);
 
@@ -324,13 +383,13 @@ void DisplayOutlineCubes() {
 	outlineShader->SetMat4("projection", camera.GetCameraProjection());
 
 	glm::mat4 model{ glm::mat4(1.0f) };
-	glBindVertexArray(vao);
+	glBindVertexArray(vaoCube);
 	{
 		for (const glm::vec3 position : cubePositions) {
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, position);
 			model = glm::scale(model, glm::vec3(1.1f));
-			//model = glm::rotate(model, static_cast<GLfloat>(glfwGetTime()) * glm::radians(40.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+			model = glm::rotate(model, static_cast<GLfloat>(glfwGetTime()) * glm::radians(40.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 
 			outlineShader->SetMat4("model", model);
 
@@ -355,7 +414,7 @@ void DisplayLightCubes() {
 	singleColorShader->SetMat4("projection", camera.GetCameraProjection());
 
 	glm::mat4 model{ glm::mat4(1.0f) };
-	glBindVertexArray(vao);
+	glBindVertexArray(vaoCube);
 	{
 		for (const glm::vec3 position : pointLightPositions) {
 			model = glm::mat4(1.0f);
@@ -397,19 +456,17 @@ void CreateFBORBO() {
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 	{
 		//Generate texture to attach to framebuffer
-		unsigned int texture;
-		glGenTextures(1, &texture);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glGenTextures(1, &textureColorBuffer);
+		glBindTexture(GL_TEXTURE_2D, textureColorBuffer);
 		{
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, WINDOW_WIDTH, WINDOW_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		}
-		glBindTexture(GL_TEXTURE_2D, 0);
 
 		//Attach texture to framebuffer
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorBuffer, 0);
 
 		//Renderbuffer to attach to framebuffer
 		glGenRenderbuffers(1, &rbo);
@@ -417,22 +474,26 @@ void CreateFBORBO() {
 		{
 			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, WINDOW_WIDTH, WINDOW_HEIGHT);
 		}
-		glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
 		//Attach renderbuffer to framebuffer
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
-		glDeleteRenderbuffers(1, &rbo);
 	}
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		std::cerr << "ERROR::FRAMEBUFFER : Framebuffer is not complete\n";
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glDeleteFramebuffers(1, &fbo);
 }
 
 void RenderFBOTexture() {
 	glDisable(GL_DEPTH_TEST);
 	fboShader->Use();
+
+	//Textures
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textureColorBuffer);
+
+	fboShader->SetInt("textureSampler", 0);
 	glBindVertexArray(vaoSquare);
 	{
 		glDrawArrays(GL_TRIANGLES, 0, sizeof(squareVertices) / sizeof(GLfloat));
@@ -441,6 +502,8 @@ void RenderFBOTexture() {
 }
 
 void DrawScene() {
+	DisplaySkybox();
+
 	glStencilMask(0x00);
 	DisplayFloor();
 
@@ -516,10 +579,10 @@ int main(int argc, char** argv) {
 		return initSuccess;
 
 	//Init and config
-	ConfigureShaders();
+	CreateShaders();
 	ConfigureVAOVBO();
-	SetTextures();
 	LoadAssets();
+	CreateFBORBO();
 
 	//Main loop
 	while (!glfwWindowShouldClose(window)) {
@@ -546,6 +609,8 @@ int main(int argc, char** argv) {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+		glBindTexture(GL_TEXTURE_2D, textureColorBuffer);
+		RenderFBOTexture();
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

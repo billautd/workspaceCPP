@@ -77,6 +77,12 @@
     <None Include="Shaders\vertexFBO.shader">
       <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="Shaders\fragmentSkybox.shader">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\vertexSkybox.shader">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">

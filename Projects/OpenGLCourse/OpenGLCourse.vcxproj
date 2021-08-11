@@ -72,7 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\David\workspaceC++\Libraries\include</IncludePath>
+    <IncludePath>C:\Users\David\workspaceCPP\Libraries\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -80,8 +80,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\David\workspaceC++\Libraries\include</IncludePath>
-    <LibraryPath>C:\Users\David\workspaceC++\Libraries\assimp;C:\Users\David\workspaceC++\Libraries\glfw_x64\lib-vc2019;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\David\workspaceCPP\Libraries\include</IncludePath>
+    <LibraryPath>C:\Users\David\workspaceCPP\Libraries\assimp;C:\Users\David\workspaceCPP\Libraries\glfw_x64\lib-vc2019;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -165,9 +165,11 @@
     <None Include="Shaders\fragmentModel.shader" />
     <None Include="Shaders\fragmentOutline.shader" />
     <None Include="Shaders\fragmentSingleColor.shader" />
+    <None Include="Shaders\fragmentSkybox.shader" />
     <None Include="Shaders\vertex2D.shader" />
     <None Include="Shaders\vertex3D.shader" />
     <None Include="Shaders\vertexFBO.shader" />
+    <None Include="Shaders\vertexSkybox.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetManager.h" />
