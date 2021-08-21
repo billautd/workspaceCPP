@@ -11,9 +11,10 @@
 #include "AssetManager.h"
 
 GLuint vaoCube, vboCube, vaoFloor, vboFloor, vaoSquareVertical, vboSquareVertical, vaoSquare, vboSquare, vaoSkybox, vboSkybox;
+GLuint vaoLightCube, vboLightCube;
 GLuint fbo, rbo, textureColorBuffer;
-Shader* mainShader{ nullptr };
-Shader* singleColorShader{ nullptr };
+Shader* cubeShader{ nullptr };
+Shader* lightCubeShader{ nullptr };
 Shader* modelShader{ nullptr };
 Shader* outlineShader{ nullptr };
 Shader* textureShader{ nullptr };
@@ -101,22 +102,21 @@ void LoadAssets() {
 
 void CreateShaders() {
 	//Configure shader
-	mainShader = new Shader(std::string("./Shaders/vertex3D.shader").c_str(), std::string("./Shaders/fragment3D.shader").c_str());
-	singleColorShader = new Shader(std::string("./Shaders/vertex3D.shader").c_str(), std::string("./Shaders/fragmentSingleColor.shader").c_str());
-	modelShader = new Shader(std::string("./Shaders/vertex3D.shader").c_str(), std::string("./Shaders/fragmentModel.shader").c_str());
-	outlineShader = new Shader(std::string("./Shaders/vertex3D.shader").c_str(), std::string("./Shaders/fragmentOutline.shader").c_str());
-	textureShader = new Shader(std::string("./Shaders/vertex2D.shader").c_str(), std::string("./Shaders/fragment2D.shader").c_str());
-	grassShader = new Shader(std::string("./Shaders/vertex2D.shader").c_str(), std::string("./Shaders/fragmentGrass.shader").c_str());
+	cubeShader = new Shader(std::string("./Shaders/vertexCube.shader").c_str(), std::string("./Shaders/fragmentCube.shader").c_str());
+	lightCubeShader = new Shader(std::string("./Shaders/vertexLightCube.shader").c_str(), std::string("./Shaders/fragmentLightCube.shader").c_str());
+	modelShader = new Shader(std::string("./Shaders/vertexCube.shader").c_str(), std::string("./Shaders/fragmentModel.shader").c_str());
+	outlineShader = new Shader(std::string("./Shaders/vertexCube.shader").c_str(), std::string("./Shaders/fragmentOutline.shader").c_str());
+	textureShader = new Shader(std::string("./Shaders/vertexTexture.shader").c_str(), std::string("./Shaders/fragmentTexture.shader").c_str());
+	grassShader = new Shader(std::string("./Shaders/vertexTexture.shader").c_str(), std::string("./Shaders/fragmentGrass.shader").c_str());
 	fboShader = new Shader(std::string("./Shaders/vertexFBO.shader").c_str(), std::string("./Shaders/fragmentFBO.shader").c_str());
 	skyboxShader = new Shader(std::string("./Shaders/vertexSkybox.shader").c_str(), std::string("./Shaders/fragmentSkybox.shader").c_str());
 
-	shaders = { mainShader, singleColorShader, modelShader, outlineShader, textureShader, grassShader, fboShader, skyboxShader };
+	shaders = { cubeShader, lightCubeShader, modelShader, outlineShader, textureShader, grassShader, fboShader, skyboxShader };
 }
 
 void ConfigureVAOVBO() {
 	glGenVertexArrays(1, &vaoCube);
 	glGenBuffers(1, &vboCube);
-
 	glBindVertexArray(vaoCube);
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, vboCube);
@@ -129,7 +129,19 @@ void ConfigureVAOVBO() {
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(5 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(2);
 	}
-	glBindVertexArray(0);
+
+	glGenVertexArrays(1, &vaoLightCube);
+	glGenBuffers(1, &vboLightCube);
+	glBindVertexArray(vaoLightCube);
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, vboLightCube);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)0);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8* sizeof(GLfloat), (void*)(5 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(1);
+	}
 
 	glGenVertexArrays(1, &vaoFloor);
 	glGenBuffers(1, &vboFloor);
@@ -169,7 +181,6 @@ void ConfigureVAOVBO() {
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(1);
 	}
-	glBindVertexArray(0);
 
 	glGenVertexArrays(1, &vaoSkybox);
 	glGenBuffers(1, &vboSkybox);
@@ -183,271 +194,8 @@ void ConfigureVAOVBO() {
 	}
 	glBindVertexArray(0);
 
-	vaos = { vaoCube, vaoFloor, vaoSquareVertical, vaoSquare, vaoSkybox };
-	vbos = { vboCube, vboFloor, vboSquareVertical, vboSquare, vboSkybox };
-}
-
-void Clear() {
-	for (GLuint vao : vaos)
-		glDeleteVertexArrays(1, &vao);
-	for (GLuint vbo : vbos)
-		glDeleteBuffers(1, &vbo);
-	for (Shader* shader : shaders)
-		shader->Delete();
-
-	glfwTerminate();
-}
-
-void DisplaySkybox() {
-	glDepthMask(GL_FALSE);
-
-	skyboxShader->Use();
-
-	//Textures
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, assetManager->GetCubeMap("skybox"));
-
-	//Uniforms
-	skyboxShader->SetInt("skybox", 0);
-
-	//MVP
-	glm::mat4 view = glm::mat4(glm::mat3(camera.GetCameraView()));
-
-	skyboxShader->SetMat4("view", view);
-	skyboxShader->SetMat4("projection", camera.GetCameraProjection());
-
-	glBindVertexArray(vaoSkybox);
-	{
-		glDrawArrays(GL_TRIANGLES, 0, sizeof(skyboxVertices) / sizeof(GLfloat));
-	}
-	glBindVertexArray(0);
-
-	glDepthMask(GL_TRUE);
-}
-
-void DisplayGrass() {
-	//Face culling
-	glDisable(GL_CULL_FACE);
-
-	grassShader->Use();
-
-	//Textures
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, assetManager->GetTexture("grass"));
-
-	//Uniforms
-	grassShader->SetInt("textureSampler", 0);
-
-	//MVP
-	grassShader->SetMat4("view", camera.GetCameraView());
-	grassShader->SetMat4("projection", camera.GetCameraProjection());
-
-	glm::mat4 model{ glm::mat4(1.0f) };
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glBindVertexArray(vaoSquareVertical);
-	{
-		for (const glm::vec3 pos : grassPositions) {
-			model = glm::mat4(1.0f);
-			model = glm::translate(model, pos);
-			textureShader->SetMat4("model", model);
-
-			//Render
-			glDrawArrays(GL_TRIANGLES, 0, sizeof(squareVerticalVertices) / sizeof(GLfloat));
-		}
-	}
-	glBindVertexArray(0);
-}
-
-void DisplayWindows() {
-	//Face culling
-	glDisable(GL_CULL_FACE);
-
-	textureShader->Use();
-
-	//Texture
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, assetManager->GetTexture("transparentWindow"));
-
-	//Uniforms
-	textureShader->SetInt("textureSampler", 0);
-
-	//MVP
-	textureShader->SetMat4("view", camera.GetCameraView());
-	textureShader->SetMat4("projection", camera.GetCameraProjection());
-
-
-	//Sort to display furthest from camera first and closest last
-	std::map<GLfloat, glm::vec3> sorted;
-	for (const glm::vec3 pos : windowsPositions) {
-		GLfloat distance{ glm::length(camera.GetPosition() - pos) };
-		sorted.emplace(distance, pos);
-	}
-
-	glm::mat4 model{ glm::mat4(1.0f) };
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glBindVertexArray(vaoSquareVertical);
-	{
-		for (std::map<float, glm::vec3>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
-			model = glm::mat4(1.0f);
-			model = glm::translate(model, it->second);
-			textureShader->SetMat4("model", model);
-
-			//Render
-			glDrawArrays(GL_TRIANGLES, 0, sizeof(squareVerticalVertices) / sizeof(GLfloat));
-		}
-	}
-	glBindVertexArray(0);
-}
-
-void DisplayFloor() {
-	//Face culling
-	glEnable(GL_CULL_FACE);
-
-	textureShader->Use();
-	//Textures
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, assetManager->GetTexture("marble"));
-
-	//Uniforms
-	textureShader->SetInt("textureSampler", 0);
-
-	//MVP
-	textureShader->SetMat4("view", camera.GetCameraView());
-	textureShader->SetMat4("projection", camera.GetCameraProjection());
-
-	glm::mat4 model{ glm::mat4(1.0f) };
-	glBindVertexArray(vaoFloor);
-	{
-		textureShader->SetMat4("model", model);
-
-		//Render
-		glDrawArrays(GL_TRIANGLES, 0, sizeof(floorVertices) / sizeof(GLfloat));
-	}
-	glBindVertexArray(0);
-}
-
-void DisplayNormalCubes() {
-	//Face culling
-	glEnable(GL_CULL_FACE);
-
-	mainShader->Use();
-
-	//Textures
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, assetManager->GetTexture("steelContainerDiffuse"));
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, assetManager->GetTexture("steelContainerSpecular"));
-
-	//Uniforms
-	mainShader->SetInt("material.diffuse", 0);
-	mainShader->SetInt("material.specular", 1);
-	mainShader->SetFloat("material.shininess", 64.0f);
-	mainShader->SetDirLight(dirLight, "dirLight");
-	mainShader->SetPointLight(pointLight0, "pointLights[0]");
-	mainShader->SetPointLight(pointLight1, "pointLights[1]");
-	mainShader->SetPointLight(pointLight2, "pointLights[2]");
-	mainShader->SetPointLight(pointLight3, "pointLights[3]");
-	mainShader->SetVec3("viewPos", camera.GetPosition());
-
-	//MVP
-	mainShader->SetMat4("view", camera.GetCameraView());
-	mainShader->SetMat4("projection", camera.GetCameraProjection());
-
-	glm::mat4 model{ glm::mat4(1.0f) };
-	glBindVertexArray(vaoCube);
-	{
-		for (const glm::vec3 position : cubePositions) {
-			model = glm::mat4(1.0f);
-			model = glm::translate(model, position);
-			model = glm::rotate(model, static_cast<GLfloat>(glfwGetTime()) * glm::radians(40.0f), glm::vec3(0.5f, 1.0f, 0.0f));
-
-			mainShader->SetMat4("model", model);
-
-			//Render
-			glDrawArrays(GL_TRIANGLES, 0, sizeof(cubeVertices) / sizeof(GLfloat));
-		}
-	}
-	glBindVertexArray(0);
-}
-
-void DisplayOutlineCubes() {
-	//Face culling
-	glDisable(GL_CULL_FACE);
-
-	outlineShader->Use();
-
-	//MVP
-	outlineShader->SetMat4("view", camera.GetCameraView());
-	outlineShader->SetMat4("projection", camera.GetCameraProjection());
-
-	glm::mat4 model{ glm::mat4(1.0f) };
-	glBindVertexArray(vaoCube);
-	{
-		for (const glm::vec3 position : cubePositions) {
-			model = glm::mat4(1.0f);
-			model = glm::translate(model, position);
-			model = glm::scale(model, glm::vec3(1.1f));
-			model = glm::rotate(model, static_cast<GLfloat>(glfwGetTime()) * glm::radians(40.0f), glm::vec3(0.5f, 1.0f, 0.0f));
-
-			outlineShader->SetMat4("model", model);
-
-			//Render
-			glDrawArrays(GL_TRIANGLES, 0, sizeof(cubeVertices) / sizeof(GLfloat));
-		}
-	}
-	glBindVertexArray(0);
-}
-
-void DisplayLightCubes() {
-	//Face culling
-	glEnable(GL_CULL_FACE);
-
-	singleColorShader->Use();
-	//Uniforms
-
-	singleColorShader->SetVec3("color", glm::vec3(1.0f));
-
-	//MVP
-	singleColorShader->SetMat4("view", camera.GetCameraView());
-	singleColorShader->SetMat4("projection", camera.GetCameraProjection());
-
-	glm::mat4 model{ glm::mat4(1.0f) };
-	glBindVertexArray(vaoCube);
-	{
-		for (const glm::vec3 position : pointLightPositions) {
-			model = glm::mat4(1.0f);
-			model = glm::translate(model, position);
-			singleColorShader->SetMat4("model", model);
-
-			//Render
-			glDrawArrays(GL_TRIANGLES, 0, sizeof(cubeVertices) / sizeof(GLfloat));
-		}
-	}
-	glBindVertexArray(0);
-}
-
-void DisplayModels() {
-	modelShader->Use();
-	//Uniform
-	//LIGHTS
-	modelShader->SetVec3("viewPos", camera.GetPosition());
-	modelShader->SetPointLight(pointLight0, "pointLights[0]");
-	modelShader->SetPointLight(pointLight1, "pointLights[1]");
-	modelShader->SetPointLight(pointLight2, "pointLights[2]");
-	modelShader->SetPointLight(pointLight3, "pointLights[3]");
-
-	//MVP
-	modelShader->SetMat4("view", camera.GetCameraView());
-	modelShader->SetMat4("projection", camera.GetCameraProjection());
-
-	glm::mat4 model{ glm::mat4(1.0f) };
-	model = glm::translate(model, modelPosition);
-	modelShader->SetMat4("model", model);
-
-	for (const Model* modelContent : assetManager->GetModels())
-		modelContent->Draw(*modelShader);
+	vaos = { vaoCube, vaoFloor, vaoSquareVertical, vaoSquare, vaoSkybox, vaoLightCube };
+	vbos = { vboCube, vboFloor, vboSquareVertical, vboSquare, vboSkybox, vboLightCube };
 }
 
 void CreateFBORBO() {
@@ -501,30 +249,292 @@ void RenderFBOTexture() {
 	glBindVertexArray(0);
 }
 
+void Clear() {
+	for (GLuint vao : vaos)
+		glDeleteVertexArrays(1, &vao);
+	for (GLuint vbo : vbos)
+		glDeleteBuffers(1, &vbo);
+	for (Shader* shader : shaders)
+		shader->Delete();
+
+	glfwTerminate();
+}
+
+void DisplayFloor() {
+	textureShader->Use();
+	//Textures
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, assetManager->GetTexture("marble"));
+
+	//Uniforms
+	textureShader->SetInt("textureSampler", 0);
+
+	//MVP
+	textureShader->SetMat4("view", camera.GetCameraView());
+	textureShader->SetMat4("projection", camera.GetCameraProjection());
+
+	glm::mat4 model{ glm::mat4(1.0f) };
+	glBindVertexArray(vaoFloor);
+	{
+		textureShader->SetMat4("model", model);
+
+		//Render
+		glDrawArrays(GL_TRIANGLES, 0, sizeof(floorVertices) / sizeof(GLfloat));
+	}
+	glBindVertexArray(0);
+}
+
+void DisplayNormalCubes() {
+	cubeShader->Use();
+
+	//Textures
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, assetManager->GetTexture("steelContainerDiffuse"));
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, assetManager->GetTexture("steelContainerSpecular"));
+
+	//Uniforms
+	cubeShader->SetInt("material.diffuse", 0);
+	cubeShader->SetInt("material.specular", 1);
+	cubeShader->SetFloat("material.shininess", 64.0f);
+	cubeShader->SetDirLight(dirLight, "dirLight");
+	cubeShader->SetPointLight(pointLight0, "pointLights[0]");
+	cubeShader->SetPointLight(pointLight1, "pointLights[1]");
+	cubeShader->SetPointLight(pointLight2, "pointLights[2]");
+	cubeShader->SetPointLight(pointLight3, "pointLights[3]");
+	cubeShader->SetVec3("viewPos", camera.GetPosition());
+
+	//MVP
+	cubeShader->SetMat4("view", camera.GetCameraView());
+	cubeShader->SetMat4("projection", camera.GetCameraProjection());
+
+	glm::mat4 model{ glm::mat4(1.0f) };
+	glBindVertexArray(vaoCube);
+	{
+		for (const glm::vec3 position : cubePositions) {
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, position);
+			model = glm::rotate(model, static_cast<GLfloat>(glfwGetTime()) * glm::radians(40.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+
+			cubeShader->SetMat4("model", model);
+
+			//Render
+			glDrawArrays(GL_TRIANGLES, 0, sizeof(cubeVertices) / sizeof(GLfloat));
+		}
+	}
+	glBindVertexArray(0);
+}
+
+void DisplayOutlineCubes() {
+	outlineShader->Use();
+
+	//MVP
+	outlineShader->SetMat4("view", camera.GetCameraView());
+	outlineShader->SetMat4("projection", camera.GetCameraProjection());
+
+	glm::mat4 model{ glm::mat4(1.0f) };
+	glBindVertexArray(vaoCube);
+	{
+		for (const glm::vec3 position : cubePositions) {
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, position);
+			model = glm::scale(model, glm::vec3(1.1f));
+			model = glm::rotate(model, static_cast<GLfloat>(glfwGetTime()) * glm::radians(40.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+
+			outlineShader->SetMat4("model", model);
+
+			//Render
+			glDrawArrays(GL_TRIANGLES, 0, sizeof(cubeVertices) / sizeof(GLfloat));
+		}
+	}
+	glBindVertexArray(0);
+}
+
+void DisplayLightCubes() {
+	lightCubeShader->Use();
+
+	//Textures
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, assetManager->GetCubeMap("skybox"));
+
+	//Uniforms
+	lightCubeShader->SetInt("skybox", 0);
+	lightCubeShader->SetVec3("cameraPos", camera.GetPosition());
+
+	//MVP
+	lightCubeShader->SetMat4("view", camera.GetCameraView());
+	lightCubeShader->SetMat4("projection", camera.GetCameraProjection());
+
+	glm::mat4 model{ glm::mat4(1.0f) };
+	glBindVertexArray(vaoLightCube);
+	{
+		for (const glm::vec3 position : pointLightPositions) {
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, position);
+			lightCubeShader->SetMat4("model", model);
+
+			//Render
+			glDrawArrays(GL_TRIANGLES, 0, sizeof(cubeVertices) / sizeof(GLfloat));
+		}
+	}
+	glBindVertexArray(0);
+}
+
+void DisplayModels() {
+	modelShader->Use();
+	//Uniform
+	//LIGHTS
+	modelShader->SetVec3("viewPos", camera.GetPosition());
+	modelShader->SetPointLight(pointLight0, "pointLights[0]");
+	modelShader->SetPointLight(pointLight1, "pointLights[1]");
+	modelShader->SetPointLight(pointLight2, "pointLights[2]");
+	modelShader->SetPointLight(pointLight3, "pointLights[3]");
+
+	//MVP
+	modelShader->SetMat4("view", camera.GetCameraView());
+	modelShader->SetMat4("projection", camera.GetCameraProjection());
+
+	glm::mat4 model{ glm::mat4(1.0f) };
+	model = glm::translate(model, modelPosition);
+	modelShader->SetMat4("model", model);
+
+	for (const Model* modelContent : assetManager->GetModels())
+		modelContent->Draw(*modelShader);
+}
+
+void DisplayGrass() {
+	//Face culling
+
+
+	grassShader->Use();
+
+	//Textures
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, assetManager->GetTexture("grass"));
+
+	//Uniforms
+	grassShader->SetInt("textureSampler", 0);
+
+	//MVP
+	grassShader->SetMat4("view", camera.GetCameraView());
+	grassShader->SetMat4("projection", camera.GetCameraProjection());
+
+	glm::mat4 model{ glm::mat4(1.0f) };
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glBindVertexArray(vaoSquareVertical);
+	{
+		for (const glm::vec3 pos : grassPositions) {
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, pos);
+			textureShader->SetMat4("model", model);
+
+			//Render
+			glDrawArrays(GL_TRIANGLES, 0, sizeof(squareVerticalVertices) / sizeof(GLfloat));
+		}
+	}
+	glBindVertexArray(0);
+}
+
+void DisplayWindows() {
+	textureShader->Use();
+
+	//Texture
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, assetManager->GetTexture("transparentWindow"));
+
+	//Uniforms
+	textureShader->SetInt("textureSampler", 0);
+
+	//MVP
+	textureShader->SetMat4("view", camera.GetCameraView());
+	textureShader->SetMat4("projection", camera.GetCameraProjection());
+
+
+	//Sort to display furthest from camera first and closest last
+	std::map<GLfloat, glm::vec3> sorted;
+	for (const glm::vec3 pos : windowsPositions) {
+		GLfloat distance{ glm::length(camera.GetPosition() - pos) };
+		sorted.emplace(distance, pos);
+	}
+
+	glm::mat4 model{ glm::mat4(1.0f) };
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glBindVertexArray(vaoSquareVertical);
+	{
+		for (std::map<float, glm::vec3>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, it->second);
+			textureShader->SetMat4("model", model);
+
+			//Render
+			glDrawArrays(GL_TRIANGLES, 0, sizeof(squareVerticalVertices) / sizeof(GLfloat));
+		}
+	}
+	glBindVertexArray(0);
+}
+
+void DisplaySkybox() {
+	skyboxShader->Use();
+
+	//Textures
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, assetManager->GetCubeMap("skybox"));
+
+	//Uniforms
+	skyboxShader->SetInt("skybox", 0);
+
+	//MVP
+	glm::mat4 view = glm::mat4(glm::mat3(camera.GetCameraView()));
+
+	skyboxShader->SetMat4("view", view);
+	skyboxShader->SetMat4("projection", camera.GetCameraProjection());
+
+	glBindVertexArray(vaoSkybox);
+	{
+		glDrawArrays(GL_TRIANGLES, 0, sizeof(skyboxVertices) / sizeof(GLfloat));
+	}
+	glBindVertexArray(0);
+
+	glDepthMask(GL_TRUE);
+}
+
+
 void DrawScene() {
-	DisplaySkybox();
 
 	glStencilMask(0x00);
+	glEnable(GL_CULL_FACE);
 	DisplayFloor();
 
-	glStencilFunc(GL_ALWAYS, 1, 0xff);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-	glStencilMask(0xff);
+	//glStencilFunc(GL_ALWAYS, 1, 0xff);
+	//glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	//glStencilMask(0xff);
 	DisplayNormalCubes();
 
-	glStencilFunc(GL_NOTEQUAL, 1, 0xff);
-	glStencilMask(0x00);
-	glDisable(GL_DEPTH_TEST);
-	DisplayOutlineCubes();
+	//glStencilFunc(GL_NOTEQUAL, 1, 0xff);
+	//glStencilMask(0x00);
+	//glDisable(GL_DEPTH_TEST);
+	//glDisable(GL_CULL_FACE);
+	//DisplayOutlineCubes();
 
-
+	glEnable(GL_CULL_FACE);
 	glStencilFunc(GL_ALWAYS, 1, 0xff);
 	glStencilMask(0xff);
 	glEnable(GL_DEPTH_TEST);
 	DisplayLightCubes();
 
 	DisplayModels();
+
+	glDisable(GL_CULL_FACE);
 	DisplayGrass();
+
+	glEnable(GL_CULL_FACE);
+	glDepthFunc(GL_LEQUAL);
+	DisplaySkybox();
+	glDepthFunc(GL_LESS);
+
+	glDisable(GL_CULL_FACE);
 	DisplayWindows();
 }
 

@@ -158,18 +158,19 @@
     <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\fragment2D.shader" />
-    <None Include="Shaders\fragment3D.shader" />
+    <None Include="Shaders\fragmentCube.shader" />
     <None Include="Shaders\fragmentFBO.shader" />
     <None Include="Shaders\fragmentGrass.shader" />
+    <None Include="Shaders\fragmentLightCube.shader" />
     <None Include="Shaders\fragmentModel.shader" />
     <None Include="Shaders\fragmentOutline.shader" />
-    <None Include="Shaders\fragmentSingleColor.shader" />
     <None Include="Shaders\fragmentSkybox.shader" />
-    <None Include="Shaders\vertex2D.shader" />
-    <None Include="Shaders\vertex3D.shader" />
+    <None Include="Shaders\fragmentTexture.shader" />
+    <None Include="Shaders\vertexCube.shader" />
     <None Include="Shaders\vertexFBO.shader" />
+    <None Include="Shaders\vertexLightCube.shader" />
     <None Include="Shaders\vertexSkybox.shader" />
+    <None Include="Shaders\vertexTexture.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetManager.h" />
