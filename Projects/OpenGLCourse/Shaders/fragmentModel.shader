@@ -1,4 +1,4 @@
-#version 330 core
+#version 420 core
 #define NBR_POINT_LIGHTS 4 
 out vec4 fragColor;
 
@@ -21,7 +21,9 @@ struct PointLight {
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
 uniform PointLight pointLights[NBR_POINT_LIGHTS];
-uniform vec3 viewPos;
+layout(std140, binding = 1) uniform ViewPos{
+	vec3 viewPos;
+};
 
 vec3 CalcPointLight(PointLight pointLight, vec3 norm, vec3 viewDir) {
 	//Maps

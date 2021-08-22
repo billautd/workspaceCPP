@@ -1,4 +1,4 @@
-#version 330 core
+#version 420 core
 #define NBR_POINT_LIGHTS 4 
 
 struct Material {
@@ -33,7 +33,10 @@ in vec2 fTexCoords;
 in vec3 fNormal;
 in vec3 fFragPos;
 
-uniform vec3 viewPos;
+layout(std140, binding = 1) uniform ViewPos{
+	vec3 viewPos;
+};
+
 uniform Material material;
 uniform DirLight dirLight;
 uniform PointLight pointLights[NBR_POINT_LIGHTS];

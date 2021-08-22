@@ -13,6 +13,7 @@
 GLuint vaoCube, vboCube, vaoFloor, vboFloor, vaoSquareVertical, vboSquareVertical, vaoSquare, vboSquare, vaoSkybox, vboSkybox;
 GLuint vaoLightCube, vboLightCube;
 GLuint fbo, rbo, textureColorBuffer;
+GLuint uboPV, uboViewPos;
 Shader* cubeShader{ nullptr };
 Shader* lightCubeShader{ nullptr };
 Shader* modelShader{ nullptr };
@@ -25,6 +26,7 @@ Shader* skyboxShader{ nullptr };
 std::vector<Shader*> shaders;
 std::vector<GLuint> vaos;
 std::vector<GLuint> vbos;
+std::vector<GLuint> ubos;
 
 Camera camera{};
 GLFWwindow* window{ nullptr };
@@ -114,7 +116,7 @@ void CreateShaders() {
 	shaders = { cubeShader, lightCubeShader, modelShader, outlineShader, textureShader, grassShader, fboShader, skyboxShader };
 }
 
-void ConfigureVAOVBO() {
+void ConfigureBufferObjects() {
 	glGenVertexArrays(1, &vaoCube);
 	glGenBuffers(1, &vboCube);
 	glBindVertexArray(vaoCube);
@@ -194,8 +196,48 @@ void ConfigureVAOVBO() {
 	}
 	glBindVertexArray(0);
 
+	//Uniform buffer object for matrices projection and view
+	glGenBuffers(1, &uboPV);
+	glBindBuffer(GL_UNIFORM_BUFFER, uboPV);
+	{
+		glBufferData(GL_UNIFORM_BUFFER, 2* sizeof(glm::mat4), nullptr, GL_STATIC_DRAW);
+	}
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	//Bind to binding point 0
+	glBindBufferBase(GL_UNIFORM_BUFFER, 0, uboPV);
+
+
+	//Uniform buffer object for camera position
+	glGenBuffers(1, &uboViewPos);
+	glBindBuffer(GL_UNIFORM_BUFFER, uboViewPos);
+	{
+		glBufferData(GL_UNIFORM_BUFFER, 1 * sizeof(glm::vec3), nullptr, GL_STATIC_DRAW);
+	}
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	//Bind to binding point 1
+	glBindBufferBase(GL_UNIFORM_BUFFER, 1, uboViewPos);
+
+
 	vaos = { vaoCube, vaoFloor, vaoSquareVertical, vaoSquare, vaoSkybox, vaoLightCube };
 	vbos = { vboCube, vboFloor, vboSquareVertical, vboSquare, vboSkybox, vboLightCube };
+	ubos = { uboPV, uboViewPos };
+}
+
+void UpdateUBOs() {
+	//Update projection and view
+	glBindBuffer(GL_UNIFORM_BUFFER, uboPV);
+	{
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(camera.GetCameraProjection()));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(camera.GetCameraView()));
+	}
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	//Update camera position
+	glBindBuffer(GL_UNIFORM_BUFFER, uboViewPos);
+	{
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec3), glm::value_ptr(camera.GetPosition()));
+	}
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 void CreateFBORBO() {
@@ -254,6 +296,8 @@ void Clear() {
 		glDeleteVertexArrays(1, &vao);
 	for (GLuint vbo : vbos)
 		glDeleteBuffers(1, &vbo);
+	for (GLuint ubo : ubos)
+		glDeleteBuffers(1, &ubo);
 	for (Shader* shader : shaders)
 		shader->Delete();
 
@@ -269,10 +313,7 @@ void DisplayFloor() {
 	//Uniforms
 	textureShader->SetInt("textureSampler", 0);
 
-	//MVP
-	textureShader->SetMat4("view", camera.GetCameraView());
-	textureShader->SetMat4("projection", camera.GetCameraProjection());
-
+	//Model
 	glm::mat4 model{ glm::mat4(1.0f) };
 	glBindVertexArray(vaoFloor);
 	{
@@ -302,12 +343,8 @@ void DisplayNormalCubes() {
 	cubeShader->SetPointLight(pointLight1, "pointLights[1]");
 	cubeShader->SetPointLight(pointLight2, "pointLights[2]");
 	cubeShader->SetPointLight(pointLight3, "pointLights[3]");
-	cubeShader->SetVec3("viewPos", camera.GetPosition());
 
-	//MVP
-	cubeShader->SetMat4("view", camera.GetCameraView());
-	cubeShader->SetMat4("projection", camera.GetCameraProjection());
-
+	//Model
 	glm::mat4 model{ glm::mat4(1.0f) };
 	glBindVertexArray(vaoCube);
 	{
@@ -328,10 +365,7 @@ void DisplayNormalCubes() {
 void DisplayOutlineCubes() {
 	outlineShader->Use();
 
-	//MVP
-	outlineShader->SetMat4("view", camera.GetCameraView());
-	outlineShader->SetMat4("projection", camera.GetCameraProjection());
-
+	//Model
 	glm::mat4 model{ glm::mat4(1.0f) };
 	glBindVertexArray(vaoCube);
 	{
@@ -359,12 +393,8 @@ void DisplayLightCubes() {
 
 	//Uniforms
 	lightCubeShader->SetInt("skybox", 0);
-	lightCubeShader->SetVec3("cameraPos", camera.GetPosition());
 
-	//MVP
-	lightCubeShader->SetMat4("view", camera.GetCameraView());
-	lightCubeShader->SetMat4("projection", camera.GetCameraProjection());
-
+	//Model
 	glm::mat4 model{ glm::mat4(1.0f) };
 	glBindVertexArray(vaoLightCube);
 	{
@@ -382,18 +412,14 @@ void DisplayLightCubes() {
 
 void DisplayModels() {
 	modelShader->Use();
-	//Uniform
-	//LIGHTS
-	modelShader->SetVec3("viewPos", camera.GetPosition());
+	
+	//Lights
 	modelShader->SetPointLight(pointLight0, "pointLights[0]");
 	modelShader->SetPointLight(pointLight1, "pointLights[1]");
 	modelShader->SetPointLight(pointLight2, "pointLights[2]");
 	modelShader->SetPointLight(pointLight3, "pointLights[3]");
 
-	//MVP
-	modelShader->SetMat4("view", camera.GetCameraView());
-	modelShader->SetMat4("projection", camera.GetCameraProjection());
-
+	//Model
 	glm::mat4 model{ glm::mat4(1.0f) };
 	model = glm::translate(model, modelPosition);
 	modelShader->SetMat4("model", model);
@@ -403,9 +429,6 @@ void DisplayModels() {
 }
 
 void DisplayGrass() {
-	//Face culling
-
-
 	grassShader->Use();
 
 	//Textures
@@ -415,10 +438,7 @@ void DisplayGrass() {
 	//Uniforms
 	grassShader->SetInt("textureSampler", 0);
 
-	//MVP
-	grassShader->SetMat4("view", camera.GetCameraView());
-	grassShader->SetMat4("projection", camera.GetCameraProjection());
-
+	//Model
 	glm::mat4 model{ glm::mat4(1.0f) };
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -446,11 +466,6 @@ void DisplayWindows() {
 	//Uniforms
 	textureShader->SetInt("textureSampler", 0);
 
-	//MVP
-	textureShader->SetMat4("view", camera.GetCameraView());
-	textureShader->SetMat4("projection", camera.GetCameraProjection());
-
-
 	//Sort to display furthest from camera first and closest last
 	std::map<GLfloat, glm::vec3> sorted;
 	for (const glm::vec3 pos : windowsPositions) {
@@ -458,6 +473,7 @@ void DisplayWindows() {
 		sorted.emplace(distance, pos);
 	}
 
+	//Model
 	glm::mat4 model{ glm::mat4(1.0f) };
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -485,11 +501,10 @@ void DisplaySkybox() {
 	//Uniforms
 	skyboxShader->SetInt("skybox", 0);
 
-	//MVP
+	//Update view correctly to remove w value
 	glm::mat4 view = glm::mat4(glm::mat3(camera.GetCameraView()));
-
-	skyboxShader->SetMat4("view", view);
 	skyboxShader->SetMat4("projection", camera.GetCameraProjection());
+	skyboxShader->SetMat4("view", view);
 
 	glBindVertexArray(vaoSkybox);
 	{
@@ -499,7 +514,6 @@ void DisplaySkybox() {
 
 	glDepthMask(GL_TRUE);
 }
-
 
 void DrawScene() {
 
@@ -590,7 +604,7 @@ int main(int argc, char** argv) {
 
 	//Init and config
 	CreateShaders();
-	ConfigureVAOVBO();
+	ConfigureBufferObjects();
 	LoadAssets();
 	CreateFBORBO();
 
@@ -608,6 +622,7 @@ int main(int argc, char** argv) {
 		ProcessInput(window, deltaTime);
 
 		//Render
+		UpdateUBOs();
 		//First pass
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);

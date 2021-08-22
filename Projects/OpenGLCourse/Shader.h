@@ -12,7 +12,7 @@ class Shader
 private:
 	GLuint id{ 0 };
 
-	void CompileAndLinkShaders(const char* vertexShaderCode, const char* fragmentShaderCode);
+	void CompileAndLinkShaders(const char* vertexPath, const char* vertexShaderCode, const char* fragmentPath, const char* fragmentShaderCode);
 
 public:
 	Shader(const char* vertexPath, const char* fragmentPath);

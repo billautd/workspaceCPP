@@ -1,10 +1,11 @@
-#version 330 core
+#version 420 core
 layout(location = 0) in vec3 pos;
 
 out vec3 fTexCoords;
 
-uniform mat4 projection;
-uniform mat4 view;
+uniform	mat4 projection;
+uniform	mat4 view;
+
 
 void main() {
 	fTexCoords = pos;

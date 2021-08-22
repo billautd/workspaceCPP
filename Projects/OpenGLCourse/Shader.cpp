@@ -36,7 +36,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
 		std::cerr << "Error trying to create shader at " << vertexPath << " & " << fragmentPath << '\n';
 	}
 
-	CompileAndLinkShaders(vShaderString.c_str(), fShaderString.c_str());
+	CompileAndLinkShaders(vertexPath, vShaderString.c_str(), fragmentPath, fShaderString.c_str());
 }
 
 void Shader::SetDirLight(const DirLight& dirLight, const std::string name) const {
@@ -58,7 +58,7 @@ void Shader::SetPointLight(const PointLight& pointLight, const std::string name)
 	SetFloat(name + ".Kquadratic", pointLight.quadratic);
 }
 
-void Shader::CompileAndLinkShaders(const char* vertexShaderCode, const char* fragmentShaderCode) {
+void Shader::CompileAndLinkShaders(const char* vertexPath, const char* vertexShaderCode, const char* fragmentPath, const char* fragmentShaderCode) {
 	GLuint vertexShader, fragmentShader;
 
 	//Create and compile vertex shader
@@ -71,7 +71,7 @@ void Shader::CompileAndLinkShaders(const char* vertexShaderCode, const char* fra
 	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
 	if (!success) {
 		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-		std::cerr << "Error compiling vertex shader : " << infoLog << '\n';
+		std::cerr << "Error compiling vertex shader at " << vertexPath << " : " << infoLog << '\n';
 	}
 
 	//Create and compile vertex shader
@@ -82,7 +82,7 @@ void Shader::CompileAndLinkShaders(const char* vertexShaderCode, const char* fra
 	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
 	if (!success) {
 		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-		std::cerr << "Error compiling fragment shader : " << infoLog << '\n';
+		std::cerr << "Error compiling fragment shader at " << fragmentPath << " : " << infoLog << '\n';
 	}
 
 	id = glCreateProgram();
