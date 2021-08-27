@@ -22,6 +22,12 @@
     <Filter Include="Header Files\ShaderClasses\Lights">
       <UniqueIdentifier>{3ae29acb-63a0-452d-b097-46faa24454e2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Shaders\Fragment">
+      <UniqueIdentifier>{472ee482-8860-4062-815a-2d3a2d81335e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\Vertex">
+      <UniqueIdentifier>{cbdb150f-7349-4247-9831-b07ec803b7b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -45,47 +51,6 @@
     <ClCompile Include="AssetManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Shaders\fragmentModel.shader">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\fragmentOutline.shader">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\fragmentGrass.shader">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\fragmentFBO.shader">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\vertexFBO.shader">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\fragmentSkybox.shader">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\vertexSkybox.shader">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\fragmentLightCube.shader">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\fragmentCube.shader">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\vertexCube.shader">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\fragmentTexture.shader">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\vertexTexture.shader">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\vertexLightCube.shader">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
@@ -121,5 +86,49 @@
     <ClInclude Include="AssetManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\Fragment\fragmentCube.shader">
+      <Filter>Resource Files\Shaders\Fragment</Filter>
+    </None>
+    <None Include="Shaders\Fragment\fragmentFBO.shader">
+      <Filter>Resource Files\Shaders\Fragment</Filter>
+    </None>
+    <None Include="Shaders\Fragment\fragmentGrass.shader">
+      <Filter>Resource Files\Shaders\Fragment</Filter>
+    </None>
+    <None Include="Shaders\Fragment\fragmentLightCube.shader">
+      <Filter>Resource Files\Shaders\Fragment</Filter>
+    </None>
+    <None Include="Shaders\Fragment\fragmentModel.shader">
+      <Filter>Resource Files\Shaders\Fragment</Filter>
+    </None>
+    <None Include="Shaders\Fragment\fragmentOutline.shader">
+      <Filter>Resource Files\Shaders\Fragment</Filter>
+    </None>
+    <None Include="Shaders\Fragment\fragmentSkybox.shader">
+      <Filter>Resource Files\Shaders\Fragment</Filter>
+    </None>
+    <None Include="Shaders\Fragment\fragmentTexture.shader">
+      <Filter>Resource Files\Shaders\Fragment</Filter>
+    </None>
+    <None Include="Shaders\Vertex\vertexCube.shader">
+      <Filter>Resource Files\Shaders\Vertex</Filter>
+    </None>
+    <None Include="Shaders\Vertex\vertexFBO.shader">
+      <Filter>Resource Files\Shaders\Vertex</Filter>
+    </None>
+    <None Include="Shaders\Vertex\vertexGrass.shader">
+      <Filter>Resource Files\Shaders\Vertex</Filter>
+    </None>
+    <None Include="Shaders\Vertex\vertexLightCube.shader">
+      <Filter>Resource Files\Shaders\Vertex</Filter>
+    </None>
+    <None Include="Shaders\Vertex\vertexSkybox.shader">
+      <Filter>Resource Files\Shaders\Vertex</Filter>
+    </None>
+    <None Include="Shaders\Vertex\vertexTexture.shader">
+      <Filter>Resource Files\Shaders\Vertex</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -158,21 +158,6 @@
     <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\fragmentCube.shader" />
-    <None Include="Shaders\fragmentFBO.shader" />
-    <None Include="Shaders\fragmentGrass.shader" />
-    <None Include="Shaders\fragmentLightCube.shader" />
-    <None Include="Shaders\fragmentModel.shader" />
-    <None Include="Shaders\fragmentOutline.shader" />
-    <None Include="Shaders\fragmentSkybox.shader" />
-    <None Include="Shaders\fragmentTexture.shader" />
-    <None Include="Shaders\vertexCube.shader" />
-    <None Include="Shaders\vertexFBO.shader" />
-    <None Include="Shaders\vertexLightCube.shader" />
-    <None Include="Shaders\vertexSkybox.shader" />
-    <None Include="Shaders\vertexTexture.shader" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="AssetManager.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraMovementEnum.h" />
@@ -184,6 +169,22 @@
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Shader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\Fragment\fragmentCube.shader" />
+    <None Include="Shaders\Fragment\fragmentFBO.shader" />
+    <None Include="Shaders\Fragment\fragmentGrass.shader" />
+    <None Include="Shaders\Fragment\fragmentLightCube.shader" />
+    <None Include="Shaders\Fragment\fragmentModel.shader" />
+    <None Include="Shaders\Fragment\fragmentOutline.shader" />
+    <None Include="Shaders\Fragment\fragmentSkybox.shader" />
+    <None Include="Shaders\Fragment\fragmentTexture.shader" />
+    <None Include="Shaders\Vertex\vertexCube.shader" />
+    <None Include="Shaders\Vertex\vertexFBO.shader" />
+    <None Include="Shaders\Vertex\vertexGrass.shader" />
+    <None Include="Shaders\Vertex\vertexLightCube.shader" />
+    <None Include="Shaders\Vertex\vertexSkybox.shader" />
+    <None Include="Shaders\Vertex\vertexTexture.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -103,15 +103,18 @@ void LoadAssets() {
 }
 
 void CreateShaders() {
+	const std::string vertexPath{ "./Shaders/Vertex/" };
+	const std::string fragmentPath{ "./Shaders/Fragment/" };
+
 	//Configure shader
-	cubeShader = new Shader(std::string("./Shaders/vertexCube.shader").c_str(), std::string("./Shaders/fragmentCube.shader").c_str());
-	lightCubeShader = new Shader(std::string("./Shaders/vertexLightCube.shader").c_str(), std::string("./Shaders/fragmentLightCube.shader").c_str());
-	modelShader = new Shader(std::string("./Shaders/vertexCube.shader").c_str(), std::string("./Shaders/fragmentModel.shader").c_str());
-	outlineShader = new Shader(std::string("./Shaders/vertexCube.shader").c_str(), std::string("./Shaders/fragmentOutline.shader").c_str());
-	textureShader = new Shader(std::string("./Shaders/vertexTexture.shader").c_str(), std::string("./Shaders/fragmentTexture.shader").c_str());
-	grassShader = new Shader(std::string("./Shaders/vertexTexture.shader").c_str(), std::string("./Shaders/fragmentGrass.shader").c_str());
-	fboShader = new Shader(std::string("./Shaders/vertexFBO.shader").c_str(), std::string("./Shaders/fragmentFBO.shader").c_str());
-	skyboxShader = new Shader(std::string("./Shaders/vertexSkybox.shader").c_str(), std::string("./Shaders/fragmentSkybox.shader").c_str());
+	cubeShader = new Shader(std::string(vertexPath + "vertexCube.shader").c_str(), std::string(fragmentPath + "fragmentCube.shader").c_str());
+	lightCubeShader = new Shader(std::string(vertexPath + "vertexLightCube.shader").c_str(), std::string(fragmentPath +  "fragmentLightCube.shader").c_str());
+	modelShader = new Shader(std::string(vertexPath + "vertexCube.shader").c_str(), std::string(fragmentPath + "fragmentModel.shader").c_str());
+	outlineShader = new Shader(std::string(vertexPath + "vertexCube.shader").c_str(), std::string(fragmentPath + "fragmentOutline.shader").c_str());
+	textureShader = new Shader(std::string(vertexPath + "vertexTexture.shader").c_str(), std::string(fragmentPath + "fragmentTexture.shader").c_str());
+	grassShader = new Shader(std::string(vertexPath + "vertexGrass.shader").c_str(), std::string(fragmentPath + "fragmentGrass.shader").c_str());
+	fboShader = new Shader(std::string(vertexPath + "vertexFBO.shader").c_str(), std::string(fragmentPath + "fragmentFBO.shader").c_str());
+	skyboxShader = new Shader(std::string(vertexPath + "vertexSkybox.shader").c_str(), std::string(fragmentPath + "fragmentSkybox.shader").c_str());
 
 	shaders = { cubeShader, lightCubeShader, modelShader, outlineShader, textureShader, grassShader, fboShader, skyboxShader };
 }
@@ -431,27 +434,30 @@ void DisplayModels() {
 void DisplayGrass() {
 	grassShader->Use();
 
+	const GLuint translationSize{ 100 };
+	std::vector<glm::vec2> translations{ std::vector<glm::vec2>(translationSize) };
+	GLuint offset{ 0 };
+	for (GLint i{ -5 }; i < 5; i++) {
+		for (GLint j{ -5 }; j < 5; j++) {
+			translations.at(offset++) = glm::vec2(i, j);
+		}
+	}
+
 	//Textures
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, assetManager->GetTexture("grass"));
 
 	//Uniforms
 	grassShader->SetInt("textureSampler", 0);
+	for (size_t i{ 0 }; i < translations.size(); i++)
+		grassShader->SetVec2("offsets[" + std::to_string(i) + "]", translations.at(i));
+	
 
-	//Model
-	glm::mat4 model{ glm::mat4(1.0f) };
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glBindVertexArray(vaoSquareVertical);
 	{
-		for (const glm::vec3 pos : grassPositions) {
-			model = glm::mat4(1.0f);
-			model = glm::translate(model, pos);
-			textureShader->SetMat4("model", model);
-
-			//Render
-			glDrawArrays(GL_TRIANGLES, 0, sizeof(squareVerticalVertices) / sizeof(GLfloat));
-		}
+		glDrawArraysInstanced(GL_TRIANGLES, 0, sizeof(squareVerticalVertices) / sizeof(GLfloat), translationSize);
 	}
 	glBindVertexArray(0);
 }

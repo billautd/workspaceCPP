@@ -146,14 +146,6 @@ const glm::vec3 cubePositions[]{
 	glm::vec3(-1.3f,  1.0f, -1.5f)
 };
 
-const glm::vec3 grassPositions[]{
-	glm::vec3(-2.5f,  0.0f, -4.48f),
-	glm::vec3(5.5f,  0.0f,  6.51f),
-	glm::vec3(-5.0f,  0.0f,  3.7f),
-	glm::vec3(-6.3f,  0.0f, -2.3f),
-	glm::vec3(2.5f,  0.0f, -1.6f)
-};
-
 const glm::vec3 windowsPositions[]{
 	glm::vec3(-6.5f,  0.0f, -1.48f),
 	glm::vec3(12.5f,  0.0f,  4.51f),
