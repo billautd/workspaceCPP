@@ -434,11 +434,11 @@ void DisplayModels() {
 void DisplayGrass() {
 	grassShader->Use();
 
-	const GLuint translationSize{ 100 };
+	const GLuint translationSize{ 400 };
 	std::vector<glm::vec2> translations{ std::vector<glm::vec2>(translationSize) };
 	GLuint offset{ 0 };
-	for (GLint i{ -5 }; i < 5; i++) {
-		for (GLint j{ -5 }; j < 5; j++) {
+	for (GLint i{ -10 }; i < 10; i++) {
+		for (GLint j{ -10 }; j < 10; j++) {
 			translations.at(offset++) = glm::vec2(i, j);
 		}
 	}
