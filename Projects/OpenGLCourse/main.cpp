@@ -12,6 +12,7 @@
 
 GLuint vaoCube, vboCube, vaoFloor, vboFloor, vaoSquareVertical, vboSquareVertical, vaoSquare, vboSquare, vaoSkybox, vboSkybox;
 GLuint vaoLightCube, vboLightCube;
+GLuint instancedGrassVBO;
 GLuint fbo, rbo, textureColorBuffer;
 GLuint uboPV, uboViewPos;
 Shader* cubeShader{ nullptr };
@@ -37,6 +38,9 @@ GLfloat lastY{ WINDOW_HEIGHT / 2.0f };
 GLboolean firstMouse{ true };
 GLfloat yaw{ -90.0f };
 GLfloat pitch{};
+
+//Can be increased a lot
+const GLuint instancedGrassSize{ 2*10*10 };
 
 void mouseCallback(GLFWwindow* window, double xpos, double ypos) {
 	if (firstMouse) {
@@ -163,6 +167,7 @@ void ConfigureBufferObjects() {
 
 	glGenVertexArrays(1, &vaoSquareVertical);
 	glGenBuffers(1, &vboSquareVertical);
+		glGenBuffers(1, &instancedGrassVBO);
 	glBindVertexArray(vaoSquareVertical);
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, vboSquareVertical);
@@ -172,6 +177,34 @@ void ConfigureBufferObjects() {
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(1);
+
+		//Grass arrays
+		std::vector<glm::mat4> displacements{ std::vector<glm::mat4>(instancedGrassSize) };
+		const GLint numberPerLine{ static_cast<GLint>(sqrtf(instancedGrassSize/2.0f)/2.0f) };
+		GLuint offset{ 0 };
+		for (GLint i{ -numberPerLine }; i < numberPerLine; i++) {
+			for (GLint j{ -numberPerLine }; j < numberPerLine; j++) {
+				//Translation
+				displacements.at(offset++) = glm::translate(glm::mat4(1.0f), glm::vec3(i, 0.0f, j));
+				//Translation + rotation by 90
+				displacements.at(offset++) = glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(i, 0.0f, j)), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+			}
+		}
+		glBindBuffer(GL_ARRAY_BUFFER, instancedGrassVBO);
+		glBufferData(GL_ARRAY_BUFFER, instancedGrassSize * sizeof(glm::mat4), &displacements.at(0), GL_STATIC_DRAW);
+		glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (void*)0);
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (void*)(1 * sizeof(glm::vec4)));
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (void*)(2*sizeof(glm::vec4)));
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (void*)(3*sizeof(glm::vec4)));
+		glEnableVertexAttribArray(5);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glVertexAttribDivisor(2, 1);
+		glVertexAttribDivisor(3, 1);
+		glVertexAttribDivisor(4, 1);
+		glVertexAttribDivisor(5, 1);
 	}
 
 	glGenVertexArrays(1, &vaoSquare);
@@ -434,30 +467,18 @@ void DisplayModels() {
 void DisplayGrass() {
 	grassShader->Use();
 
-	const GLuint translationSize{ 400 };
-	std::vector<glm::vec2> translations{ std::vector<glm::vec2>(translationSize) };
-	GLuint offset{ 0 };
-	for (GLint i{ -10 }; i < 10; i++) {
-		for (GLint j{ -10 }; j < 10; j++) {
-			translations.at(offset++) = glm::vec2(i, j);
-		}
-	}
-
 	//Textures
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, assetManager->GetTexture("grass"));
 
 	//Uniforms
 	grassShader->SetInt("textureSampler", 0);
-	for (size_t i{ 0 }; i < translations.size(); i++)
-		grassShader->SetVec2("offsets[" + std::to_string(i) + "]", translations.at(i));
-	
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glBindVertexArray(vaoSquareVertical);
 	{
-		glDrawArraysInstanced(GL_TRIANGLES, 0, sizeof(squareVerticalVertices) / sizeof(GLfloat), translationSize);
+		glDrawArraysInstanced(GL_TRIANGLES, 0, sizeof(squareVerticalVertices) / sizeof(GLfloat), instancedGrassSize);
 	}
 	glBindVertexArray(0);
 }

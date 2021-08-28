@@ -2,6 +2,7 @@
 #define OFFSET_SIZE 400
 layout(location = 0) in vec3 pos;
 layout(location = 1) in vec2 texCoords;
+layout(location = 2) in mat4 instancedModel;
 
 out vec2 fTexCoords;
 
@@ -10,15 +11,7 @@ layout(std140, binding = 0) uniform Matrices{
 	mat4 view;
 };
 
-uniform vec2 offsets[OFFSET_SIZE];
-
 void main() {
-	vec2 offset = offsets[gl_InstanceID];
-	mat4 model = mat4(
-		1.0f, 0.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0, 0.0f,
-		offset.x, 0.0f, offset.y, 1.0f);
-	gl_Position = projection * view * model * vec4(pos, 1.0f);
+	gl_Position = projection * view * instancedModel * vec4(pos, 1.0f);
 	fTexCoords = texCoords;
 }
