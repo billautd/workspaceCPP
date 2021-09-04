@@ -14,6 +14,7 @@ GLuint vaoCube, vboCube, vaoFloor, vboFloor, vaoSquareVertical, vboSquareVertica
 GLuint vaoLightCube, vboLightCube;
 GLuint instancedGrassVBO;
 GLuint fbo, rbo, textureColorBuffer;
+GLuint depthMap, depthMapFBO;
 GLuint uboPV, uboViewPos;
 Shader* cubeShader{ nullptr };
 Shader* lightCubeShader{ nullptr };
@@ -327,6 +328,26 @@ void RenderFBOTexture() {
 	glBindVertexArray(0);
 }
 
+void CreateDepthMap() {
+	glGenFramebuffers(1, &depthMapFBO);
+
+	glGenTextures(1, &depthMap);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	{
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 void Clear() {
 	for (GLuint vao : vaos)
 		glDeleteVertexArrays(1, &vao);
@@ -633,6 +654,7 @@ int main(int argc, char** argv) {
 	CreateShaders();
 	ConfigureBufferObjects();
 	LoadAssets();
+	CreateDepthMap();
 	CreateFBORBO();
 
 	//Main loop
@@ -650,19 +672,39 @@ int main(int argc, char** argv) {
 
 		//Render
 		UpdateUBOs();
-		//First pass
-		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-		glEnable(GL_DEPTH_TEST);
-		DrawScene();
+		//For post processing effects via fragmentFBO shader
+		{
+			//First pass
+			//glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+			//glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+			//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+			//glEnable(GL_DEPTH_TEST);
+			//DrawScene();
 
-		//Second pass
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-		glBindTexture(GL_TEXTURE_2D, textureColorBuffer);
-		RenderFBOTexture();
+			//Second pass
+			//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			//glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+			//glClear(GL_COLOR_BUFFER_BIT);
+			//glBindTexture(GL_TEXTURE_2D, textureColorBuffer);
+			//RenderFBOTexture();
+		}
+		//For shadow mapping
+		{
+			//First pass
+			glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+			glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+			{
+				glClear(GL_DEPTH_BUFFER_BIT);
+				DrawScene();
+			}
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);		
+
+			//Second pass
+			glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glBindTexture(GL_TEXTURE_2D, depthMap);
+			DrawScene();
+		}
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

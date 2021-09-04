@@ -48,10 +48,12 @@ const std::string ToLowerString(const std::string value) {
 
 int main() {
 	SetConsoleOutputCP(CP_UTF8);
-	std::ifstream file;
-	file.open("new.txt");
 
+	std::ifstream file;
+	std::ifstream gamesFile;
 	std::ofstream newFile;
+	file.open("new.txt");
+	gamesFile.open("Games.txt");
 	newFile.open("new2.txt", std::ios_base::app | std::ios_base::out);
 
 	//std::string line{ "" };
@@ -109,14 +111,28 @@ int main() {
 
 	//}
 
-	//std::string previousLine{ "" };
 	std::string line{ "" };
-	//std::getline(file, previousLine);
+	std::string gamesLine{ "" };
+	bool isInGamesFile{ false };
 
 	while (std::getline(file, line)) {
-		//if (std::strcmp(ToLowerString(previousLine).c_str(), ToLowerString(line).c_str()) == 0)
-		newFile << "SMW Hack - " << line.substr(0, line.find(" Added:")) << '\n';
-		//previousLine = line;
+		gamesLine = "";
+		gamesFile.clear();
+		gamesFile.seekg(0);
+		isInGamesFile = false;
+		std::cout << line << '\n';
+
+		while (std::getline(gamesFile, gamesLine) && isInGamesFile == false) {
+			const std::string toLowerGames{ ToLowerString(gamesLine) };
+			const std::string toLowerLine{ ToLowerString(line) };
+			if (toLowerGames.compare(toLowerLine) == 0 || toLowerGames.compare("(F) " + toLowerLine) == 0 ||
+				toLowerGames.compare("(S) " + toLowerLine) == 0 || toLowerGames.compare("(100F) " + toLowerLine) == 0)
+				isInGamesFile = true;
+		}
+
+		if (!isInGamesFile)
+			newFile << line << '\n';
+
 	}
 	return 0;
 }

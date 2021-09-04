@@ -27,15 +27,15 @@ struct PointLight {
 	float Kquadratic;
 };
 
+layout(std140, binding = 1) uniform ViewPos{
+	vec3 viewPos;
+};
+
 out vec4 fragColor;
 
 in vec2 fTexCoords;
 in vec3 fNormal;
 in vec3 fFragPos;
-
-layout(std140, binding = 1) uniform ViewPos{
-	vec3 viewPos;
-};
 
 uniform Material material;
 uniform DirLight dirLight;

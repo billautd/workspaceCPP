@@ -9,6 +9,9 @@ const GLsizei WINDOW_HEIGHT{ 800 };
 const GLfloat ASPECT_RATIO{ 16.0f / 9.0f };
 const GLsizei WINDOW_WIDTH{ static_cast<GLsizei>(ASPECT_RATIO * WINDOW_HEIGHT) };
 
+const GLuint SHADOW_WIDTH{ 1024 };
+const GLuint SHADOW_HEIGHT{ 1024 };
+
 const GLfloat squareVertices[]{
 	// positions   // texture Coords
 	-1.0f,  1.0f,  0.0f, 1.0f,
