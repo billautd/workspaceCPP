@@ -4,6 +4,18 @@
 #include "ShaderManager.h"
 #include "Textures2DManager.h"
 
+
+void Game::Init()
+{
+    const GLint initStatus{ InitGL() };
+    if (initStatus != 0) {
+        std::cerr << "Error initialising OpenGL\n";
+    }
+
+    LoadShaders();
+    LoadAssets();
+}
+
 const GLint Game::InitGL()
 {
     if (!glfwInit()) {
@@ -43,31 +55,51 @@ const GLint Game::InitGL()
     return 0;
 }
 
-void Game::Init()
-{
-    const GLint initStatus{ InitGL() };
-    if (initStatus != 0) {
-        std::cerr << "Error initialising OpenGL\n";
+void Game::LoadShaders() {
+    //Load shaders
+    const Shader& spriteShader{ ShaderManager::LoadShader("sprite", "./Shaders/Vertex/vertexSprite.shader", "./Shaders/Fragment/vertexFragment.shader", nullptr) };
+    spriteRenderer = new SpriteRenderer(spriteShader);
+
+    //Configure shaders
+    //Projection UBO
+    glm::mat4 projection{ glm::ortho(0.0f, static_cast<GLfloat>(SCREEN_WIDTH), static_cast<GLfloat>(SCREEN_HEIGHT), 0.0f, -1.0f, 1.0f) };
+    glGenBuffers(1, &uboProjection);
+    glBindBuffer(GL_UNIFORM_BUFFER, uboProjection);
+    {
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), nullptr, GL_STATIC_DRAW);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
     }
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    //Bind to binding point 0
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, uboProjection);
+
+    //Sprite
+    spriteShader.Use();
+    spriteShader.SetInt("image", 0);
 }
 
-void Game::ProcessInput(const GLfloat dt) const
+void Game::LoadAssets() {
+    Textures2DManager::Generate("face", "./Assets/face.png");
+}
+
+
+void Game::ProcessInput(const GLfloat dt)
 {
-    return void();
 }
 
-void Game::Update(const GLfloat dt) const
+void Game::Update(const GLfloat dt)
 {
-    return void();
 }
 
-void Game::Render() const
+void Game::Render()
 {
-    return void();
+    spriteRenderer->DrawSprite(Textures2DManager::GetTexture2D("face"), glm::vec2(200.0f), glm::vec2(300.0f, 400.0f), 45.0f, glm::vec3(1.0f, 0.0f, 1.0f));
 }
 
-void Game::Clear() const
+void Game::Clear()
 {
     ShaderManager::Clear();
     Textures2DManager::Clear();
+
+    delete spriteRenderer;
 }
