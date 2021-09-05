@@ -147,7 +147,6 @@
     <ClCompile Include="..\..\..\Libraries\glad\src\glad.c" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="SpriteRenderer.cpp" />
     <ClCompile Include="Textures2DManager.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
   </ItemGroup>
@@ -156,16 +155,11 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameStateEnum.h" />
     <ClInclude Include="IModelObject.h" />
-    <ClInclude Include="SpriteRenderer.h" />
     <ClInclude Include="Textures2DManager.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="Utils.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Shaders\Fragment\fragmentSprite.shader" />
-    <None Include="..\Shaders\Vertex\vertexSprite.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

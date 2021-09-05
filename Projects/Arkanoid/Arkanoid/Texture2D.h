@@ -4,8 +4,8 @@
 class Texture2D : public IModelObject
 {
 public:
-	GLint width{ 0 };
-	GLint height{ 0 };
+	GLuint width{ 0 };
+	GLuint height{ 0 };
 	GLuint internalFormat{ GL_RGB };
 	GLuint imageFormat{ GL_RGB };
 	GLuint wrapS{ GL_REPEAT };
