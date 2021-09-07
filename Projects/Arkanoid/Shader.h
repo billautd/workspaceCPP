@@ -3,9 +3,9 @@
 #include "glm.hpp"
 #include "gtc/type_ptr.hpp"
 #include <string>
-#include "IModelObject.h"
+#include "IUniqueId.h"
 
-class Shader : public IModelObject
+class Shader : public IUniqueId
 {
 public:
 	void Use() const { glUseProgram(id); }

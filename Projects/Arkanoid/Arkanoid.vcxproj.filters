@@ -25,6 +25,15 @@
     <Filter Include="Header Files\Manager">
       <UniqueIdentifier>{e233fbba-01e6-4c3f-92ba-9058e50a4fd5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Shaders">
+      <UniqueIdentifier>{afa384ea-4686-4201-8249-7af12bb60a9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\Vertex">
+      <UniqueIdentifier>{b768c3ba-ac61-4a34-9e2a-568e62f65e7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\Fragment">
+      <UniqueIdentifier>{de815f5d-fab5-499f-ba2a-1dcf1c7cb199}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -39,7 +48,10 @@
     <ClCompile Include="ShaderManager.cpp">
       <Filter>Source Files\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Libraries\glad\src\glad.c">
+    <ClCompile Include="SpriteRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="glad.c">
       <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -65,11 +77,22 @@
     <ClInclude Include="ShaderManager.h">
       <Filter>Header Files\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="IModelObject.h">
+    <ClInclude Include="IUniqueId.h">
       <Filter>Header Files\Model</Filter>
     </ClInclude>
     <ClInclude Include="Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SpriteRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\Vertex\vertexSprite.shader">
+      <Filter>Resource Files\Shaders\Vertex</Filter>
+    </None>
+    <None Include="Shaders\Fragment\fragmentSprite.shader">
+      <Filter>Resource Files\Shaders\Fragment</Filter>
+    </None>
   </ItemGroup>
 </Project>

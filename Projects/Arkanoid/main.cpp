@@ -1,4 +1,6 @@
+#define STB_IMAGE_IMPLEMENTATION
 #include "Game.h"
+#include <iostream>
 
 Game game{};
 
@@ -39,7 +41,7 @@ int main() {
         game.Update(deltaTime);
 
         //Render
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         game.Render();
 

@@ -1,11 +1,11 @@
 #pragma once
-#include "IModelObject.h"
+#include "IUniqueId.h"
 
-class Texture2D : public IModelObject
+class Texture2D : public IUniqueId
 {
 public:
-	GLuint width{ 0 };
-	GLuint height{ 0 };
+	GLint width{ 0 };
+	GLint height{ 0 };
 	GLuint internalFormat{ GL_RGB };
 	GLuint imageFormat{ GL_RGB };
 	GLuint wrapS{ GL_REPEAT };
