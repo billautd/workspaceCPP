@@ -1,0 +1,27 @@
+#pragma once
+#include "GameState.h"
+#include "Constants.h"
+#include "glfw3.h"
+#include "SpriteRenderer.h"
+
+class Game
+{
+public:
+	GameState state{ GAME_ACTIVE };
+	bool keys[1024]{};
+	GLuint width{ SCREEN_WIDTH };
+	GLuint height{ SCREEN_HEIGHT };
+	GLFWwindow* window{ nullptr };
+
+	Game();
+	~Game();
+
+	const int InitGL();
+	void Init();
+	void ProcessInput(const GLfloat dt);
+	void Update(const GLfloat dt);
+	void Render();
+
+	SpriteRenderer* spriteRenderer{ nullptr };
+};
+
