@@ -59,11 +59,39 @@ void Game::Init() {
 	//Textures
 	spriteRenderer = new SpriteRenderer(spriteShader);
 	ResourceManager::LoadTexture2D("face", "./Assets/face.png", true);
+	ResourceManager::LoadTexture2D("block", "./Assets/block.png", false);
+	ResourceManager::LoadTexture2D("background", "./Assets/background.jpg", false);
+	ResourceManager::LoadTexture2D("blockSolid", "./Assets/blockSolid.png", false);
+	ResourceManager::LoadTexture2D("paddle", "./Assets/paddle.png", true);
 
+	//Levels
+	GameLevel one; one.Load("./Levels/one.lvl", width, height / 2);
+	GameLevel two; two.Load("./Levels/two.lvl", width, height / 2);
+	GameLevel three; three.Load("./Levels/three.lvl", width, height / 2);
+	GameLevel four; four.Load("./Levels/four.lvl", width, height / 2);
+	levels.emplace_back(one);
+	levels.emplace_back(two);
+	levels.emplace_back(three);
+	levels.emplace_back(four);
+
+	//Player
+	player = new Player();
 }
 
 void Game::ProcessInput(const GLfloat dt) {
+	if (state == GAME_ACTIVE) {
+		GLfloat velocity{ PLAYER_VELOCITY * dt };
+		//Move player
+		if (keys[GLFW_KEY_LEFT]) {
+			if (player->position.x >= 0.0f)
+				player->position.x -= velocity;
+		}
+		if (keys[GLFW_KEY_RIGHT]) {
+			if (player->position.x + player->size.x <= width)
+				player->position.x += velocity;
+		}
 
+	}
 }
 
 void Game::Update(const GLfloat dt) {
@@ -71,5 +99,14 @@ void Game::Update(const GLfloat dt) {
 }
 
 void Game::Render() {
-	spriteRenderer->DrawSprite(ResourceManager::GetTexture2D("face"), glm::vec2(200.0f, 200.0f), glm::vec2(300.0f, 400.0f), 45.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	if (state == GAME_ACTIVE) {
+		//Draw background
+		spriteRenderer->DrawSprite(ResourceManager::GetTexture2D("background"), glm::vec2(0.0f), glm::vec2(width, height));
+
+		//Draw level
+		levels[currentLevel].Draw(*spriteRenderer);
+
+		//Draw player
+		player->Draw(*spriteRenderer);
+	}
 }
