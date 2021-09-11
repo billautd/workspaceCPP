@@ -5,6 +5,7 @@
 #include "SpriteRenderer.h"
 #include "GameLevel.h"
 #include "Player.h"
+#include "Ball.h"
 
 class Game
 {
@@ -28,5 +29,6 @@ public:
 
 	SpriteRenderer* spriteRenderer{ nullptr };
 	Player* player{nullptr};
+	Ball* ball{ nullptr };
 };
 

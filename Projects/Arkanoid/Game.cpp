@@ -58,7 +58,7 @@ void Game::Init() {
 
 	//Textures
 	spriteRenderer = new SpriteRenderer(spriteShader);
-	ResourceManager::LoadTexture2D("face", "./Assets/face.png", true);
+	ResourceManager::LoadTexture2D("ball", "./Assets/face.png", true);
 	ResourceManager::LoadTexture2D("block", "./Assets/block.png", false);
 	ResourceManager::LoadTexture2D("background", "./Assets/background.jpg", false);
 	ResourceManager::LoadTexture2D("blockSolid", "./Assets/blockSolid.png", false);
@@ -76,6 +76,9 @@ void Game::Init() {
 
 	//Player
 	player = new Player();
+
+	//Ball
+	ball = new Ball();
 }
 
 void Game::ProcessInput(const GLfloat dt) {
@@ -83,19 +86,29 @@ void Game::ProcessInput(const GLfloat dt) {
 		GLfloat velocity{ PLAYER_VELOCITY * dt };
 		//Move player
 		if (keys[GLFW_KEY_LEFT]) {
-			if (player->position.x >= 0.0f)
+			if (player->position.x >= 0.0f) {
 				player->position.x -= velocity;
+				if (ball->isStuck)
+					ball->position.x -= velocity;
+			}
 		}
 		if (keys[GLFW_KEY_RIGHT]) {
-			if (player->position.x + player->size.x <= width)
+			if (player->position.x + player->size.x <= width) {
 				player->position.x += velocity;
+				if (ball->isStuck)
+					ball->position.x += velocity;
+			}
+		}
+
+		if (keys[GLFW_KEY_SPACE]) {
+			ball->isStuck = false;
 		}
 
 	}
 }
 
 void Game::Update(const GLfloat dt) {
-
+	ball->Move(dt, width);
 }
 
 void Game::Render() {
@@ -108,5 +121,8 @@ void Game::Render() {
 
 		//Draw player
 		player->Draw(*spriteRenderer);
+
+		//Draw Ball
+		ball->Draw(*spriteRenderer);
 	}
 }

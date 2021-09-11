@@ -9,3 +9,7 @@ const GLuint SCREEN_WIDTH{ static_cast<GLuint>(ASPECT_RATIO * SCREEN_HEIGHT) };
 //Player
 const glm::vec2 PLAYER_SIZE{ 100.0f, 20.0f };
 const GLfloat PLAYER_VELOCITY{ 500.0f };
+
+//Ball
+const GLfloat BALL_RADIUS{ 12.5f };
+const glm::vec2 BALL_VELOCITY(100.0f, -350.0f);
