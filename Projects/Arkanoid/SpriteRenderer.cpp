@@ -1,6 +1,6 @@
 #include "SpriteRenderer.h"
 
-SpriteRenderer::SpriteRenderer(const Shader& shader) : shader(shader)
+SpriteRenderer::SpriteRenderer(Shader shader) : shader(shader)
 {
 	InitRenderData();
 }

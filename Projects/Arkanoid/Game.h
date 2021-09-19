@@ -3,9 +3,15 @@
 #include "Constants.h"
 #include "glfw3.h"
 #include "SpriteRenderer.h"
+#include "Direction.h"
 #include "GameLevel.h"
 #include "Player.h"
 #include "Ball.h"
+#include "PostProcessor.h"
+#include "PowerUp.h"
+#include "ParticleRenderer.h"
+
+typedef std::tuple<bool, Direction, glm::vec2> Collision;
 
 class Game
 {
@@ -16,7 +22,8 @@ public:
 	GLuint height{ SCREEN_HEIGHT };
 	GLFWwindow* window{ nullptr };
 	std::vector<GameLevel> levels{};
-	GLuint currentLevel{0};
+	GLuint currentLevel{ 0 };
+	std::vector<PowerUp> powerUps{};
 
 	Game();
 	~Game();
@@ -26,9 +33,23 @@ public:
 	void ProcessInput(const GLfloat dt);
 	void Update(const GLfloat dt);
 	void Render();
+	void DoCollisions();
+	bool CheckCollision(const GameObject& obj1, const GameObject& obj2);
+	Collision CheckCollision(const Ball& ball, const GameObject& obj2);
+	void ResetPlayer();
+	void ResetLevel();
+	void SpawnPowerUps(const GameObject& block);
+	void UpdatePowerUps(const GLfloat dt);
+	void ActivatePowerUp(const PowerUp& powerUp);
 
 	SpriteRenderer* spriteRenderer{ nullptr };
+	ParticleRenderer* particleRenderer{ nullptr };
+	PostProcessor* postProcessor{ nullptr };
 	Player* player{nullptr};
 	Ball* ball{ nullptr };
+
+private:
+	bool ShouldSpawn(const GLuint chance);
+	bool IsOtherPowerUpActive(const std::string type);
 };
 

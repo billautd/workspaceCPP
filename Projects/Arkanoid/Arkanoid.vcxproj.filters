@@ -31,6 +31,9 @@
     <Filter Include="Resource Files\Levels">
       <UniqueIdentifier>{ab7b8bc1-d123-4e49-9079-72027e8c795a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Assets\Powerups">
+      <UniqueIdentifier>{40e36e6a-0cd5-48d2-b7ec-6fbe94a2743f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -61,6 +64,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Ball.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -98,6 +113,24 @@
     <ClInclude Include="Ball.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Direction.h">
+      <Filter>Header Files\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PowerUp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\Fragment\fragmentSprite.shader">
@@ -105,6 +138,30 @@
     </None>
     <None Include="Shaders\Vertex\vertexSprite.shader">
       <Filter>Resource Files\Shaders\Vertex</Filter>
+    </None>
+    <None Include="Shaders\Vertex\vertexParticle.shader">
+      <Filter>Resource Files\Shaders\Vertex</Filter>
+    </None>
+    <None Include="Shaders\Fragment\fragmentParticle.shader">
+      <Filter>Resource Files\Shaders\Fragment</Filter>
+    </None>
+    <None Include="Shaders\Vertex\vertexPostProcessing.shader">
+      <Filter>Resource Files\Shaders\Vertex</Filter>
+    </None>
+    <None Include="Shaders\Fragment\fragmentPostProcessing.shader">
+      <Filter>Resource Files\Shaders\Fragment</Filter>
+    </None>
+    <None Include="Levels\one.lvl">
+      <Filter>Resource Files\Levels</Filter>
+    </None>
+    <None Include="Levels\three.lvl">
+      <Filter>Resource Files\Levels</Filter>
+    </None>
+    <None Include="Levels\two.lvl">
+      <Filter>Resource Files\Levels</Filter>
+    </None>
+    <None Include="Levels\four.lvl">
+      <Filter>Resource Files\Levels</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -119,6 +176,27 @@
     </Image>
     <Image Include="Assets\background.jpg">
       <Filter>Resource Files\Assets</Filter>
+    </Image>
+    <Image Include="Assets\particle.png">
+      <Filter>Resource Files\Assets</Filter>
+    </Image>
+    <Image Include="Assets\powerupChaos.png">
+      <Filter>Resource Files\Assets\Powerups</Filter>
+    </Image>
+    <Image Include="Assets\powerupConfuse.png">
+      <Filter>Resource Files\Assets\Powerups</Filter>
+    </Image>
+    <Image Include="Assets\powerupIncrease.png">
+      <Filter>Resource Files\Assets\Powerups</Filter>
+    </Image>
+    <Image Include="Assets\powerupPassthrough.png">
+      <Filter>Resource Files\Assets\Powerups</Filter>
+    </Image>
+    <Image Include="Assets\powerupSpeed.png">
+      <Filter>Resource Files\Assets\Powerups</Filter>
+    </Image>
+    <Image Include="Assets\powerupSticky.png">
+      <Filter>Resource Files\Assets\Powerups</Filter>
     </Image>
   </ItemGroup>
 </Project>

@@ -13,7 +13,7 @@ public:
 	glm::vec3 color{glm::vec3(1.0f)};
 	GLfloat rotation{ 0.0f };
 	bool isSolid{ false };
-	bool destroyed{ false };
+	bool isDestroyed{ false };
 
 	Texture2D sprite{};
 

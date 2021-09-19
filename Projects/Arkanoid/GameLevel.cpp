@@ -28,7 +28,7 @@ void GameLevel::Load(const char* file, const GLuint levelWidth, const GLuint lev
 void GameLevel::Draw(SpriteRenderer& renderer)
 {
     for (auto& brick : bricks) {
-        if (!brick.destroyed)
+        if (!brick.isDestroyed)
             brick.Draw(renderer);
     }
 }
@@ -36,7 +36,7 @@ void GameLevel::Draw(SpriteRenderer& renderer)
 bool GameLevel::IsCompleted()
 {
     for (const auto& brick : bricks) {
-        if(!brick.isSolid && !brick.destroyed)
+        if(!brick.isSolid && !brick.isDestroyed)
             return false;
     }
     return true;
@@ -53,13 +53,14 @@ void GameLevel::Init(const std::vector<std::vector<GLuint>> tileData, const GLui
     for (GLuint y{ 0 }; y < height; y++) {
         for (GLuint x{ 0 }; x < width; x++) {
             GLuint tileId{ tileData[y][x] };
-            if (tileId >= 1){ // solid
-                glm::vec2 pos{ unitWidth * x, unitHeight * y };
-                glm::vec2 size{ unitWidth, unitHeight };
-                glm::vec3 color{ glm::vec3(1.0f) };
+            if (tileId >= 1){
                 GameObject brick;
+                brick.size = glm::vec2(unitWidth, unitHeight);
+                brick.position = glm::vec2(unitWidth * x, unitHeight * y);
+                glm::vec3 color{ glm::vec3(1.0f) };
                 std::string textureId{ "block" };
-                if (tileId == 1) {//Solid
+                //Solid
+                if (tileId == 1) {
                     color = glm::vec3(0.8f, 0.8f, 0.7f);
                     textureId = "blockSolid";
                     brick.isSolid = true;
@@ -73,8 +74,9 @@ void GameLevel::Init(const std::vector<std::vector<GLuint>> tileData, const GLui
                     color = glm::vec3(0.8f, 0.8f, 0.4f);
                 else if (tileId == 5)
                     color = glm::vec3(1.0f, 0.5f, 0.0f);
-
-                bricks.emplace_back(GameObject(pos, size, ResourceManager::GetTexture2D(textureId), glm::vec2(0.0f), color));
+                brick.color = color;
+                brick.sprite = ResourceManager::GetTexture2D(textureId);
+                bricks.emplace_back(brick);
             }
         }
     }

@@ -3,16 +3,15 @@
 #include "Constants.h"
 #include "ResourceManager.h"
 
-
-const glm::vec2 INITIAL_POSITION{ glm::vec2(SCREEN_WIDTH / 2.0f - BALL_RADIUS, SCREEN_HEIGHT - PLAYER_SIZE.y - 2.0f * BALL_RADIUS) };
-
 class Ball : public GameObject
 {
 public:
 	GLfloat radius{BALL_RADIUS};
 	bool isStuck{ true };
+	bool isSticky{ false };
+	bool isPassthrough{ false };
 
-	Ball() : GameObject(INITIAL_POSITION, glm::vec2(2.0f * BALL_RADIUS), ResourceManager::GetTexture2D("ball"), BALL_VELOCITY) {}
+	Ball() : GameObject(INITIAL_BALL_POSITION, glm::vec2(2.0f * BALL_RADIUS), ResourceManager::GetTexture2D("ball"), INITIAL_BALL_VELOCITY) {}
 	~Ball() {}
 
 	void Move(const GLfloat dt, const GLuint windowWidth);

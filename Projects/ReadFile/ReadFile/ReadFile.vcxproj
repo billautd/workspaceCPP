@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{53254667-73a7-4e87-995a-b3bebd20e09d}</ProjectGuid>
-    <RootNamespace>Arkanoid</RootNamespace>
+    <ProjectGuid>{4213c8a1-d8d8-4669-99e7-0ad5ecd796f6}</ProjectGuid>
+    <RootNamespace>ReadFile</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -72,15 +72,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\David\workspaceCPP\Libraries\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\David\workspaceCPP\Libraries\include</IncludePath>
-    <LibraryPath>C:\Users\David\workspaceCPP\Libraries\glfw_x64\lib-vc2019;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -95,7 +92,6 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -124,7 +120,6 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -144,64 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Ball.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameLevel.cpp" />
-    <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="ParticleRenderer.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PostProcessor.cpp" />
-    <ClCompile Include="ResourceManager.cpp" />
-    <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="SpriteRenderer.cpp" />
-    <ClCompile Include="Texture2D.cpp" />
-    <ClCompile Include="Utils.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Ball.h" />
-    <ClInclude Include="Constants.h" />
-    <ClInclude Include="Direction.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="GameLevel.h" />
-    <ClInclude Include="GameObject.h" />
-    <ClInclude Include="GameState.h" />
-    <ClInclude Include="Particle.h" />
-    <ClInclude Include="ParticleRenderer.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="PostProcessor.h" />
-    <ClInclude Include="PowerUp.h" />
-    <ClInclude Include="ResourceManager.h" />
-    <ClInclude Include="Shader.h" />
-    <ClInclude Include="SpriteRenderer.h" />
-    <ClInclude Include="Texture2D.h" />
-    <ClInclude Include="Utils.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Levels\four.lvl" />
-    <None Include="Levels\one.lvl" />
-    <None Include="Levels\three.lvl" />
-    <None Include="Levels\two.lvl" />
-    <None Include="Shaders\Fragment\fragmentParticle.shader" />
-    <None Include="Shaders\Fragment\fragmentPostProcessing.shader" />
-    <None Include="Shaders\Fragment\fragmentSprite.shader" />
-    <None Include="Shaders\Vertex\vertexParticle.shader" />
-    <None Include="Shaders\Vertex\vertexPostProcessing.shader" />
-    <None Include="Shaders\Vertex\vertexSprite.shader" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Assets\background.jpg" />
-    <Image Include="Assets\block.png" />
-    <Image Include="Assets\blockSolid.png" />
-    <Image Include="Assets\face.png" />
-    <Image Include="Assets\particle.png" />
-    <Image Include="Assets\powerupChaos.png" />
-    <Image Include="Assets\powerupConfuse.png" />
-    <Image Include="Assets\powerupIncrease.png" />
-    <Image Include="Assets\powerupPassthrough.png" />
-    <Image Include="Assets\powerupSpeed.png" />
-    <Image Include="Assets\powerupSticky.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

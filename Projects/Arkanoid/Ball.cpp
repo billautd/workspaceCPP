@@ -23,5 +23,9 @@ void Ball::Move(const GLfloat dt, const GLuint windowWidth)
 void Ball::Reset()
 {
 	isStuck = true;
-	position = INITIAL_POSITION;
+	isSticky = false;
+	isPassthrough = false;
+	color = glm::vec3(1.0f);
+	position = INITIAL_BALL_POSITION;
+	velocity = INITIAL_BALL_VELOCITY;
 }
