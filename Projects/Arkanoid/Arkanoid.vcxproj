@@ -80,7 +80,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\Users\David\workspaceCPP\Libraries\include</IncludePath>
-    <LibraryPath>C:\Users\David\workspaceCPP\Libraries\irrKlang;C:\Users\David\workspaceCPP\Libraries\glfw_x64\lib-vc2019;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Users\David\workspaceCPP\Libraries\freetype;C:\Users\David\workspaceCPP\Libraries\irrKlang;C:\Users\David\workspaceCPP\Libraries\glfw_x64\lib-vc2019;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -124,7 +124,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;irrKlang.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -156,11 +156,13 @@
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SpriteRenderer.cpp" />
+    <ClCompile Include="TextRenderer.cpp" />
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ball.h" />
+    <ClInclude Include="Character.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Direction.h" />
     <ClInclude Include="Game.h" />
@@ -175,6 +177,7 @@
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SpriteRenderer.h" />
+    <ClInclude Include="TextRenderer.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
@@ -186,9 +189,11 @@
     <None Include="Shaders\Fragment\fragmentParticle.shader" />
     <None Include="Shaders\Fragment\fragmentPostProcessing.shader" />
     <None Include="Shaders\Fragment\fragmentSprite.shader" />
+    <None Include="Shaders\Fragment\fragmentTextRendering.shader" />
     <None Include="Shaders\Vertex\vertexParticle.shader" />
     <None Include="Shaders\Vertex\vertexPostProcessing.shader" />
     <None Include="Shaders\Vertex\vertexSprite.shader" />
+    <None Include="Shaders\Vertex\vertexTextRendering.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\background.jpg" />

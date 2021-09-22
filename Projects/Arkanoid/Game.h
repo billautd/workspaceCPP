@@ -6,6 +6,7 @@
 #include "Direction.h"
 #include "GameLevel.h"
 #include "Player.h"
+#include "TextRenderer.h"
 #include "Ball.h"
 #include "PostProcessor.h"
 #include "PowerUp.h"
@@ -17,14 +18,16 @@ typedef std::tuple<bool, Direction, glm::vec2> Collision;
 class Game
 {
 public:
-	GameState state{ GAME_ACTIVE };
+	GameState state{ GAME_MENU };
 	bool keys[1024]{};
+	bool processedKeys[1024]{};
 	GLuint width{ SCREEN_WIDTH };
 	GLuint height{ SCREEN_HEIGHT };
 	GLFWwindow* window{ nullptr };
 	std::vector<GameLevel> levels{};
 	GLuint currentLevel{ 0 };
 	std::vector<PowerUp> powerUps{};
+	GLuint lives{ INITIAL_LIVES };
 
 	Game();
 	~Game();
@@ -47,6 +50,7 @@ public:
 	ParticleRenderer* particleRenderer{ nullptr };
 	PostProcessor* postProcessor{ nullptr };
 	irrklang::ISoundEngine* soundEngine{ nullptr };
+	TextRenderer* textRenderer{ nullptr };
 	Player* player{nullptr};
 	Ball* ball{ nullptr };
 

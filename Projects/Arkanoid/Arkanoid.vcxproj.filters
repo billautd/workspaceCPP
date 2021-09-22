@@ -78,6 +78,9 @@
     <ClCompile Include="PostProcessor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TextRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -131,6 +134,12 @@
     <ClInclude Include="PowerUp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TextRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\Fragment\fragmentSprite.shader">
@@ -162,6 +171,12 @@
     </None>
     <None Include="Levels\four.lvl">
       <Filter>Resource Files\Levels</Filter>
+    </None>
+    <None Include="Shaders\Vertex\vertexTextRendering.shader">
+      <Filter>Resource Files\Shaders\Vertex</Filter>
+    </None>
+    <None Include="Shaders\Fragment\fragmentTextRendering.shader">
+      <Filter>Resource Files\Shaders\Fragment</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
