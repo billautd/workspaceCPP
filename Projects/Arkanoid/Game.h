@@ -9,6 +9,7 @@
 #include "Ball.h"
 #include "PostProcessor.h"
 #include "PowerUp.h"
+#include <irrKlang/irrKlang.h>
 #include "ParticleRenderer.h"
 
 typedef std::tuple<bool, Direction, glm::vec2> Collision;
@@ -45,6 +46,7 @@ public:
 	SpriteRenderer* spriteRenderer{ nullptr };
 	ParticleRenderer* particleRenderer{ nullptr };
 	PostProcessor* postProcessor{ nullptr };
+	irrklang::ISoundEngine* soundEngine{ nullptr };
 	Player* player{nullptr};
 	Ball* ball{ nullptr };
 

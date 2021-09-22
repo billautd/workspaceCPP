@@ -56,6 +56,7 @@ void Game::Init() {
 	Shader& postProcessingShader{ ResourceManager::LoadShader("postProcessing",
 		"./Shaders/Vertex/vertexPostProcessing.shader", "./Shaders/Fragment/fragmentPostProcessing.shader") };
 	glm::mat4 projection{ glm::ortho(0.0f, static_cast<GLfloat>(width), static_cast<GLfloat>(height), 0.0f, -1.0f, 1.0f) };
+
 	spriteShader.Use();
 	spriteShader.SetInteger("sprite", 0);
 	spriteShader.SetMatrix4("projection", projection);
@@ -66,6 +67,8 @@ void Game::Init() {
 
 	postProcessingShader.Use();
 	postProcessingShader.SetInteger("scene", 0);
+
+
 	//Set offsets
 	glUniform2fv(glGetUniformLocation(postProcessingShader.id, "offsets"), 9, (GLfloat*)OFFSETS);
 	//Set edge kernel
@@ -94,6 +97,8 @@ void Game::Init() {
 
 	postProcessor = new PostProcessor(postProcessingShader, width, height);
 
+	soundEngine = irrklang::createIrrKlangDevice();
+
 	//Levels
 	GameLevel one; one.Load("./Levels/one.lvl", width, height / 2);
 	GameLevel two; two.Load("./Levels/two.lvl", width, height / 2);
@@ -109,6 +114,9 @@ void Game::Init() {
 
 	//Ball
 	ball = new Ball();
+
+	//Audio
+	soundEngine->play2D("Audio/breakout.mp3", true);
 }
 
 void Game::ProcessInput(const GLfloat dt) {
@@ -201,6 +209,7 @@ void Game::DoCollisions(){
 				if (!brick.isSolid) {
 					brick.isDestroyed = true;
 					SpawnPowerUps(brick);
+					soundEngine->play2D("Audio/bleep.mp3");
 					//If ball passthrough, no collision resolution
 					if(ball->isPassthrough)
 						return;
@@ -208,6 +217,7 @@ void Game::DoCollisions(){
 				else if (brick.isSolid) {
 					shakeTime = 0.05f;
 					postProcessor->shake = true;
+					soundEngine->play2D("Audio/solid.wav");
 				}
 
 				//Collision resolution
@@ -250,6 +260,8 @@ void Game::DoCollisions(){
 		ball->velocity = glm::normalize(ball->velocity) * glm::length(oldVelocity);
 		//If sticky, stick to player
 		ball->isStuck = ball->isSticky;
+
+		soundEngine->play2D("Audio/bleep.wav");
 	}
 	//Powerups
 	for (auto& powerUp : powerUps) {
@@ -261,6 +273,7 @@ void Game::DoCollisions(){
 				powerUp.isActivated = true;
 				powerUp.isDestroyed = true;
 				ActivatePowerUp(powerUp);
+				soundEngine->play2D("Audio/powerup.wav");
 			}
 		}
 	}
